@@ -1,0 +1,404 @@
+#!/bin/bash
+# apt-why — understand every upgradable package, grouped by why it's on your system
+# Usage: apt-why [--kernel] [--apps] [--auto] [--sizes] [--all] [--help]
+
+# ── Colours ──────────────────────────────────────────────────────────────────
+R='\033[0;31m' Y='\033[0;33m' G='\033[0;32m'
+C='\033[0;36m' W='\033[1;37m' M='\033[0;35m'
+DIM='\033[2m' BOLD='\033[1m' RESET='\033[0m'
+
+SHOW_KERNEL=0; SHOW_FOUNDATION=0; SHOW_APPS=0; SHOW_AUTO=0; SHOW_SIZES=0; SHOW_QUICK=0
+FOUNDATION_THRESHOLD=25
+
+usage() {
+    printf "
+  ${BOLD}apt-why${RESET} -- understand every upgradable package, grouped by why it's here
+
+  Run after ${BOLD}sudo apt update${RESET} to know exactly what you're about to upgrade.
+
+  ${BOLD}Usage:${RESET}
+    apt-why [options]
+
+  ${BOLD}Options:${RESET}
+    ${C}--kernel${RESET}      Kernel, firmware, microcode updates
+    ${C}--apps${RESET}        Apps you explicitly installed
+    ${C}--auto${RESET}        Auto-installed packages, grouped by what caused them
+    ${C}--quick${RESET}       All packages at a glance: size + reason, nothing else
+    ${C}--sizes${RESET}       Disk usage summary (top 20 by default)
+    ${C}--all${RESET}         Show everything (default when no options given)
+    ${C}--help${RESET}        This help text
+
+  ${BOLD}Examples:${RESET}
+    apt-why                  # full report — scan before upgrading
+    apt-why --apps           # check what your own installs are doing
+    apt-why --auto           # see what pulled in all the auto packages
+    apt-why --kernel         # just kernel/firmware/microcode
+
+"
+    exit 0
+}
+
+if [[ $# -eq 0 ]]; then
+    SHOW_KERNEL=1; SHOW_FOUNDATION=1; SHOW_APPS=1; SHOW_AUTO=1; SHOW_SIZES=1
+fi
+for arg in "$@"; do
+    case $arg in
+        --kernel)     SHOW_KERNEL=1; SHOW_FOUNDATION=1 ;;
+        --apps)       SHOW_APPS=1 ;;
+        --auto)       SHOW_AUTO=1 ;;
+        --quick)      SHOW_QUICK=1 ;;
+        --sizes)      SHOW_SIZES=1 ;;
+        --all)        SHOW_KERNEL=1; SHOW_FOUNDATION=1; SHOW_APPS=1; SHOW_AUTO=1; SHOW_SIZES=1 ;;
+        --help|-h)    usage ;;
+        *) printf "${R}Unknown option: %s${RESET}\n" "$arg"; usage ;;
+    esac
+done
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+hr()      { printf "${DIM}"; printf '%0.s-' {1..62}; printf "${RESET}\n"; }
+section() { printf "\n${BOLD}${W}  %-58s${RESET}\n" "$1"; hr; }
+
+pkg_desc() {
+    apt-cache show "$1" 2>/dev/null \
+        | awk '/^Description/{sub(/^Description(-en)?: /,""); print substr($0,1,72); exit}'
+}
+
+pkg_versions() {
+    apt-cache policy "$1" 2>/dev/null \
+        | awk '/Installed:/{i=$2} /Candidate:/{c=$2} END{printf "%s  ->  %s", i, c}'
+}
+
+pkg_size_kb() {
+    local result
+    result=$(apt-cache show "$1" 2>/dev/null \
+        | awk -F': ' '/^Installed-Size:/{print $2; exit}')
+    echo "${result:-0}"
+}
+
+format_kb() {
+    local kb=${1:-0}
+    [[ "$kb" =~ ^[0-9]+$ ]] || kb=0
+    if   [[ $kb -gt 102400 ]]; then printf "${R}%4.0f MB${RESET}" "$(echo "scale=1; $kb/1024" | bc)"
+    elif [[ $kb -gt 10240  ]]; then printf "${Y}%4.0f MB${RESET}" "$(echo "scale=1; $kb/1024" | bc)"
+    elif [[ $kb -gt 0      ]]; then printf "${G}%5d KB${RESET}"  "$kb"
+    else                              printf "${DIM}  n/a   ${RESET}"
+    fi
+}
+
+is_manual() { [[ " ${MANUAL_PKGS[*]} " == *" $1 "* ]]; }
+
+rdeps_of() {
+    apt-cache rdepends --installed "$1" 2>/dev/null \
+        | grep -v "Reverse Depends:\|^${1}$\|^$" \
+        | sed 's/^[[:space:]]*//' \
+        | grep -v '|' \
+        | sort -u
+}
+
+# Cached rdep count — apt-cache is fast but we call this repeatedly
+declare -A RDEP_COUNT_CACHE
+rdep_count() {
+    if [[ -v RDEP_COUNT_CACHE["$1"] ]]; then
+        echo "${RDEP_COUNT_CACHE[$1]}"
+        return
+    fi
+    local n; n=$(rdeps_of "$1" | wc -l)
+    RDEP_COUNT_CACHE["$1"]=$n
+    echo "$n"
+}
+
+# Return the nearest manually-installed package in the rdep graph (BFS)
+# Echoes the package name, or "" if none found
+bfs_root_of() {
+    local start="$1"
+    declare -A _bv _bp
+    local -a _q=("$start")
+    _bv["$start"]=1
+    local _found=""
+    while [[ ${#_q[@]} -gt 0 ]]; do
+        local _cur="${_q[0]}"; _q=("${_q[@]:1}")
+        local -a _rd; mapfile -t _rd < <(rdeps_of "$_cur")
+        for _dep in "${_rd[@]}"; do
+            [[ -v _bv["$_dep"] ]] && continue
+            _bv["$_dep"]=1; _bp["$_dep"]="$_cur"
+            if is_manual "$_dep"; then _found="$_dep"; break 2; fi
+            _q+=("$_dep")
+        done
+    done
+    echo "$_found"
+}
+
+# True if package looks like a kernel/firmware/microcode package
+is_kernel_pkg() {
+    local p="$1"
+    [[ "$p" =~ ^linux- ]]             && return 0
+    [[ "$p" =~ ^(intel|amd64)-microcode$ ]] && return 0
+    [[ "$p" =~ ^firmware- ]]          && return 0
+    [[ "$p" =~ ^initramfs ]]          && return 0
+    return 1
+}
+
+# ── Collect and classify all upgradable packages ──────────────────────────────
+printf "\n${BOLD}${C}apt-why${RESET}  ${DIM}analysing upgradable packages...${RESET}\n"
+hr
+
+# Count raw apt entries first so we can explain any difference
+RAW_COUNT=$(apt list --upgradable 2>/dev/null | grep -v '^Listing' | grep -c .)
+
+mapfile -t ALL_PKGS < <(
+    apt list --upgradable 2>/dev/null \
+        | grep -v '^Listing' \
+        | awk -F'/' '{print $1}' \
+        | sort -u
+)
+
+if [[ ${#ALL_PKGS[@]} -eq 0 ]]; then
+    printf "\n${G}  System is fully up to date. Nothing to analyse.${RESET}\n\n"
+    exit 0
+fi
+
+mapfile -t MANUAL_PKGS < <(apt-mark showmanual 2>/dev/null)
+
+DUPE_COUNT=$(( RAW_COUNT - ${#ALL_PKGS[@]} ))
+if [[ $DUPE_COUNT -gt 0 ]]; then
+    printf "${DIM}  %d unique packages (%d apt entries — %d are multi-arch duplicates)${RESET}\n" \
+        "${#ALL_PKGS[@]}" "$RAW_COUNT" "$DUPE_COUNT"
+else
+    printf "${DIM}  %d packages${RESET}\n" "${#ALL_PKGS[@]}"
+fi
+
+declare -a KERNEL_LIST=() FOUNDATION_LIST=() APP_LIST=() UNTRACED_LIST=()
+declare -A PKG_ROOT      # pkg -> root manual package name
+declare -A ROOT_MEMBERS  # root -> newline-separated list of pkgs it caused
+
+for pkg in "${ALL_PKGS[@]}"; do
+    # 1. Kernel / firmware / microcode
+    if is_kernel_pkg "$pkg"; then
+        KERNEL_LIST+=("$pkg")
+        continue
+    fi
+
+    # 2. Foundational system library (too many rdeps to be meaningful)
+    count=$(rdep_count "$pkg")
+    if [[ $count -gt $FOUNDATION_THRESHOLD ]]; then
+        FOUNDATION_LIST+=("$pkg")
+        continue
+    fi
+
+    # 3. Manually installed app
+    if is_manual "$pkg"; then
+        APP_LIST+=("$pkg")
+        continue
+    fi
+
+    # 4. Auto-installed — find the manual root that caused it
+    root=$(bfs_root_of "$pkg")
+    if [[ -n "$root" ]]; then
+        PKG_ROOT["$pkg"]="$root"
+        ROOT_MEMBERS["$root"]+="$pkg"$'\n'
+    else
+        UNTRACED_LIST+=("$pkg")
+    fi
+done
+
+# Stats line
+auto_count=$(( ${#ALL_PKGS[@]} - ${#KERNEL_LIST[@]} - ${#FOUNDATION_LIST[@]} - ${#APP_LIST[@]} - ${#UNTRACED_LIST[@]} ))
+printf "${DIM}  %d total  |  %d kernel  |  %d system libs  |  %d your apps  |  %d auto-installed${RESET}\n" \
+    "${#ALL_PKGS[@]}" "${#KERNEL_LIST[@]}" "${#FOUNDATION_LIST[@]}" "${#APP_LIST[@]}" "$auto_count"
+
+# ── SECTION: Kernel, firmware, microcode ─────────────────────────────────────
+if [[ $SHOW_KERNEL -eq 1 ]]; then
+    total=$(( ${#KERNEL_LIST[@]} + ${#FOUNDATION_LIST[@]} ))
+    [[ $total -gt 0 ]] && section "KERNEL, FIRMWARE & SYSTEM LIBS  ($total packages)"
+
+    if [[ ${#KERNEL_LIST[@]} -gt 0 ]]; then
+        printf "\n  ${DIM}Kernel, firmware and microcode:${RESET}\n\n"
+        for pkg in "${KERNEL_LIST[@]}"; do
+            kb=$(pkg_size_kb "$pkg")
+            ver=$(pkg_versions "$pkg")
+            tag=""; is_manual "$pkg" && tag="  ${G}[you installed this]${RESET}"
+            printf "  ${BOLD}%-32s${RESET}  %s%b\n" "$pkg" "$(format_kb "$kb")" "$tag"
+            printf "  ${DIM}%-48s${RESET}\n" "$(pkg_desc "$pkg")"
+            printf "  ${DIM}%s${RESET}\n\n" "$ver"
+        done
+    fi
+
+    if [[ $SHOW_FOUNDATION -eq 1 && ${#FOUNDATION_LIST[@]} -gt 0 ]]; then
+        printf "  ${DIM}Foundational runtime libraries (safe to upgrade, core of the OS):${RESET}\n\n"
+        for pkg in "${FOUNDATION_LIST[@]}"; do
+            kb=$(pkg_size_kb "$pkg")
+            count=$(rdep_count "$pkg")
+            ver=$(pkg_versions "$pkg")
+            tag=""; is_manual "$pkg" && tag="  ${G}[you installed this]${RESET}"
+            printf "  ${BOLD}%-32s${RESET}  %s  ${DIM}%d packages depend on this${RESET}%b\n" \
+                "$pkg" "$(format_kb "$kb")" "$count" "$tag"
+            printf "  ${DIM}%-48s${RESET}\n" "$(pkg_desc "$pkg")"
+            printf "  ${DIM}%s${RESET}\n\n" "$ver"
+        done
+    fi
+fi
+
+# ── SECTION: Your apps ────────────────────────────────────────────────────────
+if [[ $SHOW_APPS -eq 1 && ${#APP_LIST[@]} -gt 0 ]]; then
+    section "YOUR INSTALLED APPS  (${#APP_LIST[@]} packages)"
+    printf "\n  ${DIM}These are packages you explicitly installed.${RESET}\n"
+
+    for pkg in "${APP_LIST[@]}"; do
+        kb=$(pkg_size_kb "$pkg")
+        ver=$(pkg_versions "$pkg")
+        count=$(rdep_count "$pkg")
+
+        printf "\n  ${BOLD}${G}>> %-28s${RESET}  %s\n" "$pkg" "$(format_kb "$kb")"
+        printf "  ${DIM}%s${RESET}\n" "$(pkg_desc "$pkg")"
+        printf "  ${DIM}%s${RESET}\n" "$ver"
+
+        if [[ $count -eq 0 ]]; then
+            printf "  ${DIM}standalone -- nothing else on your system needs this${RESET}\n"
+        elif [[ $count -lt 5 ]]; then
+            printf "  ${DIM}%d package(s) depend on this:${RESET}" "$count"
+            rdeps_of "$pkg" | while read -r dep; do
+                printf "  ${C}%s${RESET}" "$dep"
+            done
+            printf "\n"
+        else
+            printf "  ${DIM}%d other packages depend on this${RESET}\n" "$count"
+        fi
+    done
+fi
+
+# ── SECTION: Auto-installed, grouped by root ──────────────────────────────────
+if [[ $SHOW_AUTO -eq 1 && ${#ROOT_MEMBERS[@]} -gt 0 ]]; then
+
+    # Sort roots by number of dependents descending (biggest group first)
+    mapfile -t SORTED_ROOTS < <(
+        for root in "${!ROOT_MEMBERS[@]}"; do
+            count=$(echo "${ROOT_MEMBERS[$root]}" | grep -c .)
+            printf "%d\t%s\n" "$count" "$root"
+        done | sort -rn | awk -F'\t' '{print $2}'
+    )
+
+    for root in "${SORTED_ROOTS[@]}"; do
+        mapfile -t members < <(echo "${ROOT_MEMBERS[$root]}" | grep -v '^$' | sort)
+        count=${#members[@]}
+
+        root_desc=$(pkg_desc "$root")
+        section "PULLED IN BY: $root  ($count packages)"
+        printf "\n  ${G}%s${RESET}\n" "$root_desc"
+        printf "  ${DIM}All %d packages below exist because you installed ${BOLD}%s${RESET}${DIM}.${RESET}\n\n" \
+            "$count" "$root"
+
+        for pkg in "${members[@]}"; do
+            kb=$(pkg_size_kb "$pkg")
+            printf "  ${Y}%-32s${RESET}  %s\n" "$pkg" "$(format_kb "$kb")"
+            printf "  ${DIM}%s${RESET}\n\n" "$(pkg_desc "$pkg")"
+        done
+    done
+
+    # Untraced packages (couldn't find a manual root)
+    if [[ ${#UNTRACED_LIST[@]} -gt 0 ]]; then
+        section "OTHER AUTO-INSTALLED  (${#UNTRACED_LIST[@]} packages)"
+        printf "\n  ${DIM}These are auto-installed but couldn't be traced to a specific manual package.${RESET}\n\n"
+        for pkg in "${UNTRACED_LIST[@]}"; do
+            kb=$(pkg_size_kb "$pkg")
+            printf "  ${Y}%-32s${RESET}  %s\n" "$pkg" "$(format_kb "$kb")"
+            printf "  ${DIM}%s${RESET}\n\n" "$(pkg_desc "$pkg")"
+        done
+    fi
+fi
+
+# ── SECTION: Disk usage ───────────────────────────────────────────────────────
+if [[ $SHOW_SIZES -eq 1 ]]; then
+    section "DISK USAGE  (top 20 by installed size)"
+
+    total_kb=0
+    declare -A SIZE_MAP
+    for pkg in "${ALL_PKGS[@]}"; do
+        kb=$(pkg_size_kb "$pkg")
+        [[ "${kb:-0}" =~ ^[0-9]+$ ]] && [[ $kb -gt 0 ]] || continue
+        SIZE_MAP["$pkg"]=$kb
+        total_kb=$(( total_kb + kb ))
+    done
+
+    printf "\n"
+    {
+        for pkg in "${!SIZE_MAP[@]}"; do
+            cat="auto"
+            is_kernel_pkg "$pkg" && cat="kernel"
+            is_manual "$pkg" && cat="you"
+            [[ -v PKG_ROOT["$pkg"] ]] && cat="<- ${PKG_ROOT[$pkg]}"
+            printf "%d\t%s\t%s\n" "${SIZE_MAP[$pkg]}" "$pkg" "$cat"
+        done
+    } | sort -rn | head -20 | while IFS=$'\t' read -r kb name cat; do
+        colour="$DIM"
+        [[ "$cat" == "you" ]]    && colour="$G"
+        [[ "$cat" == "kernel" ]] && colour="$M"
+        printf "  %-32s  %s   ${colour}%s${RESET}\n" "$name" "$(format_kb "$kb")" "$cat"
+    done
+
+    printf "\n  ${BOLD}Total installed size of all upgradable packages: %s${RESET}\n" "$(format_kb $total_kb)"
+fi
+
+
+# ── SECTION: Quick overview ───────────────────────────────────────────────────
+# Shows every single upgradable package in one compact table:
+#   package name | size | why it's here
+# No truncation. Sorted by size so the biggest changes are obvious.
+if [[ $SHOW_QUICK -eq 1 ]]; then
+    section "QUICK OVERVIEW  (all ${#ALL_PKGS[@]} packages)"
+    printf "\n  ${DIM}Every upgradable package, sorted by size. Run apt-why for details.${RESET}\n\n"
+
+    total_kb=0
+    {
+        for pkg in "${ALL_PKGS[@]}"; do
+            kb=$(pkg_size_kb "$pkg")
+            [[ "${kb:-0}" =~ ^[0-9]+$ ]] || kb=0
+
+            # Classify into a short reason tag
+            if is_kernel_pkg "$pkg"; then
+                tag="kernel"
+            elif [[ -v FOUNDATION_LIST ]]; then
+                # check if in foundation list
+                found=0
+                for f in "${FOUNDATION_LIST[@]:-}"; do [[ "$f" == "$pkg" ]] && found=1 && break; done
+                if [[ $found -eq 1 ]]; then
+                    tag="system lib"
+                elif is_manual "$pkg"; then
+                    tag="you"
+                elif [[ -v PKG_ROOT["$pkg"] ]]; then
+                    tag="<- ${PKG_ROOT[$pkg]}"
+                else
+                    tag="auto"
+                fi
+            else
+                if is_manual "$pkg"; then
+                    tag="you"
+                elif [[ -v PKG_ROOT["$pkg"] ]]; then
+                    tag="<- ${PKG_ROOT[$pkg]}"
+                else
+                    tag="auto"
+                fi
+            fi
+
+            total_kb=$(( total_kb + kb ))
+            printf "%d\t%s\t%s\n" "$kb" "$pkg" "$tag"
+        done
+    } | sort -rn | while IFS=$'\t' read -r kb name tag; do
+        colour="$DIM"
+        [[ "$tag" == "you" ]]         && colour="$G"
+        [[ "$tag" == "kernel" ]]      && colour="$M"
+        [[ "$tag" == "system lib" ]]  && colour="$C"
+        printf "  %-36s  %s   ${colour}%s${RESET}\n" "$name" "$(format_kb "$kb")" "$tag"
+    done
+
+    # Recompute total cleanly
+    total_kb=0
+    for pkg in "${ALL_PKGS[@]}"; do
+        kb=$(pkg_size_kb "$pkg"); [[ "${kb:-0}" =~ ^[0-9]+$ ]] || kb=0
+        total_kb=$(( total_kb + kb ))
+    done
+    printf "\n  ${BOLD}Total: %s across %d packages${RESET}\n" "$(format_kb $total_kb)" "${#ALL_PKGS[@]}"
+fi
+
+printf "\n${DIM}  sudo apt upgrade           -- upgrade everything${RESET}\n"
+printf "${DIM}  sudo apt install <pkg>     -- upgrade one package${RESET}\n"
+printf "${DIM}  sudo apt remove <pkg>      -- remove something you no longer want${RESET}\n\n"

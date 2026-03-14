@@ -1,0 +1,338 @@
+#!/bin/bash
+# apt-why — understand every upgradable package on your Debian/Ubuntu system
+# Usage: apt-why [--manual] [--auto] [--orphans] [--sizes] [--all] [--help]
+
+# ── Colours ──────────────────────────────────────────────────────────────────
+R='\033[0;31m' Y='\033[0;33m' G='\033[0;32m'
+C='\033[0;36m' W='\033[1;37m'
+DIM='\033[2m' BOLD='\033[1m' RESET='\033[0m'
+
+# ── Options ───────────────────────────────────────────────────────────────────
+SHOW_MANUAL=0; SHOW_AUTO=0; SHOW_ORPHANS=0; SHOW_SIZES=0
+
+usage() {
+    printf "
+  ${BOLD}apt-why${RESET} -- understand every upgradable package on your system
+
+  ${BOLD}Usage:${RESET}
+    apt-why [options]
+
+  ${BOLD}Options:${RESET}
+    ${C}--manual${RESET}    Packages YOU installed + what depends on them
+    ${C}--auto${RESET}      Auto-installed + which of YOUR packages caused them
+    ${C}--orphans${RESET}   Packages nothing depends on (remove instead of upgrade?)
+    ${C}--sizes${RESET}     Disk usage breakdown of all upgradable packages
+    ${C}--all${RESET}       Show everything (default when no options given)
+    ${C}--help${RESET}      This help text
+
+  ${BOLD}Examples:${RESET}
+    apt-why                   # full report
+    apt-why --manual          # just what you installed and its dependents
+    apt-why --auto            # just the auto-installed chains
+    apt-why --auto --sizes    # combine options freely
+    apt-why --orphans         # find things to remove instead of upgrading
+
+"
+    exit 0
+}
+
+[[ $# -eq 0 ]] && SHOW_MANUAL=1 && SHOW_AUTO=1 && SHOW_ORPHANS=1 && SHOW_SIZES=1
+
+for arg in "$@"; do
+    case $arg in
+        --manual)  SHOW_MANUAL=1  ;;
+        --auto)    SHOW_AUTO=1    ;;
+        --orphans) SHOW_ORPHANS=1 ;;
+        --sizes)   SHOW_SIZES=1   ;;
+        --all)     SHOW_MANUAL=1; SHOW_AUTO=1; SHOW_ORPHANS=1; SHOW_SIZES=1 ;;
+        --help|-h) usage ;;
+        *) printf "${R}Unknown option: %s${RESET}\n" "$arg"; usage ;;
+    esac
+done
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+hr()      { printf "${DIM}"; printf '%0.s-' {1..62}; printf "${RESET}\n"; }
+section() { printf "\n${BOLD}${W}  %-58s${RESET}\n" "$1"; hr; }
+
+pkg_desc() {
+    apt-cache show "$1" 2>/dev/null \
+        | awk '/^Description/{sub(/^Description(-en)?: /,""); print substr($0,1,72); exit}'
+}
+
+pkg_versions() {
+    apt-cache policy "$1" 2>/dev/null \
+        | awk '/Installed:/{i=$2} /Candidate:/{c=$2} END{printf "%s  ->  %s", i, c}'
+}
+
+pkg_size_kb() {
+    apt-cache show "$1" 2>/dev/null \
+        | awk -F': ' '/^Installed-Size:/{print $2; exit}'
+}
+
+format_kb() {
+    local kb=${1:-0}
+    if   [[ $kb -gt 102400 ]]; then printf "${R}%4.0f MB${RESET}" "$(echo "scale=1; $kb/1024" | bc)"
+    elif [[ $kb -gt 10240  ]]; then printf "${Y}%4.0f MB${RESET}" "$(echo "scale=1; $kb/1024" | bc)"
+    else                              printf "${G}%5d KB${RESET}"  "$kb"
+    fi
+}
+
+is_manual() { [[ " ${MANUAL_PKGS[*]} " == *" $1 "* ]]; }
+
+# Installed packages that list $1 as a dependency, deduplicated
+rdeps_of() {
+    apt-cache rdepends --installed "$1" 2>/dev/null \
+        | grep -v "Reverse Depends:\|^${1}$\|^$" \
+        | sed 's/^[[:space:]]*//' \
+        | grep -v '|' \
+        | sort -u
+}
+
+# Count rdeps without storing them all
+rdep_count() {
+    rdeps_of "$1" | wc -l
+}
+
+pkg_header() {
+    local pkg="$1" colour="$2"
+    local ver kb
+    ver=$(pkg_versions "$pkg")
+    kb=$(pkg_size_kb "$pkg")
+    printf "\n${BOLD}${colour}>> %-30s${RESET}\n" "$pkg"
+    printf "   ${DIM}%s${RESET}\n" "$(pkg_desc "$pkg")"
+    printf "   ${DIM}version :${RESET} %s\n" "$ver"
+    [[ "${kb:-0}" =~ ^[0-9]+$ ]] && printf "   ${DIM}size    :${RESET} %s\n" "$(format_kb "$kb")"
+}
+
+# ── Forward tree: manual pkg -> things that depend on it ─────────────────────
+# If a package has >FOUNDATION_THRESHOLD rdeps it's a foundational system lib
+# (libgcc, libstdc++, glibc etc.) — expanding the full tree would be noise.
+FOUNDATION_THRESHOLD=25
+
+print_dependents() {
+    local pkg="$1" depth="${2:-0}" max="${3:-3}" parent="${4:-}"
+    [[ $depth -ge $max ]] && return
+
+    local pad
+    pad="$(printf '   %.0s' $(seq 1 "$depth"))"
+
+    local -a rdeps
+    mapfile -t rdeps < <(rdeps_of "$pkg")
+    local count=${#rdeps[@]}
+
+    if [[ $count -eq 0 ]]; then
+        [[ $depth -gt 0 ]] && printf "%s${DIM}+-- (nothing else depends on this)${RESET}\n" "$pad"
+        return
+    fi
+
+    # Foundational library — expanding would list half the system
+    if [[ $count -gt $FOUNDATION_THRESHOLD && $depth -gt 0 ]]; then
+        printf "%s${DIM}+-- (%d packages depend on this — foundational library)${RESET}\n" "$pad" "$count"
+        return
+    fi
+
+    local shown=0
+    for dep in "${rdeps[@]}"; do
+        [[ "$dep" == "$parent" ]] && continue
+        [[ $shown -ge 5 ]] && printf "%s${DIM}    ... and %d more${RESET}\n" "$pad" $(( count - shown )) && break
+
+        if is_manual "$dep"; then
+            printf "%s${C}+-- %-28s${RESET}  ${G}[you installed this too]${RESET}  ${DIM}%s${RESET}\n" \
+                "$pad" "$dep" "$(pkg_desc "$dep" | cut -c1-35)"
+        else
+            printf "%s${C}+-- %-28s${RESET}  ${DIM}%s${RESET}\n" \
+                "$pad" "$dep" "$(pkg_desc "$dep" | cut -c1-48)"
+        fi
+
+        # Don't recurse into foundational libs at next level either
+        local next_count
+        next_count=$(rdep_count "$dep")
+        if [[ $next_count -gt $FOUNDATION_THRESHOLD ]]; then
+            local nextpad
+            nextpad="$(printf '   %.0s' $(seq 1 $(( depth + 1 )) ))"
+            printf "%s${DIM}+-- (%d packages depend on this — foundational library)${RESET}\n" "$nextpad" "$next_count"
+        else
+            print_dependents "$dep" $(( depth + 1 )) "$max" "$pkg"
+        fi
+        (( shown++ ))
+    done
+}
+
+# ── BFS: shortest path from auto-pkg back to any manual install ───────────────
+trace_to_root() {
+    local start="$1"
+
+    declare -A bfs_visited
+    declare -A bfs_parent
+    local -a queue=("$start")
+    bfs_visited["$start"]=1
+    local found_root=""
+
+    while [[ ${#queue[@]} -gt 0 ]]; do
+        local current="${queue[0]}"
+        queue=("${queue[@]:1}")
+
+        local -a rdeps
+        mapfile -t rdeps < <(rdeps_of "$current")
+
+        if [[ ${#rdeps[@]} -eq 0 && "$current" == "$start" ]]; then
+            printf "   ${DIM}+-- (nothing installed depends on this -- likely an orphan)${RESET}\n"
+            return
+        fi
+
+        for dep in "${rdeps[@]}"; do
+            [[ -v bfs_visited["$dep"] ]] && continue
+            bfs_visited["$dep"]=1
+            bfs_parent["$dep"]="$current"
+
+            if is_manual "$dep"; then
+                found_root="$dep"
+                break 2
+            fi
+
+            queue+=("$dep")
+        done
+    done
+
+    if [[ -z "$found_root" ]]; then
+        printf "   ${DIM}+-- (could not trace to a manually installed package)${RESET}\n"
+        return
+    fi
+
+    # Reconstruct path by walking bfs_parent from root back to start
+    local -a path=("$found_root")
+    local node="$found_root"
+    while [[ -v bfs_parent["$node"] && "${bfs_parent[$node]}" != "$start" ]]; do
+        node="${bfs_parent[$node]}"
+        path=("$node" "${path[@]}")
+    done
+
+    for step in "${path[@]}"; do
+        if is_manual "$step"; then
+            printf "   ${G}+-- %-30s${RESET}  ${G}<-- YOU installed this${RESET}\n" "$step"
+            printf "       ${DIM}%s${RESET}\n" "$(pkg_desc "$step" | cut -c1-55)"
+        else
+            printf "   ${Y}+-- %-30s${RESET}  ${DIM}%s${RESET}\n" \
+                "$step" "$(pkg_desc "$step" | cut -c1-48)"
+        fi
+    done
+}
+
+# ── Collect data ──────────────────────────────────────────────────────────────
+printf "\n${BOLD}${C}apt-why${RESET}  ${DIM}analysing upgradable packages...${RESET}\n"
+hr
+
+mapfile -t ALL_PKGS < <(
+    apt list --upgradable 2>/dev/null \
+        | grep -v '^Listing' \
+        | awk -F'/' '{print $1}' \
+        | sort -u          # <-- dedup: apt can return the same pkg for multiple arches
+)
+
+if [[ ${#ALL_PKGS[@]} -eq 0 ]]; then
+    printf "\n${G}System is fully up to date. Nothing to analyse.${RESET}\n\n"
+    exit 0
+fi
+
+# Cache manual installs once — never call apt-mark in a loop
+mapfile -t MANUAL_PKGS < <(apt-mark showmanual 2>/dev/null)
+
+declare -a MANUAL_LIST=() AUTO_LIST=()
+for pkg in "${ALL_PKGS[@]}"; do
+    is_manual "$pkg" && MANUAL_LIST+=("$pkg") || AUTO_LIST+=("$pkg")
+done
+
+printf "${DIM}  %d upgradable  |  %d you installed  |  %d auto-installed${RESET}\n" \
+    "${#ALL_PKGS[@]}" "${#MANUAL_LIST[@]}" "${#AUTO_LIST[@]}"
+
+# ── SECTION: Manual ───────────────────────────────────────────────────────────
+if [[ $SHOW_MANUAL -eq 1 ]]; then
+    section "YOU INSTALLED THESE  (+ what relies on them)"
+
+    if [[ ${#MANUAL_LIST[@]} -eq 0 ]]; then
+        printf "\n  ${DIM}None of the upgradable packages were manually installed.${RESET}\n"
+    else
+        for pkg in "${MANUAL_LIST[@]}"; do
+            pkg_header "$pkg" "$G"
+
+            # Check if this is a foundational lib before trying to expand
+            total_rdeps=$(rdep_count "$pkg")
+            if [[ $total_rdeps -gt $FOUNDATION_THRESHOLD ]]; then
+                printf "\n   ${DIM}This is a foundational system library.${RESET}\n"
+                printf "   ${DIM}%d installed packages depend on it — too many to list meaningfully.${RESET}\n" "$total_rdeps"
+                printf "   ${DIM}It is safe to upgrade; nothing will break.${RESET}\n"
+            else
+                printf "\n   ${DIM}Things that depend on ${BOLD}%s${RESET}${DIM}:${RESET}\n" "$pkg"
+                print_dependents "$pkg" 1 3
+            fi
+            printf "\n"
+        done
+    fi
+fi
+
+# ── SECTION: Auto-installed ───────────────────────────────────────────────────
+if [[ $SHOW_AUTO -eq 1 ]]; then
+    section "AUTO-INSTALLED  (shortest path back to why)"
+
+    if [[ ${#AUTO_LIST[@]} -eq 0 ]]; then
+        printf "\n  ${DIM}No auto-installed packages in the upgrade list.${RESET}\n"
+    else
+        for pkg in "${AUTO_LIST[@]}"; do
+            pkg_header "$pkg" "$Y"
+            printf "\n   ${DIM}Reason it's here:${RESET}\n"
+            trace_to_root "$pkg"
+            printf "\n"
+        done
+    fi
+fi
+
+# ── SECTION: Orphans ──────────────────────────────────────────────────────────
+if [[ $SHOW_ORPHANS -eq 1 ]]; then
+    section "ORPHANS  (upgradable but nothing depends on them)"
+
+    orphan_output=$(sudo -n apt-get --dry-run autoremove 2>/dev/null | awk '/^Remv/{print $2}' || true)
+    found_any=0
+
+    for pkg in "${ALL_PKGS[@]}"; do
+        if echo "$orphan_output" | grep -q "^${pkg}$"; then
+            found_any=1
+            printf "\n  ${R}!!  %-30s${RESET}  ${DIM}%s${RESET}\n" "$pkg" "$(pkg_desc "$pkg" | cut -c1-48)"
+            printf "      ${DIM}Consider:${RESET}  sudo apt remove %s\n" "$pkg"
+        fi
+    done
+
+    [[ $found_any -eq 0 ]] && printf "\n  ${G}No orphans found in the upgrade list.${RESET}\n"
+fi
+
+# ── SECTION: Sizes ────────────────────────────────────────────────────────────
+if [[ $SHOW_SIZES -eq 1 ]]; then
+    section "DISK USAGE  (by installed size)"
+
+    total_kb=0
+    declare -A SIZE_MAP
+
+    for pkg in "${ALL_PKGS[@]}"; do
+        kb=$(pkg_size_kb "$pkg")
+        [[ "${kb:-0}" =~ ^[0-9]+$ ]] || continue
+        SIZE_MAP["$pkg"]=$kb
+        total_kb=$(( total_kb + kb ))
+    done
+
+    printf "\n"
+    {
+        for pkg in "${!SIZE_MAP[@]}"; do
+            label="auto"
+            is_manual "$pkg" && label="you"
+            printf "%d\t%s\t%s\n" "${SIZE_MAP[$pkg]}" "$pkg" "$label"
+        done
+    } | sort -rn | head -20 | while IFS=$'\t' read -r kb name label; do
+        colour="$DIM"; [[ $label == "you" ]] && colour="$G"
+        printf "  %-32s %s   ${colour}%s${RESET}\n" "$name" "$(format_kb "$kb")" "$label"
+    done
+
+    printf "\n  ${BOLD}Total installed size of all upgradable packages: %s${RESET}\n" "$(format_kb $total_kb)"
+fi
+
+printf "\n${DIM}  sudo apt upgrade           -- upgrade everything${RESET}\n"
+printf "${DIM}  sudo apt install <pkg>     -- upgrade one package${RESET}\n"
+printf "${DIM}  sudo apt remove <pkg>      -- remove an orphan instead${RESET}\n\n"
