@@ -1,11 +1,11 @@
 [package]
 name = "whypkg"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
-description = "why the hell is this package here? — a fast package investigator (apt; pacman & dnf planned)"
+description = "why the hell is this package here? — a fast, cross-distro package investigator (apt, pacman, dnf)"
 license = "AGPL-3.0-only"
 repository = "https://gitlab.com/safteinzz/whypkg"
-keywords = ["apt", "packages", "dependencies", "dpkg", "cli"]
+keywords = ["apt", "pacman", "dnf", "packages", "cli"]
 categories = ["command-line-utilities"]
 exclude = ["legacy/"]
 

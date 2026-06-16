@@ -1,0 +1,241 @@
+libgcc	16.1.1-2.fc44	277148	1781592493	GCC version 16 shared support library
+libssh-config	0.12.0-1.fc44	277	1781592493	Configuration files for libssh
+publicsuffix-list-dafsa	20260116-1.fc44	72062	1781592493	Cross-vendor public domain suffix database in DAFSA form
+fedora-release-identity-container	44-18	1454	1781592493	Package providing the identity for Fedora Container Base Image
+fedora-gpg-keys	44-1	136596	1781592493	Fedora RPM keys
+fedora-repos	44-1	4971	1781592493	Fedora package repositories
+fedora-release-common	44-18	21111	1781592493	Fedora release files
+fedora-release-container	44-18	0	1781592493	Base package for Fedora container specific default configurations
+setup	2.15.0-28.fc44	742318	1781592493	A set of system configuration and setup files
+filesystem	3.18-52.fc44	112	1781592493	The basic directory layout for a Linux system
+pcre2-syntax	10.47-1.fc44.1	288624	1781592493	Documentation for PCRE2 regular expressions
+gnulib-l10n	20241231-2.fc44	670762	1781592493	Localizations for Gnulib
+coreutils-common	9.10-4.fc44	11167824	1781592494	coreutils common optional components
+ncurses-base	6.6-1.fc44	337656	1781592494	Descriptions of common terminals
+bash	5.3.9-3.fc44	8873537	1781592494	The GNU Bourne Again shell
+glibc-common	2.43-6.fc44	1066282	1781592494	Common binaries and locale data for glibc
+glibc	2.43-6.fc44	7251783	1781592494	The GNU libc libraries
+ncurses-libs	6.6-1.fc44	992191	1781592494	Ncurses libraries
+glibc-minimal-langpack	2.43-6.fc44	0	1781592494	Minimal language packs for glibc.
+zlib-ng-compat	2.3.3-3.fc44	169608	1781592494	Zlib implementation provided by zlib-ng
+libstdc++	16.1.1-2.fc44	3237838	1781592494	GNU Standard C++ Library
+libgpg-error	1.58-2.fc44	964243	1781592494	Library for error values used by GnuPG components
+bzip2-libs	1.0.8-23.fc44	82412	1781592494	Libraries for applications using bzip2
+libzstd	1.5.7-5.fc44	979078	1781592494	Zstd shared library
+libassuan	2.5.7-5.fc44	167756	1781592494	GnuPG IPC library
+libgcrypt	1.12.2-1.fc44	1737457	1781592494	A general-purpose cryptography library
+xz-libs	5.8.2-2.fc44	222941	1781592494	Libraries for decoding LZMA compression
+systemd-libs	259.6-1.fc44	2561934	1781592494	systemd libraries
+popt	1.19-10.fc44	135826	1781592494	C library for parsing command line parameters
+gmp	6.3.0-5.fc44	834816	1781592494	GNU arbitrary precision library
+libxcrypt	4.5.2-3.fc44	300245	1781592494	Extended crypt library for descrypt, md5crypt, bcrypt, and others
+npth	1.8-4.fc44	50667	1781592494	The New GNU Portable Threads library
+libxml2	2.12.10-6.fc44	1853868	1781592494	Library providing XML and HTML support
+fmt	11.2.0-4.fc44	281517	1781592494	Small, safe and fast formatting library for C++
+readline	8.3-4.fc44	531989	1781592494	A library for editing typed command lines
+json-c	0.18-8.fc44	84578	1781592494	JSON implementation in C
+sqlite-libs	3.51.2-1.fc44	1666424	1781592494	Shared library for the sqlite3 embeddable SQL database engine.
+libuuid	2.41.4-8.fc44	38133	1781592494	Universally unique ID library
+gnupg2-gpgconf	2.4.9-16.fc44	255718	1781592494	GnuPG core configuration utilities
+libeconf	0.7.9-3.fc44	66318	1781592494	Enhanced config file parser library
+pcre2	10.47-1.fc44.1	735810	1781592494	Perl-compatible regular expression library
+gdbm-libs	1.23-11.fc44	132754	1781592494	Libraries files for gdbm
+libffi	3.5.2-2.fc44	89791	1781592494	A portable foreign function interface library
+libtasn1	4.21.0-1.fc44	184940	1781592494	The ASN.1 library used in GNUTLS
+p11-kit	0.26.2-1.fc44	2704882	1781592494	Library for loading and sharing PKCS#11 modules
+libunistring	1.1-11.fc44	1816789	1781592494	GNU Unicode string library
+libidn2	2.3.8-3.fc44	569788	1781592494	Library to support IDNA2008 internationalized domain names
+crypto-policies	20251128-3.git19878fe.fc44	135769	1781592494	System-wide crypto policies
+grep	3.12-3.fc44	1041327	1781592494	Pattern matching utilities
+libblkid	2.41.4-8.fc44	280866	1781592494	Block device ID library
+sdbus-cpp	2.2.1-2.fc44	375865	1781592494	High-level C++ D-Bus library
+elfutils-libelf	0.195-1.fc44	1215881	1781592494	Library to read and write ELF files
+libksba	1.6.7-5.fc44	424308	1781592494	CMS and X.509 library
+libattr	2.5.2-8.fc44	24877	1781592494	Dynamic library for extended attribute support
+libacl	2.3.2-6.fc44	36658	1781592494	Dynamic library for access control list support
+lua-libs	5.4.8-5.fc44	288502	1781592494	Libraries for lua
+libsepol	3.10-1.fc44	890931	1781592494	SELinux binary policy manipulation library
+libselinux	3.10-1.fc44	205853	1781592494	SELinux library and simple utilities
+libmount	2.41.4-8.fc44	397874	1781592494	Device mounting library
+sed	4.9-7.fc44	877757	1781592494	A GNU stream text editor
+libsmartcols	2.41.4-8.fc44	192866	1781592494	Formatting library for ls-like programs
+libcom_err	1.47.3-4.fc44	64513	1781592494	Common error description library
+ngtcp2	1.22.1-1.fc44	346350	1781592494	Implementation of RFC 9000 QUIC protocol
+findutils	4.10.0-7.fc44	1950887	1781592494	The GNU versions of find utilities (find and xargs)
+gnupg2-keyboxd	2.4.9-16.fc44	206040	1781592494	GnuPG public key material service
+libpsl	0.21.5-7.fc44	78160	1781592494	C library for the Publix Suffix List
+cyrus-sasl-lib	2.1.28-35.fc44	2416840	1781592494	Shared libraries needed by applications which use Cyrus SASL
+gdbm	1.23-11.fc44	470855	1781592494	A GNU set of database routines which use extensible hashing
+gnupg2-verify	2.4.9-16.fc44	368949	1781592494	GnuPG signature verification tool
+systemd-standalone-sysusers	259.6-1.fc44	312991	1781592494	Standalone systemd-sysusers binary for use on systems without systemd
+mpfr	4.2.2-3.fc44	869499	1781592494	C library for multiple-precision floating-point computations
+nettle	3.10.1-3.fc44	813368	1781592494	A low-level cryptographic library
+libusb1	1.0.30-1.fc44	180267	1781592494	Library for accessing USB devices
+file-libs	5.46-10.fc44	12439017	1781592494	Libraries for applications using libmagic
+libtool-ltdl	2.5.4-10.fc44	71689	1781592494	Runtime libraries for GNU Libtool Dynamic Module Loader
+libyaml	0.2.5-18.fc44	141859	1781592494	YAML 1.1 parser and emitter written in C
+libgomp	16.1.1-2.fc44	591242	1781592494	GCC OpenMP v5.2 shared support library
+lz4-libs	1.10.0-4.fc44	161029	1781592494	Libaries for lz4
+libcap-ng	0.9.3-1.fc44	70423	1781592494	Alternate posix capabilities library
+audit-libs	4.1.4-1.fc44	399836	1781592494	Dynamic library for libaudit
+pam-libs	1.7.2-1.fc44	133647	1781592494	Shared libraries of the PAM package
+libcap	2.78-1.fc44	217205	1781592494	Library for getting and setting POSIX.1e capabilities
+libsemanage	3.10-1.fc44	319835	1781592494	SELinux binary policy manipulation library
+alternatives	1.33-5.fc44	63544	1781592494	A tool to maintain symbolic links determining default commands
+p11-kit-trust	0.26.2-1.fc44	489777	1781592494	System trust module from p11-kit
+gnutls	3.8.13-1.fc44	4030978	1781592494	A TLS protocol implementation
+glib2	2.88.1-1.fc44	16027093	1781592494	A library of handy utility functions
+openssl-libs	3.5.7-1.fc44	9633293	1781592494	A general purpose cryptography library with TLS implementation
+coreutils	9.10-4.fc44	5935281	1781592494	A set of basic GNU tools commonly used in shell scripts
+ca-certificates	2025.2.80_v9.0.304-7.fc44	2803632	1781592494	The Mozilla CA root certificate bundle
+zchunk-libs	1.5.1-4.fc44	107517	1781592496	Zchunk library
+tpm2-tss	4.1.3-9.fc44	1700966	1781592496	TPM2.0 Software Stack
+ima-evm-utils-libs	1.6.2-8.fc44	62027	1781592496	Libraries for ima-evm-utils
+gnupg2-gpg-agent	2.4.9-16.fc44	703098	1781592496	GnuPG cryptographic agent
+gzip	1.14-2.fc44	411202	1781592496	GNU data compression program
+cracklib	2.10.3-1.fc44	240216	1781592496	A password-checking library
+libpwquality	1.4.5-15.fc44	418506	1781592496	A library for password generation and password quality checking
+authselect-libs	1.7.1-1.fc44	911035	1781592496	Utility library used by the authselect tool
+libevent	2.1.12-17.fc44	1002146	1781592497	Abstract asynchronous event notification library
+openldap	2.6.13-1.fc44	685975	1781592497	LDAP support libraries
+gnupg2-dirmngr	2.4.9-16.fc44	649181	1781592497	GnuPG network certificate management service
+gnupg2	2.4.9-16.fc44	6806074	1781592497	Utility for secure communication and data storage
+libfsverity	1.6-4.fc44	29104	1781592497	Development package for fsverity-utils
+rpm-sequoia	1.10.2-2.fc44	2472663	1781592497	Implementation of the RPM PGP interface using Sequoia
+rpm-libs	6.0.1-2.fc44	984296	1781592497	Libraries for manipulating RPM packages
+libmodulemd	2.15.2-7.fc44	706246	1781592497	Module metadata manipulation library
+rpm-sign-libs	6.0.1-2.fc44	40574	1781592497	Libraries for signing RPM packages
+libsolv	0.7.39-1.fc44	1025089	1781592497	Package dependency solver
+libarchive	3.8.7-1.fc44	1023603	1781592497	A library for handling streaming archive formats
+ngtcp2-crypto-ossl	1.22.1-1.fc44	52858	1781592497	The ngtcp2 dependency for OpenSSL
+keyutils-libs	1.6.3-7.fc44	55467	1781592497	Key utilities library
+libverto	0.3.2-12.fc44	25877	1781592497	Main loop abstraction library
+krb5-libs	1.22.2-4.fc44	2501522	1781592497	The non-admin shared libraries used by Kerberos 5
+libtirpc	1.3.7-2.fc44	209190	1781592497	Transport Independent RPC Library
+libnsl2	2.0.1-5.fc44	59126	1781592497	Public client interface library for NIS(YP) and NIS+
+pam	1.7.2-1.fc44	1715583	1781592497	An extensible library which provides authentication for applications
+libbrotli	1.2.0-3.fc44	885778	1781592497	Library for brotli lossless compression algorithm
+libcbor	0.13.0-2.fc44	81386	1781592497	A CBOR parsing library
+libfido2	1.16.0-5.fc44	252301	1781592497	FIDO2 library
+libssh	0.12.0-1.fc44	736364	1781592497	A library implementing the SSH protocol
+libnghttp2	1.68.0-4.fc44	170132	1781592497	A library implementing the HTTP/2 protocol
+libnghttp3	1.16.0-1.fc44	167152	1781592497	HTTP/3 library written in C
+libcurl	8.18.0-6.fc44	1045390	1781592497	A library for getting files from web servers
+librepo	1.20.0-5.fc44	259105	1781592497	Repodata downloading library
+libdnf5	5.4.2.1-1.fc44	4512234	1781592497	Package management library
+libdnf5-cli	5.4.2.1-1.fc44	1058109	1781592497	Library for working with a terminal in a command-line package manager
+dnf5	5.4.2.1-1.fc44	3341375	1781592497	Command-line package manager
+curl	8.18.0-6.fc44	491498	1781592497	A utility for getting files from remote servers (FTP, HTTP, and others)
+elfutils-default-yama-scope	0.195-1.fc44	1810	1781592497	Default yama attach scope sysctl setting
+elfutils-libs	0.195-1.fc44	732421	1781592497	Libraries to handle compiled objects
+rpm-build-libs	6.0.1-2.fc44	282936	1781592497	Libraries for building RPM packages
+vim-data	9.2.597-1.fc44	10444	1781592497	Shared data for Vi and Vim
+vim-minimal	9.2.597-1.fc44	1871684	1781592497	A minimal version of the VIM editor
+dnf5-plugins	5.4.2.1-1.fc44	1650703	1781592497	Plugins for dnf5
+rpm	6.0.1-2.fc44	3253221	1781592497	The RPM package management system
+sudo	1.9.17-8.p2.fc44	5295428	1781592497	Allows restricted root access for specified users
+authselect	1.7.1-1.fc44	206877	1781592497	Configures authentication and identity sources from supported profiles
+shadow-utils	4.19.0-7.fc44	4159800	1781592497	Utilities for managing accounts and shadow password files
+gawk	5.3.2-3.fc44	1906093	1781592497	The GNU version of the AWK text processing utility
+util-linux-core	2.41.4-8.fc44	1527891	1781592497	The most essential utilities from the util-linux suite
+tar	1.35-8.fc44	3113889	1781592497	GNU file archiving program
+xz	5.8.2-2.fc44	1411991	1781592497	LZMA compression utilities
+zstd	1.5.7-5.fc44	514488	1781592497	Zstd compression library
+bzip2	1.0.8-23.fc44	97301	1781592497	File compression utility
+tzdata	2026b-1.fc44	1301121	1781592498	Timezone data
+rootfiles	9.0-6.fc44	1365	1781592498	The basic required files for the root user's directory
+gpg-pubkey	36f612dcf27f7d1a48a835e4dbfcf71c6d9f90a6-6786af3b	0	1781592501	Fedora (44) <fedora-44-primary@fedoraproject.org> public key
+less	702-1.fc44	488930	1781633291	A text file browser similar to more, but better
+expat	2.8.1-1.fc44	335279	1781633291	An XML parser library
+oniguruma	6.9.10-4.fc44	789435	1781633291	Regular expressions library
+python-pip-wheel	26.0.1-2.fc44	1281460	1781633291	The pip wheel
+mpdecimal	4.0.1-3.fc44	222311	1781633291	Library for general decimal arithmetic
+python3-libs	3.14.5-1.fc44	45941606	1781633291	Python runtime libraries
+python3	3.14.5-1.fc44	29390	1781633291	Python 3.14 interpreter
+liblastlog2	2.41.4-8.fc44	42638	1781633291	lastlog database library and PAM module
+libfdisk	2.41.4-8.fc44	397610	1781633291	Partitioning library for fdisk-like programs
+util-linux	2.41.4-8.fc44	3686055	1781633291	Collection of basic system utilities
+openssh	10.2p1-10.fc44	1498478	1781633291	An open source implementation of SSH protocol version 2
+libedit	3.1-59.20260512cvs.fc44	254252	1781633291	The NetBSD Editline library
+openssh-clients	10.2p1-10.fc44	2815281	1781633291	An open source SSH client applications
+git-core	2.54.0-1.fc44	26341798	1781633291	Core package of git with minimal functionality
+git-core-doc	2.54.0-1.fc44	19603343	1781633291	Documentation files for git-core
+xxd	9.2.597-1.fc44	34074	1781633291	A hex dump utility
+vim-filesystem	9.2.597-1.fc44	40	1781633291	VIM filesystem layout
+vim-common	9.2.597-1.fc44	40183931	1781633292	The common files needed by any version of the VIM editor
+which	2.25-1.fc44	85582	1781633292	Displays where a particular program in your path is located
+libsodium	1.0.22-1.fc44	493011	1781633292	The Sodium crypto library
+ncurses	6.6-1.fc44	626058	1781633292	Ncurses support utilities
+groff-base	1.23.0-12.fc44	4049106	1781633292	Parts of the groff formatting system required to display manual pages
+perl-Digest	1.20-521.fc44	36178	1781633292	Modules that calculate message digests
+perl-B	1.89-524.fc44	513217	1781633292	Perl compiler backend
+perl-FileHandle	2.05-524.fc44	9608	1781633292	Object methods for file handles
+perl-Digest-MD5	2.59-521.fc44	60992	1781633292	Perl interface to the MD5 algorithm
+perl-Data-Dumper	2.192-523.fc44	118286	1781633292	Stringify perl data structures, suitable for printing and eval
+perl-libnet	3.15-522.fc44	296300	1781633292	Perl clients for various network protocols
+perl-MIME-Base32	1.303-25.fc44	31425	1781633292	Base32 encoder / decoder
+perl-URI	5.34-3.fc44	274445	1781633292	A Perl module implementing URI parsing and manipulation
+perl-IO-Socket-IP	0.43-522.fc44	102755	1781633292	Drop-in replacement for IO::Socket::INET supporting both IPv4 and IPv6
+perl-AutoLoader	5.74-524.fc44	21075	1781633292	Load subroutines only on demand
+perl-IO-Socket-SSL	2.098-2.fc44	740873	1781633292	Perl library for transparent SSL
+perl-locale	1.13-524.fc44	6288	1781633292	Pragma to use or avoid POSIX locales for built-in operations
+perl-Net-SSLeay	1.94-12.fc44	1391634	1781633292	Perl extension for using OpenSSL
+perl-Time-Local	1.350-521.fc44	70605	1781633292	Efficiently compute time from local and GMT time
+perl-Time-HiRes	1.9778-521.fc44	118422	1781633292	High resolution alarm, sleep, gettimeofday, interval timers
+perl-if	0.61.000-524.fc44	5985	1781633292	Use a Perl module if a condition holds
+perl-Pod-Escapes	1.07-521.fc44	25520	1781633292	Resolve POD escape sequences
+perl-File-Path	2.18-522.fc44	65044	1781633292	Create or remove directory trees
+perl-Text-Tabs+Wrap	2024.001-521.fc44	23124	1781633292	Expand tabs and do simple line wrapping
+perl-HTTP-Tiny	0.094-1.fc44	162030	1781633292	Small, simple, correct HTTP/1.1 client
+perl-Class-Struct	0.68-524.fc44	26012	1781633292	Declare struct-like data types as Perl classes
+perl-IPC-Open3	1.24-524.fc44	28314	1781633292	Open a process for reading, writing, and error handling
+perl-File-Temp	0.231.200-2.fc44	167646	1781633292	Return name and handle of a temporary file safely
+perl-POSIX	2.23-524.fc44	234892	1781633292	Perl interface to IEEE Std 1003.1
+perl-Pod-Simple	3.47-4.fc44	578819	1781633292	Framework for parsing POD documentation
+perl-Term-Cap	1.18-521.fc44	29997	1781633292	Perl termcap interface
+perl-Term-ANSIColor	5.01-522.fc44	99870	1781633292	Color screen output using ANSI escape sequences
+perl-Pod-Perldoc	3.28.01-522.fc44	167618	1781633292	Look up Perl documentation in Pod format
+perl-podlators	6.0.2-521.fc44	325070	1781633292	Format POD source into various output formats
+perl-File-stat	1.14-524.fc44	12847	1781633292	By-name interface to Perl built-in stat functions
+perl-SelectSaver	1.02-524.fc44	2256	1781633292	Save and restore selected file handle
+perl-Symbol	1.09-524.fc44	7012	1781633292	Manipulate Perl symbols and their names
+perl-Socket	2.040-3.fc44	123021	1781633292	Networking constants and support functions
+perl-Pod-Usage	2.05-521.fc44	88388	1781633292	Print a usage message from embedded POD documentation
+perl-IO	1.55-524.fc44	150807	1781633292	Perl input/output modules
+perl-overloading	0.02-524.fc44	4992	1781633292	Perl pragma to lexically control overloading
+perl-mro	1.29-524.fc44	42444	1781633292	Method resolution order
+perl-base	2.27-524.fc44	12888	1781633292	Establish an ISA relationship with base classes at compile time
+perl-Fcntl	1.20-524.fc44	49851	1781633292	File operation options
+perl-Text-ParseWords	3.31-521.fc44	13879	1781633292	Parse text into an array of tokens or array of arrays
+perl-Getopt-Long	2.58-521.fc44	147953	1781633292	Extended processing of command line options
+perl-Storable	3.37-522.fc44	240742	1781633292	Persistence for Perl data structures
+perl-overload	1.40-524.fc44	73311	1781633292	Overloading Perl operations
+perl-Getopt-Std	1.14-524.fc44	11486	1781633292	Process single-character switches with switch clustering
+perl-vars	1.05-524.fc44	3994	1781633292	Perl pragma to predeclare global variable names
+perl-MIME-Base64	3.16-521.fc44	42936	1781633292	Encoding and decoding of Base64 and quoted-printable strings
+perl-Errno	1.38-524.fc44	8572	1781633292	System errno constants
+perl-File-Basename	2.86-524.fc44	14377	1781633292	Parse file paths into directory, file name, and suffix
+perl-parent	0.244-521.fc44	10515	1781633292	Establish an ISA relationship with base classes at compile time
+perl-Scalar-List-Utils	1.70-2.fc44	148253	1781633292	A selection of general-utility scalar and list subroutines
+perl-constant	1.33-522.fc44	26875	1781633292	Perl pragma to declare constants
+perl-Encode	3.21-521.fc44	4905750	1781633292	Character encodings in Perl
+perl-DynaLoader	1.57-524.fc44	32845	1781633292	Dynamically load C libraries into Perl code
+perl-PathTools	3.94-521.fc44	184215	1781633292	PathTools Perl module (Cwd, File::Spec)
+perl-Carp	1.54-521.fc44	47692	1781633292	Alternative warn and die for modules
+perl-Exporter	5.79-521.fc44	55557	1781633292	Implements default import method for modules
+perl-libs	5.42.2-524.fc44	12123695	1781633292	The libraries for the perl run-time
+perl-interpreter	5.42.2-524.fc44	121521	1781633292	Standalone executable Perl interpreter
+perl-TermReadKey	2.38-27.fc44	65387	1781633292	A perl module for simple terminal control
+perl-Error	0.17030-3.fc44	78592	1781633292	Error/exception handling in an OO-ish way
+perl-lib	0.65-524.fc44	8747	1781633292	Manipulate @INC at compile time
+git	2.54.0-1.fc44	59058	1781633292	Fast Version Control System
+perl-Git	2.54.0-1.fc44	65912	1781633292	Perl interface to Git
+gpm-libs	1.20.7-53.fc44	32252	1781633292	Dynamic library for gpm
+vim-enhanced	9.2.597-1.fc44	4680371	1781633292	A version of the VIM editor which includes recent enhancements
+perl-NDBM_File	1.18-524.fc44	29045	1781633292	Tied access to ndbm files
+python3-html2text	2025.4.15-6.fc44	296327	1781633292	Convert HTML to Markdown-formatted text
+python-unversioned-command	3.14.5-1.fc44	23	1781633292	The "python" command that runs Python 3
+bat	0.26.1-1.fc44	6198894	1781633292	Cat(1) clone with wings
+less-color	702-1.fc44	2405	1781633292	Colorizers for less
+7zip	26.01-1.fc44	3508292	1781633292	A file archiver
+unzip	6.0-69.fc44	456507	1781633292	A utility for unpacking zip files

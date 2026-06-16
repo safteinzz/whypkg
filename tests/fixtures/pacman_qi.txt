@@ -1,0 +1,3269 @@
+Name            : acl
+Version         : 2.3.2-2
+Description     : Access control list utilities, libraries and headers
+Architecture    : x86_64
+URL             : https://savannah.nongnu.org/projects/acl
+Licenses        : LGPL-2.1-or-later AND GPL-2.0-or-later
+Groups          : None
+Provides        : libacl.so=1-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : coreutils  gettext  libarchive  sed  shadow  systemd  tar  vim
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 338.28 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun Apr 12 18:40:21 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : archlinux-keyring
+Version         : 20260612-1
+Description     : Arch Linux PGP keyring
+Architecture    : any
+URL             : https://gitlab.archlinux.org/archlinux/archlinux-keyring/
+Licenses        : GPL-3.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : pacman
+Optional Deps   : None
+Required By     : base
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1764.25 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Fri Jun 12 14:57:09 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : attr
+Version         : 2.5.2-2
+Description     : Extended attribute support library for ACL support
+Architecture    : x86_64
+URL             : https://savannah.nongnu.org/projects/attr
+Licenses        : LGPL-2.1-or-later AND GPL-2.0-or-later
+Groups          : None
+Provides        : libattr.so=1-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : coreutils  gettext  shadow
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 212.30 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun Apr 12 18:40:57 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : audit
+Version         : 4.1.4-2
+Description     : Userspace components of the audit framework
+Architecture    : x86_64
+URL             : https://github.com/linux-audit/audit-userspace
+Licenses        : GPL-2.0-or-later  LGPL-2.0-or-later
+Groups          : None
+Provides        : libaudit.so=1-64  libauparse.so=0-64
+Depends On      : bash  glibc  krb5  libkrb5.so=3-64  libgssapi_krb5.so=2-64  libcap-ng  libcap-ng.so=0-64
+Optional Deps   : audispd-plugins: for audit event dispatcher plugins
+                  audispd-plugins-zos: for z/OS audit event dispatcher plugin
+Required By     : dbus  dbus-broker  pam  shadow  systemd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1030.64 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Wed Mar 25 15:46:38 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : base
+Version         : 3-3
+Description     : Minimal package set to define a basic Arch Linux installation
+Architecture    : any
+URL             : https://www.archlinux.org
+Licenses        : GPL
+Groups          : None
+Provides        : None
+Depends On      : filesystem  gcc-libs  glibc  bash  coreutils  file  findutils  gawk  grep  procps-ng  sed  tar  gettext  pciutils  psmisc  shadow  util-linux  bzip2  gzip  xz  licenses  pacman  archlinux-keyring  systemd  systemd-sysvcompat  iputils  iproute2
+Optional Deps   : linux: bare metal support
+Required By     : None
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 0.00 B
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Fri Feb  6 07:32:26 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Explicitly installed
+Install Script  : No
+Validated By    : Signature
+
+Name            : bash
+Version         : 5.3.15-1
+Description     : The GNU Bourne Again shell
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/bash/bash.html
+Licenses        : GPL-3.0-or-later
+Groups          : None
+Provides        : sh
+Depends On      : readline  libreadline.so=8-64  glibc  ncurses
+Optional Deps   : bash-completion: for tab completion
+Required By     : audit  base  bzip2  ca-certificates-utils  db5.3  device-mapper  e2fsprogs  gawk  gdbm  gettext  glib2  gnupg  gpm  gzip  icu  iptables  keyutils  krb5  libassuan  libgpg-error  libksba  libmakepkg-dropins  libpcap  libxml2  npth  pacman  systemd  xz
+Optional For    : ncurses  pcre2  tzdata  vim-runtime
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 9.59 MiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Wed Jun 10 04:32:12 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : binutils
+Version         : 2.46+r70+g155188ea10a7-1
+Description     : A set of programs to assemble and manipulate binary and object files
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/binutils/
+Licenses        : GPL-2.0-or-later  GPL-3.0-or-later  LGPL-2.0-or-later  LGPL-3.0-or-later  GFDL-1.3  FSFAP
+Groups          : None
+Provides        : libctf.so=0-64  libgprofng.so=0-64  libsframe.so=3-64
+Depends On      : glibc  jansson  libelf  libgcc  libstdc++  zlib  zstd
+Optional Deps   : debuginfod: for debuginfod server/client functionality
+                  perl: for gprofng-display-html [installed]
+Required By     : libmakepkg-dropins
+Optional For    : None
+Conflicts With  : binutils-multilib
+Replaces        : binutils-multilib
+Installed Size  : 44.00 MiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 12:46:07 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : brotli
+Version         : 1.2.0-1
+Description     : Generic-purpose lossless compression algorithm
+Architecture    : x86_64
+URL             : https://github.com/google/brotli
+Licenses        : MIT
+Groups          : None
+Provides        : libbrotlicommon.so=1-64  libbrotlidec.so=1-64  libbrotlienc.so=1-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : curl  gnutls  openssl
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1057.18 KiB
+Packager        : Felix Yan <felixonmars@archlinux.org>
+Build Date      : Sat Jan  3 18:30:15 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : bzip2
+Version         : 1.0.8-6
+Description     : A high-quality data compression program
+Architecture    : x86_64
+URL             : https://sourceware.org/bzip2/
+Licenses        : BSD
+Groups          : None
+Provides        : libbz2.so=1.0-64
+Depends On      : glibc  sh
+Optional Deps   : None
+Required By     : base  file  gnupg  libarchive  libelf  pcre2
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 145.00 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun Mar 17 22:29:13 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : ca-certificates
+Version         : 20240618-1
+Description     : Common CA certificates - default providers
+Architecture    : any
+URL             : https://src.fedoraproject.org/rpms/ca-certificates
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : ca-certificates-mozilla
+Optional Deps   : None
+Required By     : curl
+Optional For    : openssl
+Conflicts With  : ca-certificates-cacert<=20140824-4
+Replaces        : ca-certificates-cacert<=20140824-4
+Installed Size  : 0.00 B
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Tue Jun 18 18:36:40 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : ca-certificates-mozilla
+Version         : 3.124-1
+Description     : Mozilla's set of trusted CA certificates
+Architecture    : x86_64
+URL             : https://firefox-source-docs.mozilla.org/security/nss/index.html
+Licenses        : MPL-2.0
+Groups          : None
+Provides        : None
+Depends On      : ca-certificates-utils>=20181109-3
+Optional Deps   : None
+Required By     : ca-certificates
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1014.35 KiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Fri May 15 19:38:50 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : ca-certificates-utils
+Version         : 20240618-1
+Description     : Common CA certificates (utilities)
+Architecture    : any
+URL             : https://src.fedoraproject.org/rpms/ca-certificates
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : ca-certificates  ca-certificates-java
+Depends On      : bash  coreutils  findutils  p11-kit
+Optional Deps   : None
+Required By     : ca-certificates-mozilla  curl
+Optional For    : openssl
+Conflicts With  : ca-certificates-java
+Replaces        : ca-certificates-java
+Installed Size  : 13.63 KiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Tue Jun 18 18:36:40 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : coreutils
+Version         : 9.11-1
+Description     : The basic file, shell and text manipulation utilities of the GNU operating system
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/coreutils/
+Licenses        : GPL-3.0-or-later  GFDL-1.3-or-later
+Groups          : None
+Provides        : None
+Depends On      : acl  attr  glibc  gmp  libcap  openssl
+Optional Deps   : None
+Required By     : base  ca-certificates-utils  gzip  libmakepkg-dropins  p11-kit  pacman  util-linux
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 27.50 MiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Mon Apr 20 14:58:00 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : cryptsetup
+Version         : 2.8.6-1
+Description     : Userspace setup tool for transparent encryption of block devices using dm-crypt
+Architecture    : x86_64
+URL             : https://gitlab.com/cryptsetup/cryptsetup/
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : libcryptsetup.so=12-64
+Depends On      : device-mapper  libdevmapper.so=1.02-64  glibc  openssl  libcrypto.so=3-64  popt  util-linux-libs  libblkid.so=1-64  libuuid.so=1-64  json-c  libjson-c.so=5-64
+Optional Deps   : None
+Required By     : systemd
+Optional For    : None
+Conflicts With  : mkinitcpio<38-1
+Replaces        : None
+Installed Size  : 3.29 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Thu Apr  2 17:39:39 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : curl
+Version         : 8.20.0-7
+Description     : command line tool and library for transferring data with URLs
+Architecture    : x86_64
+URL             : https://curl.se/
+Licenses        : MIT
+Groups          : None
+Provides        : libcurl.so=4-64
+Depends On      : ca-certificates  brotli  libbrotlidec.so=1-64  krb5  libgssapi_krb5.so=2-64  libidn2  libidn2.so=0-64  libnghttp2  libnghttp2.so=14-64  libnghttp3  libnghttp3.so=9-64  libngtcp2  libngtcp2.so=16-64  libpsl  libpsl.so=5-64  libssh2  libssh2.so=1-64  openssl  libcrypto.so=3-64  libssl.so=3-64  zlib  libz.so=1-64  zstd  libzstd.so=1-64
+Optional Deps   : None
+Required By     : gettext  git  libelf  pacman  tpm2-tss
+Optional For    : pciutils  systemd
+Conflicts With  : wcurl
+Replaces        : wcurl
+Installed Size  : 2.18 MiB
+Packager        : Leonidas Spyropoulos <artafinde@archlinux.org>
+Build Date      : Wed May 13 04:56:57 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : db5.3
+Version         : 5.3.28-7
+Description     : The Berkeley DB embedded database system v5.3
+Architecture    : x86_64
+URL             : https://www.oracle.com/technology/software/products/berkeley-db/index.html
+Licenses        : Sleepycat
+Groups          : None
+Provides        : None
+Depends On      : libgcc  libstdc++  sh
+Optional Deps   : None
+Required By     : perl
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 6.48 MiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Sun Feb 15 19:43:02 2026
+Install Date    : Tue Jun 16 17:34:37 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : dbus
+Version         : 1.16.2-1
+Description     : Freedesktop.org message bus system
+Architecture    : x86_64
+URL             : https://www.freedesktop.org/wiki/Software/dbus/
+Licenses        : AFL-2.1 OR GPL-2.0-or-later
+Groups          : None
+Provides        : libdbus  libdbus-1.so=3-64
+Depends On      : audit  expat  glibc  libcap-ng  systemd-libs  libaudit.so=1-64  libcap-ng.so=0-64  libexpat.so=1-64  libsystemd.so=0-64
+Optional Deps   : None
+Required By     : dbus-broker-units  libpcap  systemd
+Optional For    : None
+Conflicts With  : libdbus
+Replaces        : libdbus
+Installed Size  : 1004.89 KiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Sun Mar  2 01:56:01 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : dbus-broker
+Version         : 37-3
+Description     : Linux D-Bus Message Broker
+Architecture    : x86_64
+URL             : https://github.com/bus1/dbus-broker/wiki
+Licenses        : Apache-2.0
+Groups          : None
+Provides        : None
+Depends On      : audit  expat  glibc  libcap-ng  libgcc  systemd-libs  libaudit.so=1-64  libcap-ng.so=0-64  libexpat.so=1-64  libsystemd.so=0-64
+Optional Deps   : None
+Required By     : dbus-broker-units
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 357.64 KiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Sat Feb 14 14:59:16 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : dbus-broker-units
+Version         : 37-3
+Description     : Linux D-Bus Message Broker - Service units
+Architecture    : x86_64
+URL             : https://github.com/bus1/dbus-broker/wiki
+Licenses        : Apache-2.0
+Groups          : None
+Provides        : dbus-units
+Depends On      : dbus  dbus-broker
+Optional Deps   : None
+Required By     : dbus-units  systemd
+Optional For    : None
+Conflicts With  : dbus-daemon-units
+Replaces        : None
+Installed Size  : 0.00 B
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Sat Feb 14 14:59:16 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : dbus-units
+Version         : 37-3
+Description     : D-Bus service units (default provider)
+Architecture    : x86_64
+URL             : https://github.com/bus1/dbus-broker/wiki
+Licenses        : CC0-1.0
+Groups          : None
+Provides        : None
+Depends On      : dbus-broker-units
+Optional Deps   : None
+Required By     : systemd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 0.00 B
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Sat Feb 14 14:59:16 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : device-mapper
+Version         : 2.03.41-1
+Description     : Device mapper userspace library and tools
+Architecture    : x86_64
+URL             : http://sourceware.org/dm/
+Licenses        : GPL-2.0-only  LGPL-2.1-only
+Groups          : None
+Provides        : libdevmapper.so=1.02-64  libdevmapper-event.so=1.02-64
+Depends On      : bash  glibc  libgcc  libgcc_s.so=1-64  systemd-libs  libudev.so=1-64
+Optional Deps   : None
+Required By     : cryptsetup
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 830.54 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Mon May 18 08:48:31 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : e2fsprogs
+Version         : 1.47.4-1
+Description     : Ext2/3/4 filesystem utilities
+Architecture    : x86_64
+URL             : http://e2fsprogs.sourceforge.net
+Licenses        : GPL  LGPL  MIT
+Groups          : None
+Provides        : libcom_err.so=2-64  libe2p.so=2-64  libext2fs.so=2-64  libss.so=2-64
+Depends On      : sh  util-linux-libs
+Optional Deps   : lvm2: for e2scrub
+                  util-linux: for e2scrub [installed]
+                  smtp-forwarder: for e2scrub_fail script
+Required By     : krb5
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 5.28 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sat Mar  7 16:05:26 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : expat
+Version         : 2.8.1-1
+Description     : An XML parser library
+Architecture    : x86_64
+URL             : https://libexpat.github.io/
+Licenses        : MIT
+Groups          : None
+Provides        : libexpat.so=1-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : dbus  dbus-broker  git
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 491.70 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Sun May 10 21:31:05 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : file
+Version         : 5.48-1
+Description     : File type identification utility
+Architecture    : x86_64
+URL             : https://www.darwinsys.com/file/
+Licenses        : BSD-2-Clause-Darwin
+Groups          : None
+Provides        : libmagic.so=1-64
+Depends On      : glibc  bzip2  libbz2.so=1.0-64  libseccomp  libseccomp.so=2-64  xz  liblzma.so=5-64  zlib  libz.so=1-64  zstd  libzstd.so=1-64
+Optional Deps   : None
+Required By     : base  util-linux
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 10.53 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Tue Jun  9 05:08:20 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : filesystem
+Version         : 2025.10.12-1
+Description     : Base Arch Linux files
+Architecture    : any
+URL             : https://archlinux.org
+Licenses        : 0BSD
+Groups          : None
+Provides        : None
+Depends On      : iana-etc
+Optional Deps   : None
+Required By     : base  glibc
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 23.98 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Sun Oct 12 16:21:41 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : findutils
+Version         : 4.10.0-3
+Description     : GNU utilities to locate files
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/findutils/
+Licenses        : GPL-3.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : glibc
+Optional Deps   : None
+Required By     : base  ca-certificates-utils  libmakepkg-dropins
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1783.75 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Wed Jul  2 16:26:17 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : gawk
+Version         : 5.4.0-1
+Description     : GNU version of awk
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/gawk/
+Licenses        : GPL-3.0-or-later
+Groups          : None
+Provides        : awk
+Depends On      : sh  glibc  mpfr
+Optional Deps   : None
+Required By     : base  libmakepkg-dropins  pacman
+Optional For    : vim-runtime
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 4.02 MiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Sun Feb 22 18:36:23 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : gcc-libs
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : Runtime libraries shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : gcc-libs-multilib
+Depends On      : glibc>=2.27  libasan  libatomic  libgcc  libgfortran  libgomp  liblsan  libobjc  libquadmath  libstdc++  libtsan  libubsan
+Optional Deps   : None
+Required By     : base  libnl
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 0.00 B
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : gdbm
+Version         : 1.26-2
+Description     : GNU database library
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/gdbm/gdbm.html
+Licenses        : GPL-3.0-or-later
+Groups          : None
+Provides        : libgdbm_compat.so=4-64  libgdbm.so=6-64
+Depends On      : glibc  sh  readline  libreadline.so=8-64
+Optional Deps   : None
+Required By     : libsasl  perl
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 735.11 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Thu Jan  8 09:33:10 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : gettext
+Version         : 1.0-2
+Description     : GNU internationalization library
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/gettext/
+Licenses        : GFDL-1.2-only  GPL-2.0-only  GPL-2.0-or-later  LGPL-2.0-only
+Groups          : None
+Provides        : None
+Depends On      : acl  attr  curl  glibc  json-c  libgcc  libgomp  libstdc++  gnulib-l10n  libunistring  libxml2  ncurses  sh
+Optional Deps   : git: for autopoint infrastructure updates [installed]
+                  appstream: for appstream support
+Required By     : base  pacman
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 20.79 MiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Sun Feb 15 09:16:12 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : git
+Version         : 2.54.0-1
+Description     : the fast distributed version control system
+Architecture    : x86_64
+URL             : https://git-scm.com/
+Licenses        : GPL-2.0-only
+Groups          : None
+Provides        : None
+Depends On      : curl  expat  perl  perl-error  perl-mailtools  openssl  pcre2  grep  shadow  zlib-ng
+Optional Deps   : git-zsh-completion: upstream zsh completion
+                  tk: gitk and git gui
+                  openssh: ssh transport and crypto
+                  man: show help with `git command --help`
+                  perl-libwww: git svn
+                  perl-term-readkey: git svn and interactive.singlekey setting
+                  perl-io-socket-ssl: git send-email TLS support
+                  perl-authen-sasl: git send-email TLS support
+                  perl-cgi: gitweb (web interface) support
+                  python: git svn & git p4
+                  subversion: git svn
+                  org.freedesktop.secrets: keyring credential helper
+                  libsecret: libsecret credential helper [installed]
+                  less: the default pager for git
+Required By     : None
+Optional For    : gettext
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 30.26 MiB
+Packager        : Christian Heusel <gromit@archlinux.org>
+Build Date      : Mon Apr 20 16:37:29 2026
+Install Date    : Tue Jun 16 17:34:38 2026
+Install Reason  : Explicitly installed
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : glib2
+Version         : 2.88.1-1
+Description     : Low level core library
+Architecture    : x86_64
+URL             : https://gitlab.gnome.org/GNOME/glib
+Licenses        : LGPL-2.1-or-later
+Groups          : None
+Provides        : libglib-2.0.so=0-64  libgio-2.0.so=0-64  libgirepository-2.0.so=0-64  libgmodule-2.0.so=0-64  libgobject-2.0.so=0-64  libgthread-2.0.so=0-64
+Depends On      : bash  glibc  libffi  libsysprof-capture  pcre2  util-linux-libs  zlib  libffi.so=8-64  libmount.so=1-64
+Optional Deps   : dconf: GSettings storage backend
+                  glib2-devel: development tools
+                  gvfs: most gio functionality
+Required By     : libsecret  pinentry
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 37.96 MiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Sat May  2 13:11:25 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : glibc
+Version         : 2.43+r22+g8362e8ce10b2-2
+Description     : GNU C Library
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/libc
+Licenses        : GPL-2.0-or-later  LGPL-2.1-or-later
+Groups          : None
+Provides        : None
+Depends On      : linux-api-headers>=4.10  tzdata  filesystem
+Optional Deps   : gd: for memusagestat
+                  perl: for mtrace [installed]
+Required By     : acl  attr  audit  base  bash  binutils  brotli  bzip2  coreutils  cryptsetup  dbus  dbus-broker  device-mapper  expat  file  findutils  gawk  gcc-libs  gdbm  gettext  glib2  gmp  gnupg  gnutls  gpgme  grep  gzip  icu  iproute2  iptables  jansson  json-c  kbd  keyutils  kmod  krb5  leancrypto  libarchive  libasan  libassuan  libatomic  libbpf  libcap  libcap-ng  libelf  libevent  libffi  libgcc  libgcrypt  libgfortran  libgomp  libgpg-error  libksba  liblsan  libmnl  libnetfilter_conntrack  libnfnetlink  libnghttp2  libnghttp3  libngtcp2  libnl  libnsl  libobjc  libp11-kit  libpcap  libquadmath  libsasl  libseccomp  libsecret  libstdc++  libtasn1  libtirpc  libtsan  libubsan  libunistring  libusb  libverto  libxcrypt  libxml2  lmdb  lz4  mpfr  ncurses  nettle  nftables  npth  openssl  p11-kit  pacman  pam  pciutils  pcre2  perl  pinentry  popt  procps-ng  readline  sed  shadow  sqlite  systemd-libs  tar  util-linux  util-linux-libs  vim  xz  zlib  zlib-ng  zstd
+Optional For    : tzdata
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 50.35 MiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 08:33:40 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : gmp
+Version         : 6.3.0-3
+Description     : A free library for arbitrary precision arithmetic
+Architecture    : x86_64
+URL             : https://gmplib.org/
+Licenses        : GPL-2.0-or-later  LGPL-3.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : libgcc  libstdc++  glibc
+Optional Deps   : None
+Required By     : coreutils  gnutls  mpfr  nettle  nftables
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1036.73 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Mon Feb 16 08:17:31 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : gnulib-l10n
+Version         : 20241231-1
+Description     : The Gnulib localizations
+Architecture    : any
+URL             : https://www.gnu.org/software/gnulib/
+Licenses        : LGPL-2.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : None
+Required By     : gettext
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 629.07 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Tue Dec 31 17:20:06 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : gnupg
+Version         : 2.4.9-1
+Description     : Complete and free implementation of the OpenPGP standard
+Architecture    : x86_64
+URL             : https://www.gnupg.org/
+Licenses        : BSD-2-Clause  BSD-3-Clause  BSD-4-Clause  CC0-1.0  GPL-2.0-or-later  GPL-3.0-or-later  LGPL-2.1-or-later  LGPL-3.0-or-later OR GPL-2.0-or-later  MIT  Unicode-TOU
+Groups          : None
+Provides        : None
+Depends On      : glibc  gnutls  libgcrypt  libgpg-error  libksba  libldap  libusb  pinentry  sh  sqlite  tpm2-tss  zlib  bzip2  libbz2.so=1.0-64  libassuan  libassuan.so=9-64  npth  libnpth.so=0-64  readline  libreadline.so=8-64
+Optional Deps   : pcsclite: for using scdaemon not with the gnupg internal card driver
+Required By     : gpgme  pacman
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 10.28 MiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Wed Dec 31 00:11:16 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : gnutls
+Version         : 3.8.13-2
+Description     : A library which provides a secure layer over a reliable transport layer
+Architecture    : x86_64
+URL             : https://www.gnutls.org/
+Licenses        : GPL-3.0-or-later AND LGPL-2.1-or-later
+Groups          : None
+Provides        : None
+Depends On      : glibc  gmp  libtasn1  zlib  nettle  leancrypto  libstdc++  libgcc  libp11-kit  libidn2  zstd  libidn2.so=0-64  libunistring  brotli
+Optional Deps   : tpm2-tss: support for TPM2 wrapped keys [installed]
+Required By     : gnupg  libngtcp2
+Optional For    : systemd
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 8.11 MiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Wed Apr 29 19:21:32 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : gpgme
+Version         : 2.1.0-1
+Description     : C wrapper library for GnuPG
+Architecture    : x86_64
+URL             : https://www.gnupg.org/related_software/gpgme/
+Licenses        : GPL-2.0-or-later  LGPL-2.0-or-later  LGPL-2.1-or-later  MIT
+Groups          : None
+Provides        : libgpgme.so=45-64
+Depends On      : glibc  libassuan  libassuan.so=9-64  libgpg-error  gnupg>=2
+Optional Deps   : None
+Required By     : pacman
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 789.95 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Mon May 18 09:55:49 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : gpm
+Version         : 1.20.7.r38.ge82d1a6-6
+Description     : A mouse server for the console and xterm
+Architecture    : x86_64
+URL             : https://www.nico.schottelius.org/software/gpm/
+Licenses        : GPL
+Groups          : None
+Provides        : libgpm.so=2-64
+Depends On      : bash  procps-ng
+Optional Deps   : None
+Required By     : vim
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 393.39 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Tue Jul 23 18:19:03 2024
+Install Date    : Tue Jun 16 17:34:37 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : grep
+Version         : 3.12-2
+Description     : A string search utility
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/grep/
+Licenses        : GPL3
+Groups          : None
+Provides        : None
+Depends On      : glibc  pcre2
+Optional Deps   : None
+Required By     : base  git  gzip  libmakepkg-dropins  pacman
+Optional For    : pciutils
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 898.67 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Wed Apr 23 08:22:35 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : gzip
+Version         : 1.14-2
+Description     : GNU compression utility
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/gzip/
+Licenses        : GPL-3.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : glibc  bash  coreutils  sed  grep
+Optional Deps   : less: zless support
+                  util-linux: zmore support [installed]
+                  diffutils: zdiff/zcmp support
+Required By     : base  kbd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 158.80 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sat Apr 26 21:58:54 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : hwdata
+Version         : 0.408-1
+Description     : hardware identification databases
+Architecture    : any
+URL             : https://github.com/vcrhonek/hwdata
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : None
+Required By     : pciutils  systemd
+Optional For    : None
+Conflicts With  : None
+Replaces        : hwids
+Installed Size  : 9.94 MiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Thu Jun  4 12:21:20 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : iana-etc
+Version         : 20260530-1
+Description     : /etc/protocols and /etc/services provided by IANA
+Architecture    : any
+URL             : https://www.iana.org/protocols
+Licenses        : custom:none
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : None
+Required By     : filesystem
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 4.02 MiB
+Packager        : Jelle van der Waa <jelle@archlinux.org>
+Build Date      : Sat May 30 11:52:15 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : icu
+Version         : 78.3-1
+Description     : International Components for Unicode library
+Architecture    : x86_64
+URL             : https://icu.unicode.org
+Licenses        : LicenseRef-Unicode-3.0  BSD-2-Clause  BSD-3-Clause  NAIST-2003
+Groups          : None
+Provides        : libicudata.so=78-64  libicui18n.so=78-64  libicuio.so=78-64  libicutest.so=78-64  libicutu.so=78-64  libicuuc.so=78-64
+Depends On      : glibc  libstdc++  libgcc  sh
+Optional Deps   : None
+Required By     : libxml2
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 43.23 MiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Tue Mar 17 20:50:34 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : iproute2
+Version         : 7.0.0-1
+Description     : IP Routing Utilities
+Architecture    : x86_64
+URL             : https://git.kernel.org/pub/scm/network/iproute2/iproute2.git
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : iproute
+Depends On      : glibc  libxtables.so=12-64  libcap  libcap.so=2-64  libelf  libbpf  libbpf.so=1-64
+Optional Deps   : db: userspace arp daemon
+                  linux-atm: ATM support
+                  python: for routel
+Required By     : base
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 3.01 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Tue Apr 14 04:59:16 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : iptables
+Version         : 1:1.8.13-1
+Description     : Linux kernel packet control tool (using nft interface)
+Architecture    : x86_64
+URL             : https://www.netfilter.org/projects/iptables/index.html
+Licenses        : GPL-2.0-only
+Groups          : None
+Provides        : iptables-nft  libip4tc.so=2-64  libip6tc.so=2-64  libipq.so=0-64  libxtables.so=12-64  arptables  ebtables
+Depends On      : bash  glibc  libmnl  libnetfilter_conntrack  libnfnetlink  libnftnl  libpcap  nftables
+Optional Deps   : None
+Required By     : iproute2
+Optional For    : systemd
+Conflicts With  : arptables  ebtables
+Replaces        : iptables-nft
+Installed Size  : 2.35 MiB
+Packager        : Felix Yan <felixonmars@archlinux.org>
+Build Date      : Thu Apr  9 09:36:39 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : iputils
+Version         : 20250605-1
+Description     : Network monitoring tools, including ping
+Architecture    : x86_64
+URL             : https://github.com/iputils/iputils
+Licenses        : BSD-3-Clause  GPL-2.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : libcap  libidn2
+Optional Deps   : None
+Required By     : base
+Optional For    : None
+Conflicts With  : arping  netkit-base
+Replaces        : netkit-base
+Installed Size  : 665.05 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Thu Jun  5 19:01:53 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : jansson
+Version         : 2.15.0-1
+Description     : C library for encoding, decoding and manipulating JSON data
+Architecture    : x86_64
+URL             : https://www.digip.org/jansson/
+Licenses        : MIT
+Groups          : None
+Provides        : None
+Depends On      : glibc
+Optional Deps   : None
+Required By     : binutils  nftables
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 277.27 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Sat Jan 24 22:31:56 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : json-c
+Version         : 0.18-2
+Description     : JSON implementation in C
+Architecture    : x86_64
+URL             : https://github.com/json-c/json-c/wiki
+Licenses        : MIT
+Groups          : None
+Provides        : libjson-c.so=5-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : cryptsetup  gettext  libelf  tpm2-tss
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 184.57 KiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Tue May 13 22:39:08 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : kbd
+Version         : 2.10.0-1
+Description     : Keytable files and keyboard utilities
+Architecture    : x86_64
+URL             : http://www.kbd-project.org
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : vlock
+Depends On      : glibc  gzip  pam
+Optional Deps   : None
+Required By     : systemd
+Optional For    : None
+Conflicts With  : vlock
+Replaces        : vlock
+Installed Size  : 3.29 MiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Sun May 31 08:43:25 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : keyutils
+Version         : 1.6.3-4
+Description     : Linux Key Management Utilities
+Architecture    : x86_64
+URL             : https://www.kernel.org/
+Licenses        : GPL-2.0-or-later  LGPL-2.1-or-later
+Groups          : None
+Provides        : libkeyutils.so=1-64
+Depends On      : glibc  sh
+Optional Deps   : None
+Required By     : krb5
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 206.34 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun Apr 12 20:25:34 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : kmod
+Version         : 34.2-1
+Description     : Linux kernel module management tools and library
+Architecture    : x86_64
+URL             : https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git
+Licenses        : LGPL-2.1-or-later  GPL-2.0-or-later
+Groups          : None
+Provides        : libkmod.so=2-64
+Depends On      : glibc  zlib  openssl  xz  zstd
+Optional Deps   : None
+Required By     : pciutils  systemd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 342.59 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Fri Mar 28 15:55:44 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : krb5
+Version         : 1.22.2-1
+Description     : The Kerberos network authentication system
+Architecture    : x86_64
+URL             : https://web.mit.edu/kerberos/
+Licenses        : custom
+Groups          : None
+Provides        : libgssapi_krb5.so=2-64  libgssrpc.so=4-64  libk5crypto.so=3-64  libkadm5clnt_mit.so=12-64  libkadm5srv_mit.so=12-64  libkdb5.so=10-64  libkdb_ldap.so=1-64  libkrad.so=0-64  libkrb5.so=3-64  libkrb5support.so=0-64
+Depends On      : bash  e2fsprogs  glibc  keyutils  libldap  libverto-module-base  openssl  lmdb  libcom_err.so=2-64  libkeyutils.so=1-64  libss.so=2-64  libverto.so=1-64
+Optional Deps   : None
+Required By     : audit  curl  libtirpc
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 4.72 MiB
+Packager        : Levente Polyak <anthraxx@archlinux.org>
+Build Date      : Mon May 18 19:14:54 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : leancrypto
+Version         : 1.7.2-1
+Description     : Lean cryptographic library usable for bare-metal environments
+Architecture    : x86_64
+URL             : https://leancrypto.org
+Licenses        : GPL-2.0-or-later  LicenseRef-BSDvariant  LicenseRef-leancrypto
+Groups          : None
+Provides        : None
+Depends On      : glibc
+Optional Deps   : None
+Required By     : gnutls
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 6.19 MiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Sat Apr 11 17:25:03 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libarchive
+Version         : 3.8.7-1
+Description     : Multi-format archive and compression library
+Architecture    : x86_64
+URL             : https://libarchive.org/
+Licenses        : BSD-2-Clause
+Groups          : None
+Provides        : libarchive.so=13-64
+Depends On      : acl  libacl.so=1-64  bzip2  libbz2.so=1.0-64  glibc  libxml2  libxml2.so=16-64  lz4  openssl  libcrypto.so=3-64  xz  liblzma.so=5-64  zlib  libz.so=1-64  zstd  libzstd.so=1-64
+Optional Deps   : None
+Required By     : pacman
+Optional For    : systemd
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1257.50 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Mon Apr 13 13:48:51 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libasan
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : Address Sanitizer runtime library shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libasan.so=8-64
+Depends On      : glibc>=2.27  libgcc  libstdc++
+Optional Deps   : None
+Required By     : gcc-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1927.85 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libassuan
+Version         : 3.0.0-1
+Description     : IPC library used by some GnuPG related software
+Architecture    : x86_64
+URL             : https://www.gnupg.org/related_software/libassuan/
+Licenses        : FSFULLR  GPL-2.0-or-later  LGPL-2.1-or-later
+Groups          : None
+Provides        : libassuan.so=9-64
+Depends On      : glibc  libgpg-error  sh
+Optional Deps   : None
+Required By     : gnupg  gpgme  pinentry
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 239.46 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Wed Jul 17 09:54:50 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libatomic
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : GNU Atomic library shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libatomic.so=1-64
+Depends On      : glibc>=2.27
+Optional Deps   : None
+Required By     : gcc-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 37.20 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libbpf
+Version         : 1.7.0-1
+Description     : Library for loading eBPF programs and reading and manipulating eBPF objects from user-space
+Architecture    : x86_64
+URL             : https://github.com/libbpf/libbpf
+Licenses        : LGPL-2.1-only OR BSD-2-Clause
+Groups          : None
+Provides        : libbpf.so=1-64
+Depends On      : glibc  libelf  linux-api-headers  zlib
+Optional Deps   : None
+Required By     : iproute2
+Optional For    : systemd
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 844.55 KiB
+Packager        : Levente Polyak <anthraxx@archlinux.org>
+Build Date      : Mon Mar 30 18:10:14 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libcap
+Version         : 2.78-1
+Description     : POSIX 1003.1e capabilities
+Architecture    : x86_64
+URL             : https://sites.google.com/site/fullycapable/
+Licenses        : BSD-3-Clause OR GPL-2.0-only
+Groups          : None
+Provides        : libcap.so=2-64  libpsx.so=2-64
+Depends On      : glibc  pam
+Optional Deps   : None
+Required By     : coreutils  iproute2  iputils
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 2.08 MiB
+Packager        : Felix Yan <felixonmars@archlinux.org>
+Build Date      : Mon Apr  6 17:07:07 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libcap-ng
+Version         : 0.9.3-1
+Description     : A library for Linux that makes using posix capabilities easy
+Architecture    : x86_64
+URL             : https://people.redhat.com/sgrubb/libcap-ng/
+Licenses        : GPL-2.0-or-later  LGPL-2.1-or-later
+Groups          : None
+Provides        : libcap-ng.so=0-64  libdrop_ambient.so=0-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : audit  dbus  dbus-broker  util-linux
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 164.21 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Fri Apr 10 06:27:42 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libelf
+Version         : 0.195-1
+Description     : Handle ELF object files and DWARF debugging information (libraries)
+Architecture    : x86_64
+URL             : https://sourceware.org/elfutils/
+Licenses        : GPL-2.0-or-later OR LGPL-3.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : bzip2  libbz2.so=1.0-64  curl  libcurl.so=4-64  glibc  json-c  xz  liblzma.so=5-64  zlib  zstd  libzstd.so=1-64
+Optional Deps   : None
+Required By     : binutils  iproute2  libbpf  systemd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 3.23 MiB
+Packager        : Morten Linderud <foxboron@archlinux.org>
+Build Date      : Sat Apr 18 12:45:08 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libevent
+Version         : 2.1.12-5
+Description     : Event notification library
+Architecture    : x86_64
+URL             : https://libevent.org/
+Licenses        : BSD-3-Clause-Modification
+Groups          : None
+Provides        : libevent-2.1.so=7-64  libevent_core-2.1.so=7-64  libevent_extra-2.1.so=7-64  libevent_openssl-2.1.so=7-64  libevent_pthreads-2.1.so=7-64
+Depends On      : glibc  openssl
+Optional Deps   : python: event_rpcgen.py
+Required By     : libverto
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1146.83 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Tue Jan 20 19:59:33 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libffi
+Version         : 3.5.2-1
+Description     : Portable foreign function interface library
+Architecture    : x86_64
+URL             : https://sourceware.org/libffi/
+Licenses        : MIT
+Groups          : None
+Provides        : libffi.so=8-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : glib2  libp11-kit
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 102.59 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Sat Aug  2 20:41:02 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libgcc
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : Low-level runtime library shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libgcc_s.so=1-64
+Depends On      : glibc>=2.27
+Optional Deps   : None
+Required By     : binutils  db5.3  dbus-broker  device-mapper  gcc-libs  gettext  gmp  gnutls  icu  libasan  libgfortran  liblsan  libobjc  libquadmath  libstdc++  libtsan  libubsan  ncurses  systemd-libs  util-linux  zstd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 181.71 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libgcrypt
+Version         : 1.12.2-1
+Description     : General purpose cryptographic library based on the code from GnuPG
+Architecture    : x86_64
+URL             : https://www.gnupg.org
+Licenses        : BSD-3-Clause  BSD-3-Clause OR GPL-2.0-only  GPL-2.0-or-later  LGPL-2.0-or-later  LGPL-2.1-or-later  X11  LicenseRef-scancode-public-domain  LicenseRef-OCB1
+Groups          : None
+Provides        : None
+Depends On      : libgpg-error  glibc
+Optional Deps   : None
+Required By     : gnupg  libsecret  systemd  systemd-libs  vim
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1978.39 KiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Wed Apr 15 12:37:40 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libgfortran
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : Runtime libraries shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libgfortran.so=5-64
+Depends On      : glibc>=2.27  libgcc
+Optional Deps   : None
+Required By     : gcc-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 3.53 MiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libgomp
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : OpenMP library shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libgomp.so=1-64
+Depends On      : glibc>=2.27
+Optional Deps   : None
+Required By     : gcc-libs  gettext
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 436.88 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libgpg-error
+Version         : 1.61-1
+Description     : Support library for libgcrypt
+Architecture    : x86_64
+URL             : https://www.gnupg.org
+Licenses        : LGPL-2.1-or-later  BSD-3-Clause OR LGPL-2.1-or-later  FSFULLR  GPL-2.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : glibc  sh
+Optional Deps   : None
+Required By     : gnupg  gpgme  libassuan  libgcrypt  libksba
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1171.21 KiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Thu May  7 15:39:48 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libidn2
+Version         : 2.3.8-1
+Description     : Free software implementation of IDNA2008, Punycode and TR46
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/libidn/#libidn2
+Licenses        : GPL2  LGPL3
+Groups          : None
+Provides        : libidn2.so=0-64
+Depends On      : libunistring  libunistring.so=5-64
+Optional Deps   : None
+Required By     : curl  gnutls  iputils  libpsl  systemd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 375.48 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Mon Dec  8 10:36:04 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libksba
+Version         : 1.8.0-1
+Description     : Library for working with X.509 certificates, CMS data and related objects
+Architecture    : x86_64
+URL             : https://www.gnupg.org/related_software/libksba/
+Licenses        : GPL-2.0-only  GPL-3.0-only  LGPL-3.0-only
+Groups          : None
+Provides        : None
+Depends On      : bash  libgpg-error  glibc
+Optional Deps   : None
+Required By     : gnupg
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 343.33 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Wed May 13 13:01:10 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libldap
+Version         : 2.6.13-1
+Description     : Lightweight Directory Access Protocol (LDAP) client libraries
+Architecture    : x86_64
+URL             : https://www.openldap.org/
+Licenses        : custom
+Groups          : None
+Provides        : None
+Depends On      : libsasl
+Optional Deps   : None
+Required By     : gnupg  krb5
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 677.83 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Mon Mar  9 18:47:39 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : liblsan
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : Leak Sanitizer runtime library shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : liblsan.so=0-64
+Depends On      : glibc>=2.27  libgcc  libstdc++
+Optional Deps   : None
+Required By     : gcc-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 559.78 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libmakepkg-dropins
+Version         : 20-1
+Description     : Features that can be dropped into libmakepkg to extend the functionality of makepkg
+Architecture    : any
+URL             : https://gitlab.archlinux.org/pacman/libmakepkg-dropins
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : awk  bash  coreutils  findutils  grep  sed  binutils
+Optional Deps   : None
+Required By     : pacman
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 11.22 KiB
+Packager        : Morten Linderud <foxboron@archlinux.org>
+Build Date      : Sun Feb  8 13:53:08 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libmnl
+Version         : 1.0.5-2
+Description     : Minimalistic user-space library oriented to Netlink developers.
+Architecture    : x86_64
+URL             : https://www.netfilter.org/projects/libmnl/
+Licenses        : LGPL2.1
+Groups          : None
+Provides        : None
+Depends On      : glibc
+Optional Deps   : None
+Required By     : iptables  libnetfilter_conntrack  libnftnl  nftables
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 34.19 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun Mar 17 22:37:20 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libnetfilter_conntrack
+Version         : 1.1.1-1
+Description     : Library providing an API to the in-kernel connection tracking state table
+Architecture    : x86_64
+URL             : https://www.netfilter.org/projects/libnetfilter_conntrack/
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : glibc  libnfnetlink  libmnl
+Optional Deps   : None
+Required By     : iptables
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 160.21 KiB
+Packager        : Sébastien Luttringer <seblu@archlinux.org>
+Build Date      : Tue Apr 21 11:39:20 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libnfnetlink
+Version         : 1.0.2-2
+Description     : Low-level library for netfilter related kernel/userspace communication
+Architecture    : x86_64
+URL             : https://www.netfilter.org/projects/libnfnetlink/
+Licenses        : GPL
+Groups          : None
+Provides        : None
+Depends On      : glibc
+Optional Deps   : None
+Required By     : iptables  libnetfilter_conntrack
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 46.10 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun Mar 17 22:37:57 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libnftnl
+Version         : 1.3.1-1
+Description     : Netfilter library providing interface to the nf_tables subsystem
+Architecture    : x86_64
+URL             : https://netfilter.org/projects/libnftnl/
+Licenses        : GPL2
+Groups          : None
+Provides        : None
+Depends On      : libmnl
+Optional Deps   : None
+Required By     : iptables  nftables
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 256.73 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Wed Dec  3 16:59:44 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libnghttp2
+Version         : 1.69.0-1
+Description     : Framing layer of HTTP/2 is implemented as a reusable C library
+Architecture    : x86_64
+URL             : https://nghttp2.org/
+Licenses        : MIT
+Groups          : None
+Provides        : libnghttp2.so=14-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : curl
+Optional For    : None
+Conflicts With  : nghttp2<1.20.0-2
+Replaces        : None
+Installed Size  : 398.76 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun Apr 19 17:53:39 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libnghttp3
+Version         : 1.16.0-1
+Description     : HTTP/3 library written in C
+Architecture    : x86_64
+URL             : https://github.com/ngtcp2/nghttp3
+Licenses        : MIT
+Groups          : None
+Provides        : libnghttp3.so=9-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : curl
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 272.15 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun May 31 12:00:21 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libngtcp2
+Version         : 1.23.0-1
+Description     : Implementation of IETF QUIC protocol
+Architecture    : x86_64
+URL             : https://github.com/ngtcp2/ngtcp2
+Licenses        : MIT
+Groups          : None
+Provides        : libngtcp2.so=16-64  libngtcp2_crypto_gnutls.so=8-64  libngtcp2_crypto_ossl.so=0-64
+Depends On      : glibc  openssl  libssl.so=3-64  gnutls
+Optional Deps   : None
+Required By     : curl
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 758.34 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun May 31 14:32:59 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libnl
+Version         : 3.12.0-1
+Description     : Library for applications dealing with netlink sockets
+Architecture    : x86_64
+URL             : https://github.com/thom311/libnl/
+Licenses        : LGPL-2.1-only
+Groups          : None
+Provides        : libnl-3.so=200-64  libnl-cli-3.so=200-64  libnl-genl-3.so=200-64  libnl-idiag-3.so=200-64  libnl-nf-3.so=200-64  libnl-route-3.so=200-64  libnl-xfrm-3.so=200-64
+Depends On      : glibc  gcc-libs
+Optional Deps   : None
+Required By     : libpcap
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 2.12 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Fri Dec  5 10:09:57 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libnsl
+Version         : 2.0.1-2
+Description     : Public client interface library for NIS(YP)
+Architecture    : x86_64
+URL             : https://github.com/thkukuk/libnsl
+Licenses        : LGPL-2.1-only
+Groups          : None
+Provides        : libnsl.so=3-64
+Depends On      : glibc  libtirpc
+Optional Deps   : None
+Required By     : pam
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 70.13 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Wed May 13 21:04:20 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libobjc
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : Ojective-C runtime libraries shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libobjc.so=4-64
+Depends On      : glibc>=2.27  libgcc
+Optional Deps   : None
+Required By     : gcc-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 92.00 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libp11-kit
+Version         : 0.26.2-1
+Description     : Loads and enumerates PKCS#11 modules (library)
+Architecture    : x86_64
+URL             : https://p11-glue.freedesktop.org
+Licenses        : BSD-3-Clause
+Groups          : None
+Provides        : libp11-kit.so=0-64
+Depends On      : glibc  libffi  libtasn1
+Optional Deps   : None
+Required By     : gnutls  p11-kit
+Optional For    : systemd
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 3.21 MiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Fri Feb  6 17:12:22 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libpcap
+Version         : 1.10.6-1
+Description     : A system-independent interface for user-level packet capture
+Architecture    : x86_64
+URL             : https://www.tcpdump.org/
+Licenses        : BSD-3-Clause
+Groups          : None
+Provides        : libpcap.so=1-64
+Depends On      : glibc  libnl  sh  libdbus-1.so=3-64
+Optional Deps   : None
+Required By     : iptables
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 666.95 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Mon Jan  5 12:47:55 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libpsl
+Version         : 0.21.5-2
+Description     : Public Suffix List library
+Architecture    : x86_64
+URL             : https://github.com/rockdaboot/libpsl
+Licenses        : MIT
+Groups          : None
+Provides        : libpsl.so=5-64
+Depends On      : libidn2  libunistring  libidn2.so=0-64  libunistring.so=5-64
+Optional Deps   : None
+Required By     : curl
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 222.72 KiB
+Packager        : Levente Polyak <anthraxx@archlinux.org>
+Build Date      : Mon May  6 18:19:53 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libquadmath
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : GCC __float128 library
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libquadmath.so=0-64
+Depends On      : glibc>=2.27  libgcc
+Optional Deps   : None
+Required By     : gcc-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 308.60 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libsasl
+Version         : 2.1.28-5
+Description     : Cyrus Simple Authentication Service Layer (SASL) library
+Architecture    : x86_64
+URL             : https://www.cyrusimap.org/sasl/
+Licenses        : BSD-3-Clause-Attribution
+Groups          : None
+Provides        : libsasl2.so=3-64
+Depends On      : glibc  gdbm  libgdbm.so=6-64  openssl  libcrypto.so=3-64
+Optional Deps   : None
+Required By     : libldap
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 516.17 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Thu Aug 15 09:30:34 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libseccomp
+Version         : 2.6.0-1
+Description     : Enhanced seccomp library
+Architecture    : x86_64
+URL             : https://github.com/seccomp/libseccomp
+Licenses        : LGPL-2.1-only
+Groups          : None
+Provides        : libseccomp.so=2-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : file  systemd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 313.54 KiB
+Packager        : Levente Polyak <anthraxx@archlinux.org>
+Build Date      : Thu Jan  8 17:38:15 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libsecret
+Version         : 0.21.7-1
+Description     : Library for storing and retrieving passwords and other secrets
+Architecture    : x86_64
+URL             : https://gnome.pages.gitlab.gnome.org/libsecret/
+Licenses        : LGPL-2.1-or-later
+Groups          : None
+Provides        : libsecret-1.so=0-64
+Depends On      : glib2  glibc  libgcrypt  tpm2-tss
+Optional Deps   : org.freedesktop.secrets: secret storage backend
+Required By     : pinentry
+Optional For    : git
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1189.41 KiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Tue Mar 18 23:13:46 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libssh2
+Version         : 1.11.1-1
+Description     : A library implementing the SSH2 protocol as defined by Internet Drafts
+Architecture    : x86_64
+URL             : https://www.libssh2.org/
+Licenses        : BSD
+Groups          : None
+Provides        : libssh2.so=1-64
+Depends On      : openssl  zlib
+Optional Deps   : None
+Required By     : curl
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 486.47 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Wed Jan  1 15:56:10 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libstdc++
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : C++ runtime libraries shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libstdc++.so=6-64
+Depends On      : glibc>=2.27  libgcc
+Optional Deps   : None
+Required By     : binutils  db5.3  gcc-libs  gettext  gmp  gnutls  icu  libasan  liblsan  libtsan  libubsan  ncurses  zstd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 2.81 MiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libsysprof-capture
+Version         : 50.0-2
+Description     : Kernel based performance profiler - capture library
+Architecture    : x86_64
+URL             : https://apps.gnome.org/Sysprof/
+Licenses        : BSD-2-Clause-Patent
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : None
+Required By     : glib2
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 274.08 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 14:59:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libtasn1
+Version         : 4.21.0-1
+Description     : The ASN.1 library used in GNUTLS
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/libtasn1/
+Licenses        : GPL-3.0-or-later  LGPL-2.1-or-later  GFDL-1.3-or-later
+Groups          : None
+Provides        : None
+Depends On      : glibc
+Optional Deps   : None
+Required By     : gnutls  libp11-kit  p11-kit
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 277.86 KiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Thu Jan  8 21:38:35 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libtirpc
+Version         : 1.3.7-1
+Description     : Transport Independent RPC library (SunRPC replacement)
+Architecture    : x86_64
+URL             : http://git.linux-nfs.org/?p=steved/libtirpc.git;a=summary
+Licenses        : SISSL  BSD-3-Clause
+Groups          : None
+Provides        : None
+Depends On      : krb5  glibc
+Optional Deps   : None
+Required By     : libnsl  pam
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 431.37 KiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Mon Aug 25 18:33:26 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libtsan
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : Thread Sanitizer runtime library shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libtsan.so=2-64
+Depends On      : glibc>=2.27  libgcc  libstdc++
+Optional Deps   : None
+Required By     : gcc-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1487.84 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libubsan
+Version         : 16.1.1+r12+g301eb08fa2c5-1
+Description     : Undefined Behavior Sanitizer runtime library shipped by GCC
+Architecture    : x86_64
+URL             : https://gcc.gnu.org
+Licenses        : GPL-3.0-or-later WITH GCC-exception-3.1  GFDL-1.3-or-later
+Groups          : None
+Provides        : libubsan.so=1-64
+Depends On      : glibc>=2.27  libgcc  libstdc++
+Optional Deps   : None
+Required By     : gcc-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 507.89 KiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Fri May  1 13:07:36 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libunistring
+Version         : 1.4.2-1
+Description     : Library for manipulating Unicode strings and C strings
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/libunistring/
+Licenses        : GPL-2.0-or-later  LGPL-3.0-or-later
+Groups          : None
+Provides        : libunistring.so=5-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : gettext  gnutls  libidn2  libpsl
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 2.73 MiB
+Packager        : Felix Yan <felixonmars@archlinux.org>
+Build Date      : Tue Apr 14 19:51:07 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libusb
+Version         : 1.0.30-1
+Description     : Library that provides generic access to USB devices
+Architecture    : x86_64
+URL             : https://libusb.info/
+Licenses        : LGPL-2.1-or-later
+Groups          : None
+Provides        : libusb-1.0.so=0-64
+Depends On      : glibc  systemd-libs  libudev.so=1-64
+Optional Deps   : None
+Required By     : gnupg
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 233.02 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Mon May 18 14:03:38 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libverto
+Version         : 0.3.2-6
+Description     : Main event loop abstraction library
+Architecture    : x86_64
+URL             : https://github.com/latchset/libverto
+Licenses        : MIT
+Groups          : None
+Provides        : libverto.so=1-64  libverto-libevent.so=1-64  libverto-module-base
+Depends On      : glibc  libevent
+Optional Deps   : None
+Required By     : krb5
+Optional For    : None
+Conflicts With  : krb5<1.19.3-2  libverto-libevent<0.3.2-4
+Replaces        : libverto-libevent<0.3.2-4
+Installed Size  : 68.39 KiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Sat Apr 11 17:18:48 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : libxcrypt
+Version         : 4.5.2-1
+Description     : Modern library for one-way hashing of passwords
+Architecture    : x86_64
+URL             : https://github.com/besser82/libxcrypt/
+Licenses        : LGPL
+Groups          : None
+Provides        : libcrypt.so=2-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : pam  perl  shadow  systemd  util-linux
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 195.12 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Mon Nov 10 21:07:47 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : libxml2
+Version         : 2.15.3-1
+Description     : XML C parser and toolkit
+Architecture    : x86_64
+URL             : https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home
+Licenses        : MIT
+Groups          : None
+Provides        : libxml2.so=16-64
+Depends On      : bash  glibc  icu  readline  zlib  libicuuc.so=78-64
+Optional Deps   : python: Python bindings
+Required By     : gettext  libarchive
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 3.00 MiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Thu Apr 16 13:19:09 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : licenses
+Version         : 20240728-1
+Description     : A set of common license files
+Architecture    : any
+URL             : https://www.archlinux.org/
+Licenses        : LicenseRef-None
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : None
+Required By     : base
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1579.40 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Sun Jul 28 07:28:19 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : linux-api-headers
+Version         : 7.0-1
+Description     : Kernel headers sanitized for use in userspace
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/libc
+Licenses        : GPL-2.0-only
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : None
+Required By     : glibc  libbpf
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 6.92 MiB
+Packager        : Frederik Schwan <freswa@archlinux.org>
+Build Date      : Tue Apr 28 10:53:53 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : lmdb
+Version         : 0.9.35-1
+Description     : Symas Lightning Memory-Mapped Database
+Architecture    : x86_64
+URL             : https://symas.com/lmdb
+Licenses        : custom:OpenLDAP
+Groups          : None
+Provides        : None
+Depends On      : glibc
+Optional Deps   : None
+Required By     : krb5
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 413.00 KiB
+Packager        : Felix Yan <felixonmars@archlinux.org>
+Build Date      : Sun Mar  8 16:49:49 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : lz4
+Version         : 1:1.10.0-2
+Description     : Extremely fast compression algorithm
+Architecture    : x86_64
+URL             : https://lz4.github.io/lz4/
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : liblz4.so=1-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : libarchive  systemd  systemd-libs  zstd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 450.16 KiB
+Packager        : Sven-Hendrik Haase <svenstaro@archlinux.org>
+Build Date      : Sun Jul 28 19:36:47 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : mpfr
+Version         : 4.2.2-1
+Description     : Multiple-precision floating-point library
+Architecture    : x86_64
+URL             : https://www.mpfr.org/
+Licenses        : GPL-3.0-or-later  LGPL-3.0-or-later
+Groups          : None
+Provides        : libmpfr.so=6-64
+Depends On      : glibc  gmp
+Optional Deps   : None
+Required By     : gawk
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1035.32 KiB
+Packager        : Antonio Rojas <arojas@archlinux.org>
+Build Date      : Thu Mar 20 16:30:01 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : ncurses
+Version         : 6.6-2
+Description     : System V Release 4.0 curses emulation library
+Architecture    : x86_64
+URL             : https://invisible-island.net/ncurses/ncurses.html
+Licenses        : MIT-open-group
+Groups          : None
+Provides        : libncurses++w.so=6-64  libformw.so=6-64  libmenuw.so=6-64  libpanelw.so=6-64  libncursesw.so=6-64
+Depends On      : glibc  libgcc  libstdc++
+Optional Deps   : bash: for ncursesw6-config [installed]
+Required By     : bash  gettext  pinentry  procps-ng  psmisc  readline  util-linux
+Optional For    : None
+Conflicts With  : None
+Replaces        : alacritty-terminfo  rio-terminfo  wezterm-terminfo
+Installed Size  : 4.09 MiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Sun Mar 22 10:00:45 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : nettle
+Version         : 4.0-1
+Description     : A low-level cryptographic library
+Architecture    : x86_64
+URL             : https://www.lysator.liu.se/~nisse/nettle
+Licenses        : LGPL-3.0-or-later OR GPL-2.0-or-later
+Groups          : None
+Provides        : libnettle.so=9-64  libhogweed.so=7-64
+Depends On      : glibc  gmp
+Optional Deps   : None
+Required By     : gnutls
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1057.71 KiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Wed Apr 29 19:12:38 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : nftables
+Version         : 1:1.1.6-3
+Description     : Netfilter tables userspace tools
+Architecture    : x86_64
+URL             : https://netfilter.org/projects/nftables/
+Licenses        : GPL-2.0-only
+Groups          : None
+Provides        : None
+Depends On      : glibc  gmp  jansson  libmnl  libnftnl  readline
+Optional Deps   : python: Python bindings
+                  python-jsonschema: Python bindings
+Required By     : iptables
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1141.69 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun Mar  1 19:41:58 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : npth
+Version         : 1.8-1
+Description     : The new GNU portable threads library
+Architecture    : x86_64
+URL             : https://www.gnupg.org/software/npth/index.html
+Licenses        : LGPL-2.1-or-later
+Groups          : None
+Provides        : libnpth.so=0-64
+Depends On      : glibc  sh
+Optional Deps   : None
+Required By     : gnupg
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 86.13 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Thu Nov 28 11:09:05 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : openssl
+Version         : 3.6.3-1
+Description     : The Open Source toolkit for cryptography and Transport Layer Security
+Architecture    : x86_64
+URL             : https://www.openssl.org
+Licenses        : Apache-2.0
+Groups          : None
+Provides        : libcrypto.so=3-64  libssl.so=3-64
+Depends On      : brotli  glibc  zlib  zstd
+Optional Deps   : ca-certificates [installed]
+                  perl [installed]
+Required By     : coreutils  cryptsetup  curl  git  kmod  krb5  libarchive  libevent  libngtcp2  libsasl  libssh2  pacman  systemd  tpm2-tss
+Optional For    : None
+Conflicts With  : None
+Replaces        : openssl-perl  openssl-doc
+Installed Size  : 12.24 MiB
+Packager        : Pierre Schmitz <pierre@archlinux.org>
+Build Date      : Tue Jun  9 16:12:05 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : p11-kit
+Version         : 0.26.2-1
+Description     : Loads and enumerates PKCS#11 modules
+Architecture    : x86_64
+URL             : https://p11-glue.freedesktop.org
+Licenses        : BSD-3-Clause
+Groups          : None
+Provides        : None
+Depends On      : coreutils  glibc  libtasn1  libp11-kit=0.26.2-1  libp11-kit.so=0-64
+Optional Deps   : None
+Required By     : ca-certificates-utils
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1122.44 KiB
+Packager        : Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Build Date      : Fri Feb  6 17:12:22 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : pacman
+Version         : 7.1.0.r9.g54d9411-2
+Description     : A library-based package manager with dependency support
+Architecture    : x86_64
+URL             : https://www.archlinux.org/pacman/
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : libalpm.so=16-64
+Depends On      : bash  coreutils  curl  libcurl.so=4-64  gawk  gettext  glibc  gnupg  gpgme  libgpgme.so=45-64  grep  libarchive  libarchive.so=13-64  openssl  libcrypto.so=3-64  pacman-mirrorlist  systemd  libmakepkg-dropins
+Optional Deps   : base-devel: required to use makepkg
+                  perl-locale-gettext: translation support in makepkg-template
+Required By     : archlinux-keyring  base
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 5.04 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Wed May  6 08:46:32 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : pacman-mirrorlist
+Version         : 20260610-1
+Description     : Arch Linux mirror list for use by pacman
+Architecture    : any
+URL             : https://www.archlinux.org/mirrorlist/
+Licenses        : GPL-2.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : None
+Required By     : pacman
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 26.65 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Wed Jun 10 04:33:38 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : pam
+Version         : 1.7.2-2
+Description     : PAM (Pluggable Authentication Modules) library
+Architecture    : x86_64
+URL             : http://linux-pam.org
+Licenses        : GPL-2.0-only
+Groups          : None
+Provides        : libpam.so=0-64  libpamc.so=0-64  libpam_misc.so=0-64
+Depends On      : audit  glibc  libaudit.so=1-64  libcrypt.so=2-64  libnsl  libtirpc  libxcrypt  pambase  systemd-libs
+Optional Deps   : None
+Required By     : kbd  libcap  shadow  systemd  util-linux
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 2.92 MiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Mon Jan 26 14:40:50 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : pambase
+Version         : 20250719-1
+Description     : Base PAM configuration for services
+Architecture    : any
+URL             : https://www.archlinux.org
+Licenses        : GPL-3.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : None
+Required By     : pam
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 2.73 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Sat Jul 19 11:20:35 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : pciutils
+Version         : 3.15.0-1
+Description     : PCI bus configuration space access library and tools
+Architecture    : x86_64
+URL             : https://mj.ucw.cz/sw/pciutils/
+Licenses        : GPL-2.0-only
+Groups          : None
+Provides        : None
+Depends On      : glibc  hwdata  kmod  systemd-libs
+Optional Deps   : which: for update-pciids
+                  grep: for update-pciids [installed]
+                  curl: for update-pciids [installed]
+Required By     : base
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 417.97 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Tue Apr  7 10:03:11 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : pcre2
+Version         : 10.47-1
+Description     : A library that implements Perl 5-style regular expressions. 2nd version
+Architecture    : x86_64
+URL             : https://github.com/PCRE2Project/pcre2
+Licenses        : BSD-2-Clause  BSD-3-Clause WITH PCRE2-exception
+Groups          : None
+Provides        : libpcre2-8.so=0-64  libpcre2-16.so=0-64  libpcre2-32.so=0-64  libpcre2-posix.so=3-64
+Depends On      : bzip2  glibc  readline  zlib
+Optional Deps   : sh: for pcre2-config [installed]
+Required By     : git  glib2  grep  systemd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 7.00 MiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Wed Oct 22 12:36:35 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : perl
+Version         : 5.42.2-1
+Description     : A highly capable, feature-rich programming language
+Architecture    : x86_64
+URL             : https://www.perl.org
+Licenses        : Artistic-1.0-Perl  GPL-1.0-or-later
+Groups          : None
+Provides        : perl-archive-tar=3.04  perl-attribute-handlers=1.03  perl-autodie=2.37  perl-autoloader=5.74  perl-autouse=1.11  perl-base=2.27  perl-bignum=0.67  perl-carp=1.54  perl-compress-raw-bzip2=2.213  perl-compress-raw-zlib=2.222  perl-config-perl-v=0.38  perl-constant=1.33  perl-cpan-meta-requirements=2.143  perl-cpan-meta-yaml=0.020  perl-cpan-meta=2.150010  perl-cpan=2.38  perl-data-dumper=2.192  perl-db_file=1.859  perl-devel-ppport=3.73  perl-devel-selfstubber=1.06  perl-digest-md5=2.59  perl-digest-sha=6.04  perl-digest=1.20  perl-dumpvalue=1.21  perl-encode=3.21  perl-encoding-warnings=0.14  perl-env=1.06  perl-experimental=0.035  perl-exporter=5.79  perl-extutils-cbuilder=0.280242  perl-extutils-constant=0.25  perl-extutils-install=2.22  perl-extutils-makemaker=7.76  perl-extutils-manifest=1.75  perl-extutils-parsexs=3.57  perl-extutils-pl2bat=0.005  perl-file-fetch=1.04  perl-file-path=2.18  perl-file-temp=0.2311  perl-filter-simple=0.96  perl-filter-util-call=1.64  perl-findbin=1.54  perl-getopt-long=2.58  perl-http-tiny=0.090  perl-i18n-collate=1.02  perl-i18n-langtags=0.45  perl-if=0.0610  perl-io-compress=2.213  perl-io-socket-ip=0.43  perl-io-zlib=1.15  perl-io=1.55  perl-ipc-cmd=1.04  perl-ipc-sysv=2.09  perl-json-pp=4.16  perl-lib=0.65  perl-libnet=3.15  perl-locale-maketext-simple=0.21_01  perl-locale-maketext=1.33  perl-math-bigint-fastcalc=0.5020  perl-math-bigint=2.005002  perl-math-complex=1.63  perl-memoize=1.17  perl-mime-base64=3.16_01  perl-module-corelist=5.20260329_42  perl-module-load-conditional=0.74  perl-module-load=0.36  perl-module-loaded=0.08  perl-module-metadata=1.000038  perl-net-ping=2.76  perl-params-check=0.38  perl-parent=0.244  perl-pathtools=3.94  perl-perl-ostype=1.010  perl-perlfaq=5.20250619  perl-perlio-via-quotedprint=0.10  perl-pod-checker=1.77  perl-pod-escapes=1.07  perl-pod-perldoc=3.2801  perl-pod-simple=3.45  perl-pod-usage=2.05  perl-podlators=6.0.2  perl-safe=2.47  perl-scalar-list-utils=1.68_01  perl-search-dict=1.08  perl-selfloader=1.28  perl-socket=2.038  perl-storable=3.37  perl-sys-syslog=0.36  perl-term-ansicolor=5.01  perl-term-cap=1.18  perl-term-complete=1.403  perl-term-readline=1.17  perl-term-table=0.024  perl-test-harness=3.50  perl-test-simple=1.302210  perl-test=1.31  perl-text-abbrev=1.02  perl-text-balanced=2.06  perl-text-parsewords=3.31  perl-text-tabs=2024.001  perl-thread-queue=3.14  perl-thread-semaphore=2.13  perl-threads-shared=1.70  perl-threads=2.43  perl-tie-file=1.10  perl-tie-refhash=1.41  perl-time-hires=1.9778  perl-time-local=1.35  perl-time-piece=1.36  perl-unicode-collate=1.31  perl-unicode-normalize=1.32  perl-version=0.9933  perl-xsloader=0.32
+Depends On      : gdbm>=1.17  db5.3  glibc  libxcrypt  libcrypt.so=2-64
+Optional Deps   : None
+Required By     : git  perl-error  perl-timedate
+Optional For    : binutils  glibc  openssl  vim
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 70.11 MiB
+Packager        : Felix Yan <felixonmars@archlinux.org>
+Build Date      : Thu Apr  2 07:19:33 2026
+Install Date    : Tue Jun 16 17:34:38 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : perl-error
+Version         : 0.17030-3
+Description     : Perl/CPAN Error module - Error/exception handling in an OO-ish way
+Architecture    : any
+URL             : https://search.cpan.org/dist/Error/
+Licenses        : PerlArtistic  GPL
+Groups          : None
+Provides        : None
+Depends On      : perl
+Optional Deps   : None
+Required By     : git
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 41.86 KiB
+Packager        : Antonio Rojas <arojas@archlinux.org>
+Build Date      : Sun Dec 14 09:57:38 2025
+Install Date    : Tue Jun 16 17:34:38 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : perl-mailtools
+Version         : 2.22-3
+Description     : Various e-mail related modules
+Architecture    : any
+URL             : https://metacpan.org/release/MailTools
+Licenses        : PerlArtistic  GPL
+Groups          : None
+Provides        : None
+Depends On      : perl-timedate
+Optional Deps   : None
+Required By     : git
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 104.24 KiB
+Packager        : Antonio Rojas <arojas@archlinux.org>
+Build Date      : Sun Dec 14 10:49:41 2025
+Install Date    : Tue Jun 16 17:34:38 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : perl-timedate
+Version         : 2.35-1
+Description     : Date formating subroutines
+Architecture    : any
+URL             : https://search.cpan.org/dist/TimeDate/
+Licenses        : PerlArtistic
+Groups          : None
+Provides        : timedate
+Depends On      : perl
+Optional Deps   : None
+Required By     : perl-mailtools
+Optional For    : None
+Conflicts With  : None
+Replaces        : timedate
+Installed Size  : 154.13 KiB
+Packager        : Felix Yan <felixonmars@archlinux.org>
+Build Date      : Sun Mar 22 03:48:45 2026
+Install Date    : Tue Jun 16 17:34:38 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : pinentry
+Version         : 1.3.2-2
+Description     : Collection of simple PIN or passphrase entry dialogs which utilize the Assuan protocol
+Architecture    : x86_64
+URL             : https://gnupg.org/related_software/pinentry/
+Licenses        : GPL
+Groups          : None
+Provides        : None
+Depends On      : glibc  ncurses  libassuan  libsecret  glib2  libglib-2.0.so=0-64  libncursesw.so=6-64  libsecret-1.so=0-64
+Optional Deps   : gcr: GNOME backend
+                  gtk3: GTK backend
+                  qt5-x11extras: Qt5 backend
+                  kwayland5: Qt5 backend
+                  kguiaddons: Qt6 backend
+                  kwindowsystem: Qt6 backend
+Required By     : gnupg
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 766.39 KiB
+Packager        : Lukas Fleischer <lfleischer@archlinux.org>
+Build Date      : Tue Aug 19 12:43:36 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : popt
+Version         : 1.19-2
+Description     : A commandline option parser
+Architecture    : x86_64
+URL             : https://github.com/rpm-software-management/popt
+Licenses        : custom
+Groups          : None
+Provides        : None
+Depends On      : glibc
+Optional Deps   : None
+Required By     : cryptsetup
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 235.51 KiB
+Packager        : Antonio Rojas <arojas@archlinux.org>
+Build Date      : Fri Sep  6 18:34:18 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : procps-ng
+Version         : 4.0.6-1
+Description     : Utilities for monitoring your system and its processes
+Architecture    : x86_64
+URL             : https://gitlab.com/procps-ng/procps
+Licenses        : GPL  LGPL
+Groups          : None
+Provides        : procps  sysvinit-tools  libproc2.so=1-64
+Depends On      : glibc  ncurses  libncursesw.so=6-64  systemd-libs
+Optional Deps   : None
+Required By     : base  gpm
+Optional For    : None
+Conflicts With  : procps  sysvinit-tools
+Replaces        : procps  sysvinit-tools
+Installed Size  : 2.54 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Thu Jan 29 10:01:28 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : psmisc
+Version         : 23.7-2
+Description     : Miscellaneous procfs tools
+Architecture    : x86_64
+URL             : https://gitlab.com/psmisc/psmisc
+Licenses        : GPL
+Groups          : None
+Provides        : None
+Depends On      : ncurses
+Optional Deps   : None
+Required By     : base
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 780.64 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Sun Apr 12 20:20:01 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : readline
+Version         : 8.3.003-1
+Description     : GNU readline library
+Architecture    : x86_64
+URL             : https://tiswww.case.edu/php/chet/readline/rltop.html
+Licenses        : GPL-3.0-or-later
+Groups          : None
+Provides        : libhistory.so=8-64  libreadline.so=8-64
+Depends On      : glibc  libncursesw.so=6-64  ncurses
+Optional Deps   : None
+Required By     : bash  gdbm  gnupg  libxml2  nftables  pcre2  sqlite  util-linux
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1532.64 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Wed Dec 10 22:01:46 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : sed
+Version         : 4.10-1
+Description     : GNU stream editor
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/sed/
+Licenses        : GPL-3.0-or-later
+Groups          : None
+Provides        : None
+Depends On      : glibc  acl
+Optional Deps   : None
+Required By     : base  gzip  libmakepkg-dropins
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 796.12 KiB
+Packager        : Sébastien Luttringer <seblu@archlinux.org>
+Build Date      : Fri Apr 24 19:33:48 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : shadow
+Version         : 4.18.0-1
+Description     : Password and account management tool suite with support for shadow files and PAM
+Architecture    : x86_64
+URL             : https://github.com/shadow-maint/shadow
+Licenses        : BSD-3-Clause
+Groups          : None
+Provides        : None
+Depends On      : glibc  acl  libacl.so=1-64  attr  libattr.so  audit  libaudit.so=1-64  libxcrypt  libcrypt.so=2-64  pam  libpam.so=0-64  libpam_misc.so=0-64
+Optional Deps   : None
+Required By     : base  git  util-linux
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 3.91 MiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Fri Jun 27 07:35:08 2025
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : sqlite
+Version         : 3.53.2-1
+Description     : A C library that implements an SQL database engine
+Architecture    : x86_64
+URL             : https://www.sqlite.org/
+Licenses        : LicenseRef-Sqlite
+Groups          : None
+Provides        : sqlite3=3.53.2  libsqlite3.so=0-64
+Depends On      : readline  zlib  glibc
+Optional Deps   : None
+Required By     : gnupg  util-linux-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : sqlite3
+Installed Size  : 16.78 MiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Thu Jun  4 05:45:46 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : systemd
+Version         : 260.2-2
+Description     : system and service manager
+Architecture    : x86_64
+URL             : https://www.github.com/systemd/systemd
+Licenses        : LGPL-2.1-or-later  CC0-1.0  GPL-2.0-or-later  MIT-0
+Groups          : None
+Provides        : nss-myhostname  systemd-tools=260.2  udev=260.2
+Depends On      : systemd-libs=260.2  acl  bash  cryptsetup  libcryptsetup.so=12-64  dbus  dbus-units  kbd  kmod  hwdata  libgcrypt  libxcrypt  libidn2  lz4  pam  libelf  libseccomp  util-linux  xz  pcre2  audit  openssl  libcrypto.so=3-64  libssl.so=3-64
+Optional Deps   : libmicrohttpd: systemd-journal-gatewayd and systemd-journal-remote
+                  apparmor: additional security features
+                  quota-tools: kernel-level quota management
+                  systemd-sysvcompat: symlink package to provide sysvinit binaries [installed]
+                  systemd-ukify: combine kernel and initrd into a signed Unified Kernel Image
+                  polkit: allow administration as unprivileged user
+                  curl: systemd-journal-upload, machinectl pull-tar and pull-raw [installed]
+                  gnutls: systemd-journal-gatewayd and systemd-journal-remote [installed]
+                  qrencode: show QR codes
+                  iptables: firewall features [installed]
+                  libarchive: convert DDIs to tarballs [installed]
+                  libbpf: support BPF programs [installed]
+                  libpwquality: check password quality
+                  libfido2: unlocking LUKS2 volumes with FIDO2 token
+                  libp11-kit: support PKCS#11 [installed]
+                  tpm2-tss: unlocking LUKS2 volumes with TPM2 [installed]
+Required By     : base  pacman  systemd-sysvcompat
+Optional For    : None
+Conflicts With  : nss-myhostname  systemd-tools  udev
+Replaces        : nss-myhostname  systemd-tools  udev
+Installed Size  : 37.39 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Thu May 28 06:50:46 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : Yes
+Validated By    : Signature
+
+Name            : systemd-libs
+Version         : 260.2-2
+Description     : systemd client libraries
+Architecture    : x86_64
+URL             : https://www.github.com/systemd/systemd
+Licenses        : LGPL-2.1-or-later  CC0-1.0  GPL-2.0-or-later WITH Linux-syscall-note
+Groups          : None
+Provides        : libsystemd  libsystemd.so=0-64  libudev.so=1-64
+Depends On      : glibc  libgcc  libgcc_s.so=1-64  libgcrypt  lz4  xz  zstd
+Optional Deps   : None
+Required By     : dbus  dbus-broker  device-mapper  libusb  pam  pciutils  procps-ng  systemd  util-linux
+Optional For    : None
+Conflicts With  : libsystemd
+Replaces        : libsystemd
+Installed Size  : 3.48 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Thu May 28 06:50:46 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : systemd-sysvcompat
+Version         : 260.2-2
+Description     : sysvinit compat for systemd
+Architecture    : x86_64
+URL             : https://www.github.com/systemd/systemd
+Licenses        : LGPL-2.1-or-later
+Groups          : None
+Provides        : None
+Depends On      : systemd=260.2
+Optional Deps   : None
+Required By     : base
+Optional For    : systemd
+Conflicts With  : sysvinit
+Replaces        : None
+Installed Size  : 2.64 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Thu May 28 06:50:46 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : tar
+Version         : 1.35-2
+Description     : Utility used to store, backup, and transport files
+Architecture    : x86_64
+URL             : https://www.gnu.org/software/tar/
+Licenses        : GPL3
+Groups          : None
+Provides        : None
+Depends On      : glibc  acl
+Optional Deps   : None
+Required By     : base
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 2.80 MiB
+Packager        : Sébastien Luttringer <seblu@archlinux.org>
+Build Date      : Sat Sep 30 12:09:47 2023
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : tpm2-tss
+Version         : 4.1.3-1
+Description     : Implementation of the TCG Trusted Platform Module 2.0 Software Stack (TSS2)
+Architecture    : x86_64
+URL             : https://github.com/tpm2-software/tpm2-tss
+Licenses        : BSD-2-Clause
+Groups          : None
+Provides        : libtss2-esys.so=0-64  libtss2-fapi.so=1-64  libtss2-mu.so=0-64  libtss2-rc.so=0-64  libtss2-sys.so=1-64  libtss2-tctildr.so=0-64
+Depends On      : curl  json-c  openssl  libjson-c.so=5-64
+Optional Deps   : None
+Required By     : gnupg  libsecret
+Optional For    : gnutls  systemd
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 3.27 MiB
+Packager        : Morten Linderud <foxboron@archlinux.org>
+Build Date      : Fri Sep 13 21:29:33 2024
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : tzdata
+Version         : 2026b-1
+Description     : Sources for time zone and daylight saving time data
+Architecture    : x86_64
+URL             : https://www.iana.org/time-zones
+Licenses        : LicenseRef-tz
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : bash: for tzselect [installed]
+                  glibc: for zdump, zic [installed]
+Required By     : glibc
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1681.23 KiB
+Packager        : Andreas Radke <andyrtr@archlinux.org>
+Build Date      : Thu Apr 23 14:33:18 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : util-linux
+Version         : 2.42.1-1
+Description     : Miscellaneous system utilities for Linux
+Architecture    : x86_64
+URL             : https://github.com/util-linux/util-linux
+Licenses        : BSD-2-Clause  BSD-3-Clause  BSD-4-Clause-UC  GPL-2.0-only  GPL-2.0-or-later  GPL-3.0-or-later  ISC  LGPL-2.1-or-later  LicenseRef-PublicDomain
+Groups          : None
+Provides        : rfkill  hardlink
+Depends On      : util-linux-libs=2.42.1  coreutils  file  libmagic.so=1-64  glibc  libcap-ng  libgcc  libgcc_s.so=1-64  libxcrypt  libcrypt.so=2-64  ncurses  libncursesw.so=6-64  pam  readline  shadow  systemd-libs  libsystemd.so=0-64  libudev.so=1-64  zlib
+Optional Deps   : words: default dictionary for look
+Required By     : base  systemd
+Optional For    : e2fsprogs  gzip
+Conflicts With  : rfkill  hardlink
+Replaces        : rfkill  hardlink
+Installed Size  : 19.70 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Mon May 18 11:47:32 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : util-linux-libs
+Version         : 2.42.1-1
+Description     : util-linux runtime libraries
+Architecture    : x86_64
+URL             : https://github.com/util-linux/util-linux
+Licenses        : BSD-2-Clause  BSD-3-Clause  BSD-4-Clause-UC  GPL-2.0-only  GPL-2.0-or-later  GPL-3.0-or-later  ISC  LGPL-2.1-or-later  LicenseRef-PublicDomain
+Groups          : None
+Provides        : libutil-linux  libblkid.so=1-64  libfdisk.so=1-64  libmount.so=1-64  libsmartcols.so=1-64  libuuid.so=1-64
+Depends On      : glibc  sqlite
+Optional Deps   : python: python bindings to libmount
+Required By     : cryptsetup  e2fsprogs  glib2  util-linux
+Optional For    : None
+Conflicts With  : libutil-linux
+Replaces        : libutil-linux
+Installed Size  : 1421.23 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Mon May 18 11:47:32 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : vim
+Version         : 9.2.0653-1
+Description     : Vi Improved, a highly configurable, improved version of the vi text editor
+Architecture    : x86_64
+URL             : https://www.vim.org
+Licenses        : custom:vim
+Groups          : None
+Provides        : xxd  vim-minimal  vim-plugin-runtime
+Depends On      : vim-runtime=9.2.0653-1  gpm  acl  glibc  libgcrypt  zlib
+Optional Deps   : python: Python language support
+                  ruby: Ruby language support
+                  lua: Lua language support
+                  perl: Perl language support [installed]
+                  tcl: Tcl language support
+Required By     : None
+Optional For    : None
+Conflicts With  : gvim  vim-minimal
+Replaces        : vim-minimal
+Installed Size  : 5.37 MiB
+Packager        : Levente Polyak <anthraxx@archlinux.org>
+Build Date      : Mon Jun 15 20:44:04 2026
+Install Date    : Tue Jun 16 17:34:37 2026
+Install Reason  : Explicitly installed
+Install Script  : No
+Validated By    : Signature
+
+Name            : vim-runtime
+Version         : 9.2.0653-1
+Description     : Vi Improved, a highly configurable, improved version of the vi text editor (shared runtime)
+Architecture    : x86_64
+URL             : https://www.vim.org
+Licenses        : custom:vim
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : sh: support for some tools and macros [installed]
+                  python: demoserver example tool
+                  gawk: mve tools support [installed]
+Required By     : vim
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 38.46 MiB
+Packager        : Levente Polyak <anthraxx@archlinux.org>
+Build Date      : Mon Jun 15 20:44:04 2026
+Install Date    : Tue Jun 16 17:34:37 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : xz
+Version         : 5.8.3-1
+Description     : Library and command line tools for XZ and LZMA compressed files
+Architecture    : x86_64
+URL             : https://tukaani.org/xz/
+Licenses        : GPL-2.0-or-later AND 0BSD AND LicenseRef-Public-Domain AND LGPL-2.1-or-later
+Groups          : None
+Provides        : liblzma.so=5-64
+Depends On      : glibc  sh
+Optional Deps   : None
+Required By     : base  file  kmod  libarchive  libelf  systemd  systemd-libs  zstd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 2.97 MiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Tue Mar 31 16:57:57 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : zlib
+Version         : 1:1.3.2-3
+Description     : Compression library implementing the deflate compression method found in gzip and PKZIP
+Architecture    : x86_64
+URL             : https://www.zlib.net/
+Licenses        : Zlib
+Groups          : None
+Provides        : libz.so=1-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : binutils  curl  file  glib2  gnupg  gnutls  kmod  libarchive  libbpf  libelf  libssh2  libxml2  openssl  pcre2  sqlite  util-linux  vim  zstd
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 223.22 KiB
+Packager        : David Runge <dvzrv@archlinux.org>
+Build Date      : Sun Mar  8 15:43:56 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : zlib-ng
+Version         : 2.3.3-1
+Description     : zlib replacement with optimizations for next generation systems
+Architecture    : x86_64
+URL             : https://github.com/zlib-ng/zlib-ng
+Licenses        : Zlib
+Groups          : None
+Provides        : libz-ng.so=2-64
+Depends On      : glibc
+Optional Deps   : None
+Required By     : git
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 283.07 KiB
+Packager        : Christian Hesse <eworm@archlinux.org>
+Build Date      : Wed Feb  4 07:42:46 2026
+Install Date    : Tue Jun 16 17:34:38 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+
+Name            : zstd
+Version         : 1.5.7-3
+Description     : Zstandard - Fast real-time compression algorithm
+Architecture    : x86_64
+URL             : https://facebook.github.io/zstd/
+Licenses        : BSD-3-Clause  GPL-2.0-only
+Groups          : None
+Provides        : libzstd.so=1-64
+Depends On      : glibc  libgcc  libstdc++  zlib  xz  lz4
+Optional Deps   : None
+Required By     : binutils  curl  file  gnutls  kmod  libarchive  libelf  openssl  systemd-libs
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 1572.61 KiB
+Packager        : Tobias Powalowski <tpowa@archlinux.org>
+Build Date      : Sun Feb 15 16:43:11 2026
+Install Date    : Sun Jun 14 00:00:00 2026
+Install Reason  : Installed as a dependency for another package
+Install Script  : No
+Validated By    : Signature
+

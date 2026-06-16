@@ -7,6 +7,8 @@ use crate::model::World;
 use std::process::Command;
 
 pub mod apt;
+pub mod dnf;
+pub mod pacman;
 
 /// One package-management ecosystem (apt/dpkg, pacman, dnf/rpm…).
 pub trait Backend {
@@ -23,7 +25,12 @@ pub fn detect() -> Option<Box<dyn Backend>> {
     if have("dpkg-query") || have("apt") {
         return Some(Box::new(apt::Apt));
     }
-    // Future: pacman, dnf — same trait, slot in here.
+    if have("dnf") || have("rpm") {
+        return Some(Box::new(dnf::Dnf));
+    }
+    if have("pacman") {
+        return Some(Box::new(pacman::Pacman));
+    }
     None
 }
 
@@ -41,6 +48,10 @@ fn have(bin: &str) -> bool {
 pub fn capture(bin: &str, args: &[&str]) -> Result<String, String> {
     let out = Command::new(bin)
         .args(args)
+        // Force the C locale so field labels, dates, and status messages are
+        // predictable to parse regardless of the user's language settings.
+        .env("LC_ALL", "C")
+        .env("LANG", "C")
         .output()
         .map_err(|e| format!("could not run `{bin}`: {e}"))?;
     Ok(String::from_utf8_lossy(&out.stdout).into_owned())

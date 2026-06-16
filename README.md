@@ -44,8 +44,8 @@ package manager's own queries (~½ second), not whypkg.
 | Distro family         | Status     |
 |-----------------------|------------|
 | Debian / Ubuntu (apt) | ✅ working  |
-| Arch (pacman)         | 🔜 planned  |
-| Fedora / RHEL (dnf)   | 🔜 planned  |
+| Arch (pacman)         | ✅ working  |
+| Fedora / RHEL (dnf)   | ✅ working  |
 
 Each package manager lives behind a single `Backend` trait — the analysis and
 the UI are distro-agnostic, so adding pacman or dnf is one focused file.
