@@ -63,13 +63,37 @@ impl FilterMode {
     }
 }
 
+/// Which side of the dependency relation the dossier's navigation list shows,
+/// toggled with ←/→. Kept separate so the two are never mixed in one list.
+#[derive(Clone, Copy, PartialEq)]
+enum Relation {
+    /// Packages that depend on the focused one (reverse deps).
+    NeededBy,
+    /// Packages the focused one depends on.
+    DependsOn,
+}
+
+impl Relation {
+    fn toggle(self) -> Self {
+        match self {
+            Relation::NeededBy => Relation::DependsOn,
+            Relation::DependsOn => Relation::NeededBy,
+        }
+    }
+}
+
 /// One level of the navigation stack: either the root package list, or a
-/// package's dossier (whose `pool` is the things it relates to).
+/// package's dossier.
 struct Frame {
     /// `None` at the root list; `Some(pkg)` when viewing a dossier.
     focus: Option<String>,
-    /// Package names selectable on this level.
+    /// Root-list package names (empty for dossier frames, which use the two
+    /// relation lists below instead).
     pool: Vec<String>,
+    /// Dossier: packages that depend on `focus` (reverse deps).
+    needed_by: Vec<String>,
+    /// Dossier: packages `focus` depends on.
+    depends_on: Vec<String>,
     /// Current fuzzy query.
     query: String,
     /// Selected position within the *filtered* list.
@@ -117,9 +141,12 @@ pub fn run(args: Args) {
         world,
         matcher: Matcher::new(Config::DEFAULT),
         filter: FilterMode::All,
+        relation: Relation::NeededBy,
         stack: vec![Frame {
             focus: None,
             pool,
+            needed_by: Vec::new(),
+            depends_on: Vec::new(),
             query: String::new(),
             selected: 0,
             alongside: Vec::new(),
@@ -147,6 +174,8 @@ struct App {
     matcher: Matcher,
     /// Manual/auto filter, shared across levels and toggled with Tab.
     filter: FilterMode,
+    /// Which dependency side the dossier list shows, toggled with ←/→.
+    relation: Relation,
     stack: Vec<Frame>,
 }
 
@@ -202,6 +231,14 @@ impl App {
                 }
                 KeyCode::Up => self.move_selection(-1, visible.len()),
                 KeyCode::Down => self.move_selection(1, visible.len()),
+                KeyCode::Left | KeyCode::Right => {
+                    // In a dossier, flip the list between "what needs it" and
+                    // "what it needs". No-op on the root list.
+                    if self.frame().focus.is_some() {
+                        self.relation = self.relation.toggle();
+                        self.frame_mut().selected = 0;
+                    }
+                }
                 KeyCode::Backspace => {
                     self.frame_mut().query.pop();
                     self.frame_mut().selected = 0;
@@ -231,21 +268,17 @@ impl App {
         self.stack.last_mut().unwrap()
     }
 
-    /// Push a new dossier frame for `pkg`, whose pool is everything it relates
-    /// to: the packages that need it, then the packages it depends on.
+    /// Push a new dossier frame for `pkg`. The two relation lists are kept
+    /// separate (never mixed) and toggled with ←/→; we reset to "what needs it"
+    /// so every dossier opens in the same, origin-oriented direction.
     fn open(&mut self, pkg: String) {
-        let mut pool: Vec<String> = Vec::new();
-        let mut seen = std::collections::HashSet::new();
-        for p in self
-            .world
-            .rdeps_of(&pkg)
-            .iter()
-            .chain(self.world.deps_of(&pkg).iter())
-        {
-            if seen.insert(p.clone()) {
-                pool.push(p.clone());
-            }
-        }
+        let dedup = |src: &[String]| -> Vec<String> {
+            let mut seen = std::collections::HashSet::new();
+            src.iter().filter(|p| seen.insert((*p).clone())).cloned().collect()
+        };
+        let needed_by = dedup(self.world.rdeps_of(&pkg));
+        let depends_on = dedup(self.world.deps_of(&pkg));
+
         // Compute the "why is this here" answer and same-session context once,
         // now, so rendering the dossier stays a cheap lookup.
         let origin = if self.world.is_manual(&pkg) {
@@ -258,9 +291,12 @@ impl App {
         };
         let alongside = same_session(&self.world, &pkg);
 
+        self.relation = Relation::NeededBy;
         self.stack.push(Frame {
             focus: Some(pkg),
-            pool,
+            pool: Vec::new(),
+            needed_by,
+            depends_on,
             query: String::new(),
             selected: 0,
             alongside,
@@ -268,19 +304,30 @@ impl App {
         });
     }
 
-    /// The current frame's pool, filtered & ranked by the fuzzy query. An empty
-    /// query keeps the pool's natural (sorted) order.
+    /// The active base list for the current frame: the root pool, or — in a
+    /// dossier — whichever relation side is currently selected.
+    fn base_list(&self) -> &[String] {
+        let frame = self.stack.last().unwrap();
+        if frame.focus.is_none() {
+            &frame.pool
+        } else if self.relation == Relation::NeededBy {
+            &frame.needed_by
+        } else {
+            &frame.depends_on
+        }
+    }
+
+    /// The current base list, filtered by manual/auto and ranked by the fuzzy
+    /// query. An empty query keeps the natural (sorted) order.
     fn filtered(&mut self) -> Vec<String> {
-        // First apply the manual/auto filter, then the fuzzy query on top.
         let (query, base) = {
-            let frame = self.stack.last().unwrap();
-            let base: Vec<String> = frame
-                .pool
+            let base: Vec<String> = self
+                .base_list()
                 .iter()
                 .filter(|n| self.filter.matches(&self.world, n))
                 .cloned()
                 .collect();
-            (frame.query.clone(), base)
+            (self.stack.last().unwrap().query.clone(), base)
         };
         if query.is_empty() {
             return base;
@@ -389,7 +436,7 @@ impl App {
 
         // Contextual help footer.
         let help = if has_dossier {
-            "[M] manual  [A] auto  ↑ upgrade  │  Enter open  Esc back  Tab manual/auto  Ctrl-C quit"
+            "Enter open  Esc back  ←/→ needs-it / it-needs  Tab manual/auto  Ctrl-C quit"
         } else {
             "type to filter  │  Tab manual/auto  Enter open  Esc quit"
         };
@@ -493,10 +540,22 @@ impl App {
         lines.push(kv("version", Span::raw(version)));
         lines.push(kv("size", Span::raw(size)));
         lines.push(kv("installed", Span::raw(installed)));
-        lines.push(kv("needed by", Span::raw(needed_by_text)));
-        // "depends on" goes last: the navigable list right below it *is* those
-        // dependencies, so the count sits directly above what it describes.
-        lines.push(kv("depends on", Span::raw(format!("{depends_on} packages"))));
+
+        // The two relations are separate lists, one shown at a time (toggle with
+        // ←/→). Mark whichever is active so it's always clear which packages the
+        // list below holds — even if that side happens to be empty.
+        let showing = || Span::styled("  ← showing below", Style::new().bold().cyan());
+        let mut needed = vec![Span::raw(needed_by_text)];
+        if self.relation == Relation::NeededBy {
+            needed.push(showing());
+        }
+        lines.push(kv_spans("needed by", needed));
+
+        let mut depends = vec![Span::raw(format!("{depends_on} packages"))];
+        if self.relation == Relation::DependsOn {
+            depends.push(showing());
+        }
+        lines.push(kv_spans("depends on", depends));
         lines
     }
 
