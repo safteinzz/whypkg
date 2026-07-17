@@ -211,8 +211,15 @@ impl App {
                 return Ok(());
             }
 
+            // Esc, or Ctrl+[ — the same control byte historically, but the
+            // enhanced keyboard protocol reports them separately, so treat both
+            // as escape.
+            let escape = matches!(key.code, KeyCode::Esc)
+                || (key.modifiers.contains(KeyModifiers::CONTROL)
+                    && matches!(key.code, KeyCode::Char('[')));
+
             match key.code {
-                KeyCode::Esc => {
+                _ if escape => {
                     // Pop a level; quit if we're already at the root.
                     if self.stack.len() == 1 {
                         return Ok(());

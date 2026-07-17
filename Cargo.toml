@@ -1,6 +1,6 @@
 [package]
 name = "whypkg"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 description = "why the hell is this package here? — a fast, cross-distro package investigator (apt, pacman, dnf)"
 license = "AGPL-3.0-only"
