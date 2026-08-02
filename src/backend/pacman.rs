@@ -10,7 +10,7 @@
 //! `apply_upgradable`) so it can be unit-tested against captured real output
 //! without needing pacman on the build machine — see the tests at the bottom.
 
-use super::{capture, Backend};
+use super::{Backend, capture};
 use crate::model::{Package, World};
 use chrono::NaiveDateTime;
 use std::collections::HashMap;
@@ -137,10 +137,10 @@ pub fn apply_upgradable(world: &mut World, qu: &str) {
             _ => continue,
         };
         let candidate = line.split("->").nth(1).map(str::trim).unwrap_or("");
-        if let Some(pkg) = world.packages.get_mut(name) {
-            if !candidate.is_empty() {
-                pkg.candidate = Some(candidate.to_string());
-            }
+        if let Some(pkg) = world.packages.get_mut(name)
+            && !candidate.is_empty()
+        {
+            pkg.candidate = Some(candidate.to_string());
         }
     }
 }
@@ -186,9 +186,7 @@ fn parse_pkg_list(value: &str) -> Vec<String> {
     value
         .split_whitespace()
         .map(|tok| {
-            let end = tok
-                .find(|c| c == '=' || c == '<' || c == '>')
-                .unwrap_or(tok.len());
+            let end = tok.find(['=', '<', '>']).unwrap_or(tok.len());
             tok[..end].to_string()
         })
         .filter(|s| !s.is_empty())

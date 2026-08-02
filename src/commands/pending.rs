@@ -8,9 +8,10 @@
 //! the manual package that pulled it in.
 
 use crate::commands::load_world;
-use crate::engine::{bfs_root, format_size, is_kernel_pkg, FOUNDATION_THRESHOLD};
+use crate::engine::{FOUNDATION_THRESHOLD, bfs_root, format_size, is_kernel_pkg};
 use crate::model::World;
 use colored::Colorize;
+use std::cmp::Reverse;
 use std::collections::HashMap;
 
 #[derive(clap::Args)]
@@ -136,7 +137,11 @@ fn desc(world: &World, pkg: &str) -> String {
 }
 
 fn size_kb(world: &World, pkg: &str) -> u64 {
-    world.packages.get(pkg).map(|p| p.installed_size).unwrap_or(0)
+    world
+        .packages
+        .get(pkg)
+        .map(|p| p.installed_size)
+        .unwrap_or(0)
 }
 
 // ── sections ────────────────────────────────────────────────────────────────
@@ -144,12 +149,20 @@ fn size_kb(world: &World, pkg: &str) -> u64 {
 fn section_kernel(world: &World, pool: &[String], cat: &HashMap<String, Category>) {
     let list: Vec<&String> = pool
         .iter()
-        .filter(|p| matches!(cat.get(*p), Some(Category::Kernel) | Some(Category::Foundation)))
+        .filter(|p| {
+            matches!(
+                cat.get(*p),
+                Some(Category::Kernel) | Some(Category::Foundation)
+            )
+        })
         .collect();
     if list.is_empty() {
         return;
     }
-    header(&format!("KERNEL, FIRMWARE & SYSTEM LIBS  ({} packages)", list.len()));
+    header(&format!(
+        "KERNEL, FIRMWARE & SYSTEM LIBS  ({} packages)",
+        list.len()
+    ));
     for pkg in list {
         let note = match cat.get(pkg) {
             Some(Category::Foundation) => {
@@ -209,7 +222,10 @@ fn section_auto(world: &World, pool: &[String], cat: &HashMap<String, Category>)
     roots.sort_by(|a, b| b.1.len().cmp(&a.1.len()).then(a.0.cmp(b.0)));
 
     for (root, members) in roots {
-        header(&format!("PULLED IN BY: {root}  ({} packages)", members.len()));
+        header(&format!(
+            "PULLED IN BY: {root}  ({} packages)",
+            members.len()
+        ));
         println!("  {}", desc(world, root).green());
         println!(
             "  {}",
@@ -232,7 +248,10 @@ fn section_auto(world: &World, pool: &[String], cat: &HashMap<String, Category>)
     }
 
     if !untraced.is_empty() {
-        header(&format!("OTHER AUTO-INSTALLED  ({} packages)", untraced.len()));
+        header(&format!(
+            "OTHER AUTO-INSTALLED  ({} packages)",
+            untraced.len()
+        ));
         println!(
             "\n  {}",
             "Auto-installed, but no manual package found in the dependency chain.".dimmed()
@@ -252,12 +271,12 @@ fn section_auto(world: &World, pool: &[String], cat: &HashMap<String, Category>)
 fn section_sizes(world: &World, pool: &[String], cat: &HashMap<String, Category>) {
     header("DISK USAGE  (top 20 by installed size)");
     let mut by_size: Vec<&String> = pool.iter().collect();
-    by_size.sort_by(|a, b| size_kb(world, b).cmp(&size_kb(world, a)));
+    by_size.sort_by_key(|p| Reverse(size_kb(world, p)));
     println!();
     for pkg in by_size.iter().take(20) {
         println!(
-            "  {}  {:>10}   {}",
-            format!("{pkg:<34}"),
+            "  {:<34}  {:>10}   {}",
+            pkg,
             format_size(size_kb(world, pkg)),
             reason(cat.get(*pkg)).dimmed()
         );
@@ -265,13 +284,18 @@ fn section_sizes(world: &World, pool: &[String], cat: &HashMap<String, Category>
     let total: u64 = pool.iter().map(|p| size_kb(world, p)).sum();
     println!(
         "\n  {}",
-        format!("Total: {} across {} packages", format_size(total), pool.len()).bold()
+        format!(
+            "Total: {} across {} packages",
+            format_size(total),
+            pool.len()
+        )
+        .bold()
     );
 }
 
 fn section_quick(world: &World, pool: &[String], cat: &HashMap<String, Category>) {
     let mut by_size: Vec<&String> = pool.iter().collect();
-    by_size.sort_by(|a, b| size_kb(world, b).cmp(&size_kb(world, a)));
+    by_size.sort_by_key(|p| Reverse(size_kb(world, p)));
     for pkg in by_size {
         println!(
             "{:<36}  {:>10}   {}",

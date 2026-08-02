@@ -10,7 +10,7 @@
 //! As with the other backends the parsing is pure functions (`build`,
 //! `parse_meta`, …) unit-tested against captured Fedora output.
 
-use super::{capture, Backend};
+use super::{Backend, capture};
 use crate::model::{Package, World};
 use std::collections::{HashMap, HashSet};
 
@@ -26,7 +26,11 @@ impl Backend for Dnf {
         // then the array tag inside it.
         let meta = capture(
             "rpm",
-            &["-qa", "--qf", "%{NAME}\t%{VERSION}-%{RELEASE}\t%{SIZE}\t%{INSTALLTIME}\t%{SUMMARY}\n"],
+            &[
+                "-qa",
+                "--qf",
+                "%{NAME}\t%{VERSION}-%{RELEASE}\t%{SIZE}\t%{INSTALLTIME}\t%{SUMMARY}\n",
+            ],
         )?;
         let provides = capture("rpm", &["-qa", "--qf", "%{NAME}\t[%{PROVIDENAME} ]\n"])?;
         let requires = capture("rpm", &["-qa", "--qf", "%{NAME}\t[%{REQUIRENAME} ]\n"])?;
@@ -34,15 +38,29 @@ impl Backend for Dnf {
         // Manual set + upgrades come from dnf. `--cacheonly` keeps us offline;
         // upgrades simply come back empty if the user hasn't refreshed metadata
         // (same contract as `apt list --upgradable` needing `apt update`).
-        let userinstalled =
-            capture("dnf", &["repoquery", "--userinstalled", "--qf", "%{name}\n", "--cacheonly"])
-                .unwrap_or_default();
+        let userinstalled = capture(
+            "dnf",
+            &[
+                "repoquery",
+                "--userinstalled",
+                "--qf",
+                "%{name}\n",
+                "--cacheonly",
+            ],
+        )
+        .unwrap_or_default();
 
         let mut world = build(&meta, &provides, &requires, &files, &userinstalled);
 
         if let Ok(up) = capture(
             "dnf",
-            &["repoquery", "--upgrades", "--qf", "%{name}\t%{evr}\n", "--cacheonly"],
+            &[
+                "repoquery",
+                "--upgrades",
+                "--qf",
+                "%{name}\t%{evr}\n",
+                "--cacheonly",
+            ],
         ) {
             apply_upgradable(&mut world, &up);
         }
@@ -159,11 +177,12 @@ fn resolve_graph(
             if req.starts_with("rpmlib(") || req.starts_with("rtld(") {
                 continue;
             }
-            if let Some(prov) = provider.get(&req) {
-                if prov != &pkg && seen.insert(prov.clone()) {
-                    deps.entry(pkg.clone()).or_default().push(prov.clone());
-                    rdeps.entry(prov.clone()).or_default().push(pkg.clone());
-                }
+            if let Some(prov) = provider.get(&req)
+                && prov != &pkg
+                && seen.insert(prov.clone())
+            {
+                deps.entry(pkg.clone()).or_default().push(prov.clone());
+                rdeps.entry(prov.clone()).or_default().push(pkg.clone());
             }
         }
     }
@@ -265,6 +284,9 @@ mod tests {
     fn upgradable_parsing() {
         let mut w = world();
         apply_upgradable(&mut w, "bash\t5.3.0-2.fc44\n");
-        assert_eq!(w.packages["bash"].candidate.as_deref(), Some("5.3.0-2.fc44"));
+        assert_eq!(
+            w.packages["bash"].candidate.as_deref(),
+            Some("5.3.0-2.fc44")
+        );
     }
 }

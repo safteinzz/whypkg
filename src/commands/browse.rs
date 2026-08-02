@@ -16,10 +16,10 @@ use crossterm::event::{
     self, Event, KeyCode, KeyEventKind, KeyModifiers, KeyboardEnhancementFlags,
     PopKeyboardEnhancementFlags, PushKeyboardEnhancementFlags,
 };
-use crossterm::terminal::{
-    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
-};
 use crossterm::execute;
+use crossterm::terminal::{
+    EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode,
+};
 use nucleo_matcher::pattern::{CaseMatching, Normalization, Pattern};
 use nucleo_matcher::{Config, Matcher};
 use ratatui::prelude::*;
@@ -281,7 +281,10 @@ impl App {
     fn open(&mut self, pkg: String) {
         let dedup = |src: &[String]| -> Vec<String> {
             let mut seen = std::collections::HashSet::new();
-            src.iter().filter(|p| seen.insert((*p).clone())).cloned().collect()
+            src.iter()
+                .filter(|p| seen.insert((*p).clone()))
+                .cloned()
+                .collect()
         };
         let needed_by = dedup(self.world.rdeps_of(&pkg));
         let depends_on = dedup(self.world.deps_of(&pkg));
@@ -341,7 +344,7 @@ impl App {
         }
         let pattern = Pattern::parse(&query, CaseMatching::Ignore, Normalization::Smart);
         pattern
-            .match_list(base.into_iter(), &mut self.matcher)
+            .match_list(base, &mut self.matcher)
             .into_iter()
             .map(|(name, _score)| name)
             .collect()
@@ -380,11 +383,15 @@ impl App {
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints([
-                Constraint::Length(1),                                   // breadcrumb
-                Constraint::Length(if has_dossier { dossier_lines.len() as u16 + 2 } else { 0 }),
-                Constraint::Min(3),                                      // list
-                Constraint::Length(1),                                   // query input
-                Constraint::Length(1),                                   // help
+                Constraint::Length(1), // breadcrumb
+                Constraint::Length(if has_dossier {
+                    dossier_lines.len() as u16 + 2
+                } else {
+                    0
+                }),
+                Constraint::Min(3),    // list
+                Constraint::Length(1), // query input
+                Constraint::Length(1), // help
             ])
             .split(f.area());
 
@@ -498,7 +505,10 @@ impl App {
         };
 
         let kv = |k: &str, v: Span<'static>| -> Line<'static> {
-            Line::from(vec![Span::styled(format!("  {k:<10}"), Style::new().dim()), v])
+            Line::from(vec![
+                Span::styled(format!("  {k:<10}"), Style::new().dim()),
+                v,
+            ])
         };
         // A key/value line whose value is several styled spans (e.g. the origin).
         let kv_spans = |k: &str, mut spans: Vec<Span<'static>>| -> Line<'static> {
@@ -514,7 +524,10 @@ impl App {
                 Span::styled(root.clone(), Style::new().bold().yellow()),
             ],
             Origin::Untraced => {
-                vec![Span::styled("auto-installed (origin untraced)", Style::new().yellow())]
+                vec![Span::styled(
+                    "auto-installed (origin untraced)",
+                    Style::new().yellow(),
+                )]
             }
             Origin::None => vec![Span::raw("")],
         };
@@ -579,7 +592,13 @@ impl App {
         } else {
             Span::raw(" ")
         };
-        let size = format_size(self.world.packages.get(name).map(|p| p.installed_size).unwrap_or(0));
+        let size = format_size(
+            self.world
+                .packages
+                .get(name)
+                .map(|p| p.installed_size)
+                .unwrap_or(0),
+        );
         let desc = truncate(
             &self
                 .world

@@ -22,7 +22,10 @@ pub fn load_world() -> World {
     match backend.build_world() {
         Ok(world) => world,
         Err(e) => {
-            eprintln!("whypkg: failed to read package data ({}): {e}", backend.name());
+            eprintln!(
+                "whypkg: failed to read package data ({}): {e}",
+                backend.name()
+            );
             std::process::exit(1);
         }
     }

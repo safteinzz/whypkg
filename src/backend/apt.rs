@@ -10,7 +10,7 @@
 //!   * `apt list --upgradable`       → pending upgrades
 //!   * `/var/log/dpkg.log*`          → install dates + "same session"
 
-use super::{capture, Backend};
+use super::{Backend, capture};
 use crate::model::{Package, World};
 use chrono::NaiveDateTime;
 use flate2::read::GzDecoder;
@@ -118,10 +118,10 @@ impl Backend for Apt {
                     _ => continue,
                 };
                 let candidate = line.split_whitespace().nth(1).unwrap_or("");
-                if let Some(pkg) = packages.get_mut(name) {
-                    if !candidate.is_empty() {
-                        pkg.candidate = Some(candidate.to_string());
-                    }
+                if let Some(pkg) = packages.get_mut(name)
+                    && !candidate.is_empty()
+                {
+                    pkg.candidate = Some(candidate.to_string());
                 }
             }
         }
@@ -130,11 +130,11 @@ impl Backend for Apt {
         let install_log = parse_dpkg_logs();
         // Attach each package's earliest install time for the dossier display.
         for (epoch, name) in &install_log {
-            if let Some(pkg) = packages.get_mut(name) {
-                if pkg.install_epoch.is_none() {
-                    pkg.install_epoch = Some(*epoch);
-                    pkg.install_date = Some(epoch_to_date(*epoch));
-                }
+            if let Some(pkg) = packages.get_mut(name)
+                && pkg.install_epoch.is_none()
+            {
+                pkg.install_epoch = Some(*epoch);
+                pkg.install_date = Some(epoch_to_date(*epoch));
             }
         }
 
