@@ -11,6 +11,30 @@
 use std::collections::{HashMap, HashSet};
 
 /// Everything we know about a single installed package.
+/// Which packaging system a package belongs to. The system package manager
+/// (apt/dnf/pacman) and Flatpak coexist, so a `World` can hold both.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Source {
+    /// The distro's package manager (apt, dnf, pacman).
+    System,
+    /// A Flatpak app.
+    Flatpak,
+}
+
+/// Where an installed package came from, as best the backend can determine.
+/// Answers "is this from my repos, or did I sideload it?".
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Origin {
+    /// Offered by a currently-configured repository (the normal case).
+    Repo,
+    /// Installed from a local file (a `.deb`/`.rpm`, an AUR or local build).
+    Local,
+    /// Installed, but no configured repo offers it anymore (repo removed).
+    Orphaned,
+    /// Could not be determined.
+    Unknown,
+}
+
 #[derive(Clone)]
 pub struct Package {
     pub name: String,
@@ -23,6 +47,13 @@ pub struct Package {
     pub description: String,
     /// Explicitly installed by the user (`true`) vs. pulled in as a dependency.
     pub manual: bool,
+    /// Which packaging system this belongs to (system PM vs Flatpak).
+    pub source: Source,
+    /// For Flatpak, the remote it came from (e.g. "flathub"); `None` for system
+    /// packages.
+    pub remote: Option<String>,
+    /// Where the package came from (repo / local file / orphaned).
+    pub origin: Origin,
     /// Unix timestamp it was installed, parsed from the package-manager log.
     /// Used for relative "same session" window math (timezone cancels out).
     pub install_epoch: Option<i64>,
@@ -48,6 +79,18 @@ pub struct World {
 }
 
 impl World {
+    /// An empty world - used when there's no system package manager but Flatpak
+    /// is present, so we can still show flatpak apps.
+    pub fn empty() -> Self {
+        World {
+            packages: HashMap::new(),
+            deps: HashMap::new(),
+            rdeps: HashMap::new(),
+            manual: HashSet::new(),
+            install_log: Vec::new(),
+        }
+    }
+
     pub fn is_manual(&self, pkg: &str) -> bool {
         self.manual.contains(pkg)
     }

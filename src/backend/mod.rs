@@ -8,6 +8,7 @@ use std::process::Command;
 
 pub mod apt;
 pub mod dnf;
+pub mod flatpak;
 pub mod pacman;
 
 /// One package-management ecosystem (apt/dpkg, pacman, dnf/rpm…).

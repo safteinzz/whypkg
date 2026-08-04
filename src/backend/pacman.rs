@@ -11,9 +11,9 @@
 //! without needing pacman on the build machine — see the tests at the bottom.
 
 use super::{Backend, capture};
-use crate::model::{Package, World};
+use crate::model::{Origin, Package, Source, World};
 use chrono::NaiveDateTime;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 pub struct Pacman;
 
@@ -31,6 +31,20 @@ impl Backend for Pacman {
         // database sync (`pacman -Sy`) — we never sync ourselves (needs root).
         if let Ok(qu) = capture("pacman", &["-Qu"]) {
             apply_upgradable(&mut world, &qu);
+        }
+
+        // Origin: `pacman -Qm` lists "foreign" packages not in any sync db
+        // (AUR builds, `pacman -U` local files). Everything else is from a repo.
+        // Reflects the last sync, like upgrades do.
+        if let Ok(qm) = capture("pacman", &["-Qm"]) {
+            let foreign = parse_foreign(&qm);
+            for (name, pkg) in world.packages.iter_mut() {
+                pkg.origin = if foreign.contains(name) {
+                    Origin::Local
+                } else {
+                    Origin::Repo
+                };
+            }
         }
 
         // Install history for the "same session" clue.
@@ -108,6 +122,9 @@ pub fn parse_qi(text: &str) -> World {
                 installed_size: size_kb,
                 description,
                 manual,
+                source: Source::System,
+                remote: None,
+                origin: Origin::Unknown,
                 install_epoch,
                 install_date,
             },
@@ -143,6 +160,16 @@ pub fn apply_upgradable(world: &mut World, qu: &str) {
             pkg.candidate = Some(candidate.to_string());
         }
     }
+}
+
+/// Names from `pacman -Qm` output (`name version` per line) — the foreign
+/// (not-in-any-repo) packages.
+fn parse_foreign(text: &str) -> HashSet<String> {
+    text.lines()
+        .filter_map(|l| l.split_whitespace().next())
+        .filter(|s| !s.is_empty())
+        .map(String::from)
+        .collect()
 }
 
 /// Parse `/var/log/pacman.log` install events into `(epoch, package)`, sorted.
@@ -281,5 +308,13 @@ mod tests {
         assert_eq!(parse_size_kb("512.00 KiB"), 512);
         assert_eq!(parse_size_kb("2.00 MiB"), 2048);
         assert_eq!(parse_size_kb("1.00 GiB"), 1024 * 1024);
+    }
+
+    #[test]
+    fn foreign_packages() {
+        let foreign = parse_foreign("yay 12.4.2-1\nbrave-bin 1.60-1\n");
+        assert!(foreign.contains("yay"));
+        assert!(foreign.contains("brave-bin"));
+        assert_eq!(foreign.len(), 2);
     }
 }

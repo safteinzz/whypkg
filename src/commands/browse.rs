@@ -21,7 +21,7 @@ use crossterm::terminal::{
     EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode,
 };
 use nucleo_matcher::pattern::{CaseMatching, Normalization, Pattern};
-use nucleo_matcher::{Config, Matcher};
+use nucleo_matcher::{Config, Matcher, Utf32Str};
 use ratatui::prelude::*;
 use ratatui::widgets::{Block, Borders, List, ListItem, ListState, Paragraph};
 use std::io::{self, Stdout};
@@ -30,28 +30,38 @@ pub struct Args {
     pub upgradable: bool,
 }
 
-/// Which packages the list shows, toggled with Tab. The fuzzy query filters by
-/// *name*; this filters by *origin* (the `[M]`/`[A]` axis) — the two compose.
+/// Which packages the list shows, cycled with Tab. Buckets are disjoint:
+/// manual/auto are *system* packages only, flatpak is its own group (flatpak
+/// apps are technically "manual", but as a bucket they're more useful on their
+/// own). The fuzzy query composes on top.
 #[derive(Clone, Copy, PartialEq)]
 enum FilterMode {
     All,
     Manual,
     Auto,
+    Flatpak,
 }
 
 impl FilterMode {
     fn matches(self, world: &World, name: &str) -> bool {
+        let is_flatpak = world
+            .packages
+            .get(name)
+            .map(|p| p.source == crate::model::Source::Flatpak)
+            .unwrap_or(false);
         match self {
             FilterMode::All => true,
-            FilterMode::Manual => world.is_manual(name),
-            FilterMode::Auto => !world.is_manual(name),
+            FilterMode::Manual => world.is_manual(name) && !is_flatpak,
+            FilterMode::Auto => !world.is_manual(name) && !is_flatpak,
+            FilterMode::Flatpak => is_flatpak,
         }
     }
     fn next(self) -> Self {
         match self {
             FilterMode::All => FilterMode::Manual,
             FilterMode::Manual => FilterMode::Auto,
-            FilterMode::Auto => FilterMode::All,
+            FilterMode::Auto => FilterMode::Flatpak,
+            FilterMode::Flatpak => FilterMode::All,
         }
     }
     fn label(self) -> &'static str {
@@ -59,6 +69,7 @@ impl FilterMode {
             FilterMode::All => "all",
             FilterMode::Manual => "manual [M]",
             FilterMode::Auto => "auto [A]",
+            FilterMode::Flatpak => "flatpak [F]",
         }
     }
 }
@@ -130,7 +141,7 @@ pub fn run(args: Args) {
 
     if pool.is_empty() {
         if args.upgradable {
-            println!("\n  Nothing to upgrade — system is up to date.\n");
+            println!("\n  Nothing to upgrade - system is up to date.\n");
         } else {
             println!("\n  No packages found.\n");
         }
@@ -232,8 +243,12 @@ impl App {
                     }
                 }
                 KeyCode::Tab => {
-                    // Cycle all → manual → auto; reset selection to the top.
+                    // Cycle all → manual → auto → flatpak; skip the flatpak
+                    // bucket entirely on machines with no flatpak apps.
                     self.filter = self.filter.next();
+                    if self.filter == FilterMode::Flatpak && !self.has_flatpak() {
+                        self.filter = self.filter.next();
+                    }
                     self.frame_mut().selected = 0;
                 }
                 KeyCode::Up => self.move_selection(-1, visible.len()),
@@ -251,11 +266,17 @@ impl App {
                     self.frame_mut().selected = 0;
                 }
                 KeyCode::Char(c) => {
-                    // Ctrl-j/Ctrl-n move down, Ctrl-k/Ctrl-p move up.
+                    // vim-style: Ctrl-j/k move, Ctrl-h/l flip the relation
+                    // (Ctrl-l works everywhere; Ctrl-h only where the terminal
+                    // sends it distinct from Backspace, e.g. kitty protocol).
                     if key.modifiers.contains(KeyModifiers::CONTROL) {
                         match c {
                             'j' | 'n' => self.move_selection(1, visible.len()),
                             'k' | 'p' => self.move_selection(-1, visible.len()),
+                            'h' | 'l' if self.frame().focus.is_some() => {
+                                self.relation = self.relation.toggle();
+                                self.frame_mut().selected = 0;
+                            }
                             _ => {}
                         }
                     } else {
@@ -266,6 +287,14 @@ impl App {
                 _ => {}
             }
         }
+    }
+
+    /// Whether any flatpak apps are present (gates the flatpak Tab bucket).
+    fn has_flatpak(&self) -> bool {
+        self.world
+            .packages
+            .values()
+            .any(|p| p.source == crate::model::Source::Flatpak)
     }
 
     fn frame(&self) -> &Frame {
@@ -342,12 +371,27 @@ impl App {
         if query.is_empty() {
             return base;
         }
+        // Match against "name + description", not just the name, so a flatpak
+        // app is findable by its friendly name (search "element" → im.riot.Riot)
+        // and any package by words in its synopsis.
         let pattern = Pattern::parse(&query, CaseMatching::Ignore, Normalization::Smart);
-        pattern
-            .match_list(base, &mut self.matcher)
+        let world = &self.world;
+        let matcher = &mut self.matcher;
+        let mut buf = Vec::new();
+        let mut scored: Vec<(u32, String)> = base
             .into_iter()
-            .map(|(name, _score)| name)
-            .collect()
+            .filter_map(|name| {
+                let haystack = match world.packages.get(&name) {
+                    Some(p) if !p.description.is_empty() => format!("{name} {}", p.description),
+                    _ => name.clone(),
+                };
+                let utf32 = Utf32Str::new(&haystack, &mut buf);
+                pattern.score(utf32, matcher).map(|score| (score, name))
+            })
+            .collect();
+        // Highest score first; ties keep the pool's (sorted) order via stable sort.
+        scored.sort_by(|a, b| b.0.cmp(&a.0));
+        scored.into_iter().map(|(_, name)| name).collect()
     }
 
     fn clamp_selection(&mut self, len: usize) {
@@ -450,9 +494,9 @@ impl App {
 
         // Contextual help footer.
         let help = if has_dossier {
-            "Enter open  Esc back  ←/→ needs-it / it-needs  Tab manual/auto  Ctrl-C quit"
+            "Enter open  Esc back  ←/→ needs-it / it-needs  Tab filter  Ctrl-C quit"
         } else {
-            "type to filter  │  Tab manual/auto  Enter open  Esc quit"
+            "type to filter  │  Tab filter  Enter open  Esc quit"
         };
         f.render_widget(
             Paragraph::new(Line::from(Span::styled(help, Style::new().dim()))),
@@ -496,23 +540,23 @@ impl App {
         // not be touched.
         let needed_by_text = if needed_by == 0 {
             if crate::engine::is_kernel_pkg(pkg) {
-                "nothing — but kernel/firmware, do not remove".to_string()
+                "nothing - but kernel/firmware, do not remove".to_string()
             } else {
-                "nothing — safe to remove".to_string()
+                "nothing - safe to remove".to_string()
             }
         } else {
-            format!("{needed_by} packages")
+            format!("{needed_by} {}", plural(needed_by, "package"))
         };
 
         let kv = |k: &str, v: Span<'static>| -> Line<'static> {
             Line::from(vec![
-                Span::styled(format!("  {k:<10}"), Style::new().dim()),
+                Span::styled(format!("  {k:<12}"), Style::new().dim()),
                 v,
             ])
         };
         // A key/value line whose value is several styled spans (e.g. the origin).
         let kv_spans = |k: &str, mut spans: Vec<Span<'static>>| -> Line<'static> {
-            let mut out = vec![Span::styled(format!("  {k:<10}"), Style::new().dim())];
+            let mut out = vec![Span::styled(format!("  {k:<12}"), Style::new().dim())];
             out.append(&mut spans);
             Line::from(out)
         };
@@ -561,6 +605,35 @@ impl App {
         lines.push(kv("size", Span::raw(size)));
         lines.push(kv("installed", Span::raw(installed)));
 
+        // Where it came from: a repo, a sideloaded local file, or an orphan
+        // whose repo is gone. (`crate::model::Origin` by full path — this
+        // module has its own `Origin` for the "why here" trace.)
+        let source = if p.map(|p| p.source) == Some(crate::model::Source::Flatpak) {
+            // Show the remote it came from, e.g. "flatpak (flathub)".
+            let text = match p.and_then(|p| p.remote.as_deref()) {
+                Some(remote) => format!("flatpak ({remote})"),
+                None => "flatpak app".to_string(),
+            };
+            Some(Span::styled(text, Style::new().blue()))
+        } else {
+            match p.map(|p| p.origin) {
+                Some(crate::model::Origin::Repo) => {
+                    Some(Span::styled("from a repository", Style::new().green()))
+                }
+                Some(crate::model::Origin::Local) => {
+                    Some(Span::styled("installed from a local file", Style::new().yellow()))
+                }
+                Some(crate::model::Origin::Orphaned) => Some(Span::styled(
+                    "not in any repo (repo removed?)",
+                    Style::new().red(),
+                )),
+                _ => None,
+            }
+        };
+        if let Some(span) = source {
+            lines.push(kv("source", span));
+        }
+
         // The two relations are separate lists, one shown at a time (toggle with
         // ←/→). Mark whichever is active so it's always clear which packages the
         // list below holds — even if that side happens to be empty.
@@ -571,7 +644,10 @@ impl App {
         }
         lines.push(kv_spans("needed by", needed));
 
-        let mut depends = vec![Span::raw(format!("{depends_on} packages"))];
+        let mut depends = vec![Span::raw(format!(
+            "{depends_on} {}",
+            plural(depends_on, "package")
+        ))];
         if self.relation == Relation::DependsOn {
             depends.push(showing());
         }
@@ -582,7 +658,12 @@ impl App {
     /// One styled row in the package list: tag, name, upgrade arrow, size, desc.
     fn pkg_line(&self, name: &str) -> Line<'static> {
         let manual = self.world.is_manual(name);
-        let tag = if manual {
+        let is_flatpak =
+            self.world.packages.get(name).map(|p| p.source) == Some(crate::model::Source::Flatpak);
+        // Flatpak apps get their own tag; system packages show manual/auto.
+        let tag = if is_flatpak {
+            Span::styled("[F]", Style::new().blue())
+        } else if manual {
             Span::styled("[M]", Style::new().green())
         } else {
             Span::styled("[A]", Style::new().yellow())
@@ -622,6 +703,16 @@ impl App {
 
 /// Truncate to at most `max` characters (UTF-8 safe — never splits a char,
 /// unlike the byte-based `substr`/`:0:n` the bash version used).
+/// Naive English pluralization for counts: `plural(1, "package")` -> "package",
+/// `plural(3, "package")` -> "packages".
+fn plural(n: usize, word: &str) -> String {
+    if n == 1 {
+        word.to_string()
+    } else {
+        format!("{word}s")
+    }
+}
+
 fn truncate(s: &str, max: usize) -> String {
     if s.chars().count() <= max {
         s.to_string()

@@ -11,7 +11,7 @@
 //! `parse_meta`, …) unit-tested against captured Fedora output.
 
 use super::{Backend, capture};
-use crate::model::{Package, World};
+use crate::model::{Origin, Package, Source, World};
 use std::collections::{HashMap, HashSet};
 
 pub struct Dnf;
@@ -63,6 +63,21 @@ impl Backend for Dnf {
             ],
         ) {
             apply_upgradable(&mut world, &up);
+        }
+
+        // Origin: `from_repo` tells us where each package was installed from -
+        // a real repo, a local `.rpm` (@commandline), or an unknown/gone repo.
+        if let Ok(repos) = capture(
+            "dnf",
+            &[
+                "repoquery",
+                "--installed",
+                "--qf",
+                "%{name}\t%{from_repo}\n",
+                "--cacheonly",
+            ],
+        ) {
+            apply_origins(&mut world, &repos);
         }
 
         Ok(world)
@@ -139,6 +154,9 @@ pub fn parse_meta(meta: &str) -> (HashMap<String, Package>, Vec<(i64, String)>) 
                 installed_size: size_kb,
                 description: f[4].to_string(),
                 manual: false,
+                source: Source::System,
+                remote: None,
+                origin: Origin::Unknown,
                 install_epoch,
                 install_date,
             },
@@ -202,6 +220,31 @@ pub fn apply_upgradable(world: &mut World, up: &str) {
                 pkg.candidate = Some(evr.to_string());
             }
         }
+    }
+}
+
+/// Apply `dnf repoquery --qf '%{name}\t%{from_repo}'` output as package origins.
+pub fn apply_origins(world: &mut World, text: &str) {
+    for line in text.lines() {
+        let (name, from_repo) = match line.split_once('\t') {
+            Some(pair) => pair,
+            None => continue,
+        };
+        if let Some(pkg) = world.packages.get_mut(name.trim()) {
+            pkg.origin = classify_repo(from_repo.trim());
+        }
+    }
+}
+
+/// Map a dnf `from_repo` value to an [`Origin`]. A local `.rpm` install records
+/// `@commandline`; a package whose source repo is no longer known records
+/// `@System`; anything else is a real repository name.
+fn classify_repo(from_repo: &str) -> Origin {
+    match from_repo {
+        "@commandline" | "@@commandline" => Origin::Local,
+        "@System" | "@@System" => Origin::Orphaned,
+        "" | "(none)" => Origin::Unknown,
+        _ => Origin::Repo,
     }
 }
 
@@ -288,5 +331,21 @@ mod tests {
             w.packages["bash"].candidate.as_deref(),
             Some("5.3.0-2.fc44")
         );
+    }
+
+    #[test]
+    fn origin_from_repo_classification() {
+        assert_eq!(classify_repo("fedora"), Origin::Repo);
+        assert_eq!(classify_repo("updates"), Origin::Repo);
+        assert_eq!(classify_repo("@commandline"), Origin::Local);
+        assert_eq!(classify_repo("@System"), Origin::Orphaned);
+        assert_eq!(classify_repo(""), Origin::Unknown);
+    }
+
+    #[test]
+    fn apply_origins_sets_local() {
+        let mut w = world();
+        apply_origins(&mut w, "bash\t@commandline\n");
+        assert_eq!(w.packages["bash"].origin, Origin::Local);
     }
 }
