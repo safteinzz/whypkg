@@ -146,3 +146,123 @@ pub fn format_size(kb: u64) -> String {
         format!("{kb} KB")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::model::World;
+
+    // ── bfs_root: the "why is this here" origin trace ────────────────────────
+
+    #[test]
+    fn traces_an_auto_package_to_the_manual_one_that_pulled_it_in() {
+        // firefox (you installed it) -> libnss3 -> libfoo
+        let w = World::from_edges(
+            &[("firefox", "libnss3"), ("libnss3", "libfoo")],
+            &["firefox"],
+        );
+        let path = bfs_root(&w, "libfoo").expect("libfoo should trace to firefox");
+        assert_eq!(path.first().unwrap(), "libfoo");
+        assert_eq!(path.last().unwrap(), "firefox");
+    }
+
+    #[test]
+    fn picks_the_shortest_chain_when_several_manual_roots_exist() {
+        // libfoo is needed by libnss3 (-> firefox) and directly by vlc.
+        let w = World::from_edges(
+            &[
+                ("firefox", "libnss3"),
+                ("libnss3", "libfoo"),
+                ("vlc", "libfoo"),
+            ],
+            &["firefox", "vlc"],
+        );
+        let path = bfs_root(&w, "libfoo").unwrap();
+        assert_eq!(path.last().unwrap(), "vlc", "vlc is one hop away");
+        assert_eq!(path.len(), 2);
+    }
+
+    #[test]
+    fn returns_none_for_an_orphan_with_no_manual_ancestor() {
+        let w = World::from_edges(&[("liba", "libb")], &[]);
+        assert!(bfs_root(&w, "libb").is_none());
+    }
+
+    #[test]
+    fn survives_dependency_cycles() {
+        // Mutually-dependent packages are real (and a naive walk would hang).
+        let w = World::from_edges(&[("liba", "libb"), ("libb", "liba")], &[]);
+        assert!(bfs_root(&w, "liba").is_none());
+
+        // …and still finds the root when a cycle sits in the middle.
+        let w = World::from_edges(
+            &[("app", "liba"), ("liba", "libb"), ("libb", "liba")],
+            &["app"],
+        );
+        assert_eq!(bfs_root(&w, "libb").unwrap().last().unwrap(), "app");
+    }
+
+    #[test]
+    fn a_manual_package_still_traces_out_to_whatever_needs_it() {
+        // Being manual doesn't stop the walk at itself: `bfs_root` looks
+        // *outward*, so a manual leaf with no dependents has no root.
+        let w = World::from_edges(&[("app", "libfoo")], &["app", "libfoo"]);
+        assert_eq!(bfs_root(&w, "libfoo").unwrap().last().unwrap(), "app");
+        assert!(bfs_root(&w, "app").is_none());
+    }
+
+    // ── same_session ─────────────────────────────────────────────────────────
+
+    #[test]
+    fn same_session_is_empty_without_an_install_time() {
+        let w = World::from_edges(&[("app", "lib")], &["app"]);
+        assert!(same_session(&w, "app").is_empty());
+    }
+
+    #[test]
+    fn same_session_returns_packages_installed_near_the_anchor() {
+        let mut w = World::from_edges(&[("app", "lib")], &["app"]);
+        let t = 1_700_000_000;
+        w.packages.get_mut("app").unwrap().install_epoch = Some(t);
+        w.install_log = vec![
+            (t - 10, "installed-with-it".into()),
+            (t, "app".into()),
+            (t + 10, "also-with-it".into()),
+            (t + 60 * 60 * 24 * 30, "much-later".into()),
+        ];
+        let session = same_session(&w, "app");
+        assert!(session.contains(&"installed-with-it".to_string()));
+        assert!(session.contains(&"also-with-it".to_string()));
+        assert!(!session.contains(&"much-later".to_string()));
+        assert!(!session.contains(&"app".to_string()), "excludes itself");
+    }
+
+    // ── classification helpers ───────────────────────────────────────────────
+
+    #[test]
+    fn kernel_packages_are_recognised() {
+        assert!(is_kernel_pkg("linux-image-6.1"));
+        assert!(is_kernel_pkg("intel-microcode"));
+        assert!(is_kernel_pkg("firmware-realtek"));
+        assert!(!is_kernel_pkg("firefox"));
+        assert!(!is_kernel_pkg("linuxlogo"), "prefix must be `linux-`");
+    }
+
+    #[test]
+    fn sizes_render_in_the_right_unit() {
+        assert_eq!(format_size(0), "n/a");
+        assert_eq!(format_size(512), "512 KB");
+        assert_eq!(format_size(1024), "1.0 MB");
+    }
+
+    #[test]
+    fn relative_time_reads_naturally() {
+        let now = chrono::Utc::now().timestamp();
+        assert_eq!(relative_time(now), "today");
+        assert_eq!(relative_time(now - 86_400), "yesterday");
+        assert_eq!(relative_time(now - 86_400 * 3), "3 days ago");
+        assert_eq!(relative_time(now - 86_400 * 14), "2 weeks ago");
+        assert_eq!(relative_time(now - 86_400 * 60), "2 months ago");
+        assert_eq!(relative_time(now - 86_400 * 400), "1 year ago");
+    }
+}

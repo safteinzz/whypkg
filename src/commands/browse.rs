@@ -153,6 +153,7 @@ pub fn run(args: Args) {
         matcher: Matcher::new(Config::DEFAULT),
         filter: FilterMode::All,
         relation: Relation::NeededBy,
+        graph: None,
         stack: vec![Frame {
             focus: None,
             pool,
@@ -188,6 +189,8 @@ struct App {
     /// Which dependency side the dossier list shows, toggled with ←/→.
     relation: Relation,
     stack: Vec<Frame>,
+    /// When `Some`, the graph view is open over everything else (Ctrl+G).
+    graph: Option<crate::commands::graph::GraphView>,
 }
 
 impl App {
@@ -200,6 +203,77 @@ impl App {
 
     fn event_loop(&mut self, terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> io::Result<()> {
         loop {
+            // The graph view, when open, takes over the whole screen and its
+            // own keys until Esc.
+            if self.graph.is_some() {
+                terminal.draw(|f| {
+                    if let Some(g) = &self.graph {
+                        g.render(f, f.area());
+                    }
+                })?;
+                let Event::Key(key) = event::read()? else {
+                    continue;
+                };
+                if key.kind == KeyEventKind::Release {
+                    continue;
+                }
+                if key.modifiers.contains(KeyModifiers::CONTROL)
+                    && matches!(key.code, KeyCode::Char('c'))
+                {
+                    return Ok(());
+                }
+                // Ctrl+[ is Esc; treat both as "step back".
+                let graph_back = matches!(key.code, KeyCode::Esc)
+                    || (key.modifiers.contains(KeyModifiers::CONTROL)
+                        && matches!(key.code, KeyCode::Char('[')));
+
+                match key.code {
+                    // Back out through the graph history; once there's nothing
+                    // left to unwind, close the graph.
+                    _ if graph_back => {
+                        let unwound = self
+                            .graph
+                            .as_mut()
+                            .map(|g| g.back(&self.world))
+                            .unwrap_or(false);
+                        if !unwound {
+                            self.graph = None;
+                        }
+                    }
+                    // q always leaves the graph outright.
+                    KeyCode::Char('q') => self.graph = None,
+                    KeyCode::Enter => {
+                        if let Some(g) = &mut self.graph {
+                            g.recenter(&self.world);
+                        }
+                    }
+                    // Column-aware nav: h/l (and ←/→) cross columns, j/k (and
+                    // ↓/↑) move within a column.
+                    KeyCode::Left | KeyCode::Char('h') => {
+                        if let Some(g) = &mut self.graph {
+                            g.move_horizontal(-1);
+                        }
+                    }
+                    KeyCode::Right | KeyCode::Char('l') => {
+                        if let Some(g) = &mut self.graph {
+                            g.move_horizontal(1);
+                        }
+                    }
+                    KeyCode::Up | KeyCode::Char('k') => {
+                        if let Some(g) = &mut self.graph {
+                            g.move_vertical(-1);
+                        }
+                    }
+                    KeyCode::Down | KeyCode::Char('j') => {
+                        if let Some(g) = &mut self.graph {
+                            g.move_vertical(1);
+                        }
+                    }
+                    _ => {}
+                }
+                continue;
+            }
+
             // Recompute the visible (filtered) list for the current frame.
             let visible = self.filtered();
             self.clamp_selection(visible.len());
@@ -276,6 +350,21 @@ impl App {
                             'h' | 'l' if self.frame().focus.is_some() => {
                                 self.relation = self.relation.toggle();
                                 self.frame_mut().selected = 0;
+                            }
+                            'g' => {
+                                // Open the graph view centred on the focused
+                                // package, or the highlighted row at the root.
+                                let target = self
+                                    .frame()
+                                    .focus
+                                    .clone()
+                                    .or_else(|| visible.get(self.frame().selected).cloned());
+                                if let Some(t) = target {
+                                    self.graph = Some(crate::commands::graph::GraphView::build(
+                                        &self.world,
+                                        &t,
+                                    ));
+                                }
                             }
                             _ => {}
                         }
@@ -382,8 +471,19 @@ impl App {
             .into_iter()
             .filter_map(|name| {
                 let haystack = match world.packages.get(&name) {
-                    Some(p) if !p.description.is_empty() => format!("{name} {}", p.description),
-                    _ => name.clone(),
+                    Some(p) => {
+                        let mut h = name.clone();
+                        if !p.description.is_empty() {
+                            h.push(' ');
+                            h.push_str(&p.description);
+                        }
+                        if let Some(d) = &p.details {
+                            h.push(' ');
+                            h.push_str(d);
+                        }
+                        h
+                    }
+                    None => name.clone(),
                 };
                 let utf32 = Utf32Str::new(&haystack, &mut buf);
                 pattern.score(utf32, matcher).map(|score| (score, name))
@@ -494,9 +594,9 @@ impl App {
 
         // Contextual help footer.
         let help = if has_dossier {
-            "Enter open  Esc back  ←/→ needs-it / it-needs  Tab filter  Ctrl-C quit"
+            "Enter open · Esc back · ←/→ needs-it / it-needs · Tab filter · Ctrl-G graph · Ctrl-C quit"
         } else {
-            "type to filter  │  Tab filter  Enter open  Esc quit"
+            "type to filter · Tab filter · Enter open · Ctrl-G graph · Esc quit"
         };
         f.render_widget(
             Paragraph::new(Line::from(Span::styled(help, Style::new().dim()))),
@@ -588,6 +688,13 @@ impl App {
             Line::from(Span::styled(format!("  {description}"), dim)),
             kv_spans("why here", origin_spans),
         ];
+
+        // A trimmed extended description under the synopsis, when the manager
+        // has one - this is what tells you `code` is actually Visual Studio Code.
+        if let Some(d) = p.and_then(|p| p.details.as_deref()) {
+            let text = truncate(d, 100);
+            lines.insert(2, Line::from(Span::styled(format!("  {text}"), dim)));
+        }
 
         // "alongside" sits high — it's context for *why here*: a few example
         // packages installed in the same session, not just a count.

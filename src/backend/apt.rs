@@ -47,31 +47,53 @@ impl Backend for Apt {
         )?;
 
         let mut packages: HashMap<String, Package> = HashMap::new();
+        // Track the package a continuation line belongs to, so we can gather the
+        // extended description that follows the synopsis.
+        let mut last: Option<String> = None;
         for line in meta_raw.lines() {
             let fields: Vec<&str> = line.splitn(4, '\t').collect();
             if fields.len() < 4 {
-                continue; // long-description continuation line — ignore
+                // Continuation line: part of the previous package's extended
+                // description. Collect it (capped) into `details`.
+                if let Some(name) = &last {
+                    let extra = line.trim();
+                    if !extra.is_empty() && extra != "." {
+                        if let Some(pkg) = packages.get_mut(name) {
+                            let d = pkg.details.get_or_insert_with(String::new);
+                            if d.len() < 240 {
+                                if !d.is_empty() {
+                                    d.push(' ');
+                                }
+                                d.push_str(extra);
+                            }
+                        }
+                    }
+                }
+                continue;
             }
             let name = fields[0].to_string();
             if name.is_empty() {
+                last = None;
                 continue;
             }
             packages.insert(
                 name.clone(),
                 Package {
-                    name,
+                    name: name.clone(),
                     version: fields[1].to_string(),
                     candidate: None,
                     installed_size: fields[2].trim().parse().unwrap_or(0),
                     description: fields[3].to_string(),
-                    manual: false,             // filled in below
+                    details: None, // filled from continuation lines below
+                    manual: false, // filled in below
                     source: Source::System,
                     remote: None,
-                    origin: Origin::Unknown,   // filled in below
+                    origin: Origin::Unknown, // filled in below
                     install_epoch: None,
                     install_date: None,
                 },
             );
+            last = Some(name);
         }
 
         // Mark manual packages now that the set and the map both exist.

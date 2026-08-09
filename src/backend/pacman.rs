@@ -121,6 +121,7 @@ pub fn parse_qi(text: &str) -> World {
                 candidate: None,
                 installed_size: size_kb,
                 description,
+                details: None,
                 manual,
                 source: Source::System,
                 remote: None,

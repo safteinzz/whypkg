@@ -45,6 +45,10 @@ pub struct Package {
     pub installed_size: u64,
     /// Short synopsis (first line of the description only).
     pub description: String,
+    /// Longer description text, when the manager exposes it (apt's extended
+    /// description). Not shown in the list, but searchable and shown in the
+    /// dossier - so a package like `code` is findable by "visual studio".
+    pub details: Option<String>,
     /// Explicitly installed by the user (`true`) vs. pulled in as a dependency.
     pub manual: bool,
     /// Which packaging system this belongs to (system PM vs Flatpak).
@@ -76,6 +80,57 @@ pub struct World {
     /// Every install event from the package-manager log, oldest first:
     /// `(epoch, package)`. Powers the "installed in the same session" clue.
     pub install_log: Vec<(i64, String)>,
+}
+
+#[cfg(test)]
+impl World {
+    /// Build a small synthetic world for tests, from `(dependent, dependency)`
+    /// edges plus the set of manually-installed names. Both directions of the
+    /// graph are filled in, so it behaves like a real backend's output.
+    pub fn from_edges(edges: &[(&str, &str)], manual: &[&str]) -> World {
+        let mut world = World::empty();
+        let add = |world: &mut World, name: &str| {
+            world
+                .packages
+                .entry(name.to_string())
+                .or_insert_with(|| Package {
+                    name: name.to_string(),
+                    version: "1.0".into(),
+                    candidate: None,
+                    installed_size: 100,
+                    description: format!("{name} description"),
+                    details: None,
+                    manual: false,
+                    source: Source::System,
+                    remote: None,
+                    origin: Origin::Repo,
+                    install_epoch: None,
+                    install_date: None,
+                });
+        };
+        for (dependent, dependency) in edges {
+            add(&mut world, dependent);
+            add(&mut world, dependency);
+            world
+                .deps
+                .entry(dependent.to_string())
+                .or_default()
+                .push(dependency.to_string());
+            world
+                .rdeps
+                .entry(dependency.to_string())
+                .or_default()
+                .push(dependent.to_string());
+        }
+        for name in manual {
+            add(&mut world, name);
+            world.manual.insert(name.to_string());
+            if let Some(p) = world.packages.get_mut(*name) {
+                p.manual = true;
+            }
+        }
+        world
+    }
 }
 
 impl World {

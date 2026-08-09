@@ -99,6 +99,7 @@ pub fn parse_apps(text: &str) -> (Vec<Package>, Vec<(String, String)>) {
             candidate: None,
             installed_size: size,
             description: describe(friendly, blurb),
+            details: None,
             manual: true, // flatpak apps are always deliberately installed
             source: Source::Flatpak,
             remote: remote.map(String::from),
@@ -130,6 +131,7 @@ pub fn parse_runtimes(text: &str) -> Vec<Package> {
                 candidate: None,
                 installed_size: size,
                 description: describe(friendly, "shared flatpak runtime"),
+                details: None,
                 manual: false, // runtimes are pulled in by the apps that use them
                 source: Source::Flatpak,
                 remote: remote.map(String::from),

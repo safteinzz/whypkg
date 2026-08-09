@@ -32,7 +32,7 @@ Inside the browser: type to filter, Enter to open, Esc to go back.";
     name = "whypkg",
     bin_name = "whypkg",
     version,
-    about = "why the hell is this package here? — a fast, cross-distro package investigator",
+    about = "why the hell is this package here? - a fast, cross-distro package investigator",
     after_help = EXAMPLES,
 )]
 struct Cli {
@@ -52,7 +52,24 @@ enum Cmd {
     Update(commands::update::Args),
 }
 
+/// Rust starts with `SIGPIPE` ignored, so writing to a closed pipe returns an
+/// error and `println!` panics. That makes `whypkg pending --quick | head`
+/// explode instead of ending quietly. Restore the default so we behave like
+/// every other Unix tool and just die when the reader goes away.
+#[cfg(unix)]
+fn restore_sigpipe() {
+    // SAFETY: setting a signal disposition to the default is always sound, and
+    // this runs before any threads exist.
+    unsafe {
+        libc::signal(libc::SIGPIPE, libc::SIG_DFL);
+    }
+}
+
+#[cfg(not(unix))]
+fn restore_sigpipe() {}
+
 fn main() {
+    restore_sigpipe();
     let cli = Cli::parse();
 
     match cli.command {

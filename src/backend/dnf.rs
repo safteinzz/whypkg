@@ -153,6 +153,7 @@ pub fn parse_meta(meta: &str) -> (HashMap<String, Package>, Vec<(i64, String)>) 
                 candidate: None,
                 installed_size: size_kb,
                 description: f[4].to_string(),
+                details: None,
                 manual: false,
                 source: Source::System,
                 remote: None,
