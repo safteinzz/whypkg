@@ -1,6 +1,6 @@
 [package]
 name = "whypkg"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2024"
 rust-version = "1.85"
 description = "why the hell is this package here? - a fast, cross-distro package investigator (apt, pacman, dnf, flatpak)"

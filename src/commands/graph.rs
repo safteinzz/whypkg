@@ -37,14 +37,20 @@ struct Node {
 
 /// The graph view state: an ego graph laid out radially around `center`.
 pub struct GraphView {
+    /// The package in the middle, and its colour.
+    centre: (String, Color),
+    /// Every neighbour on each side, with its colour. Only a page of these is
+    /// laid out at a time; drawing them all would be an unreadable hairball.
+    all_needed: Vec<(String, Color)>,
+    all_deps: Vec<(String, Color)>,
+    /// Which page of each side is on screen.
+    page_left: usize,
+    page_right: usize,
     nodes: Vec<Node>,
     /// `(from, to)` indices into `nodes`.
     edges: Vec<(usize, usize)>,
     /// Index of the currently selected node.
     selected: usize,
-    /// Counts trimmed off each side (so we can tell the user "+N more").
-    hidden_needed: usize,
-    hidden_deps: usize,
     /// Centres visited before this one, so Esc can walk back out the way you
     /// dug in (Enter pushes, Esc pops).
     history: Vec<String>,
@@ -66,36 +72,81 @@ impl GraphView {
             }
         };
 
-        let needed: Vec<String> = dedup(world.rdeps_of(center));
-        let deps: Vec<String> = dedup(world.deps_of(center));
-        let hidden_needed = needed.len().saturating_sub(PER_SIDE);
-        let hidden_deps = deps.len().saturating_sub(PER_SIDE);
+        let with_colour = |names: Vec<String>| -> Vec<(String, Color)> {
+            names.into_iter().map(|n| { let c = color_of(&n); (n, c) }).collect()
+        };
+        let mut view = GraphView {
+            centre: (center.to_string(), color_of(center)),
+            all_needed: with_colour(dedup(world.rdeps_of(center))),
+            all_deps: with_colour(dedup(world.deps_of(center))),
+            page_left: 0,
+            page_right: 0,
+            nodes: Vec::new(),
+            edges: Vec::new(),
+            // Start on the centre - the package you're actually inspecting - so
+            // h/l steps out into either side from there.
+            selected: 0,
+            history: Vec::new(),
+        };
+        view.layout();
+        view
+    }
 
-        let mut nodes = vec![Node {
-            name: center.to_string(),
+    /// Lay out the current page of each side around the centre.
+    fn layout(&mut self) {
+        self.nodes = vec![Node {
+            name: self.centre.0.clone(),
             x: 0.0,
             y: 0.0,
-            color: color_of(center),
+            color: self.centre.1,
             center: true,
             side: Side::Center,
         }];
-        let mut edges = Vec::new();
+        self.edges = Vec::new();
+        let left = page_slice(&self.all_needed, self.page_left);
+        let right = page_slice(&self.all_deps, self.page_right);
+        place_side(left, Side::Left, &mut self.nodes, &mut self.edges);
+        place_side(right, Side::Right, &mut self.nodes, &mut self.edges);
+        self.selected = self.selected.min(self.nodes.len().saturating_sub(1));
+    }
 
-        // Left side (needed by) and right side (depends on), on a bowed arc.
-        place_side(&needed, PER_SIDE, Side::Left, &color_of, &mut nodes, &mut edges);
-        place_side(&deps, PER_SIDE, Side::Right, &color_of, &mut nodes, &mut edges);
-
-        // Start on the centre - the package you're actually inspecting - so
-        // h/l steps out into either side from there.
-        let selected = 0;
-        GraphView {
-            nodes,
-            edges,
-            selected,
-            hidden_needed,
-            hidden_deps,
-            history: Vec::new(),
+    /// All neighbours on a side, and which page we're on.
+    fn side_state(&self, side: Side) -> (&[(String, Color)], usize) {
+        match side {
+            Side::Left => (&self.all_needed, self.page_left),
+            Side::Right => (&self.all_deps, self.page_right),
+            Side::Center => (&[], 0),
         }
+    }
+
+    /// "17-32 of 64" for a side that spans more than one page, else `None` -
+    /// shown in the zone header so the count sits where you're already looking.
+    pub fn page_label(&self, needed_by: bool) -> Option<String> {
+        let side = if needed_by { Side::Left } else { Side::Right };
+        let (all, page) = self.side_state(side);
+        if all.len() <= PER_SIDE {
+            return None;
+        }
+        let start = page * PER_SIDE;
+        let end = (start + PER_SIDE).min(all.len());
+        Some(format!("{}-{} of {}", start + 1, end, all.len()))
+    }
+
+    /// Move to the next/previous page of a side, if there is one.
+    fn turn_page(&mut self, side: Side, dir: isize) -> bool {
+        let (all, page) = self.side_state(side);
+        let last_page = all.len().saturating_sub(1) / PER_SIDE;
+        let next = page as isize + dir;
+        if next < 0 || next > last_page as isize || all.len() <= PER_SIDE {
+            return false;
+        }
+        match side {
+            Side::Left => self.page_left = next as usize,
+            Side::Right => self.page_right = next as usize,
+            Side::Center => return false,
+        }
+        self.layout();
+        true
     }
 
     /// Node indices in one column, ordered top (higher y) to bottom.
@@ -113,13 +164,28 @@ impl GraphView {
     }
 
     /// Move up/down *within* the current column (`dir` -1 = up, +1 = down),
-    /// clamped so you never jump columns by accident.
+    /// never jumping columns. Running off the end of a column turns to the next
+    /// page of that side, so you can walk through every neighbour without ever
+    /// drawing them all at once.
     pub fn move_vertical(&mut self, dir: isize) {
-        let col = self.column(self.nodes[self.selected].side);
+        let side = self.nodes[self.selected].side;
+        let col = self.column(side);
         if col.is_empty() {
             return;
         }
         let pos = col.iter().position(|&i| i == self.selected).unwrap_or(0);
+        let at_end = (dir > 0 && pos + 1 == col.len()) || (dir < 0 && pos == 0);
+
+        if at_end {
+            if self.turn_page(side, dir) {
+                // Enter the new page from the edge you left the old one at.
+                let col = self.column(side);
+                if let Some(&idx) = if dir > 0 { col.first() } else { col.last() } {
+                    self.selected = idx;
+                }
+            }
+            return;
+        }
         let next = (pos as isize + dir).clamp(0, col.len() as isize - 1) as usize;
         self.selected = col[next];
     }
@@ -223,16 +289,39 @@ impl GraphView {
         let halves =
             Layout::horizontal([Constraint::Percentage(50), Constraint::Percentage(50)])
                 .split(chunks[1]);
-        f.render_widget(
-            Paragraph::new("needed by")
+        // The "17-32 of 64" counter rides in the header, where you're already
+        // looking, rather than being tucked away at the bottom of the screen.
+        let header = |label: &str, page: Option<String>, fg: Color, bg: Color| {
+            let mut spans = vec![Span::styled(
+                label.to_string(),
+                Style::new().fg(fg).bold().bg(bg),
+            )];
+            if let Some(p) = page {
+                spans.push(Span::styled(
+                    format!(" · {p}"),
+                    Style::new().fg(fg).dim().bg(bg),
+                ));
+            }
+            Paragraph::new(Line::from(spans))
                 .alignment(Alignment::Center)
-                .style(Style::new().fg(Color::Rgb(150, 175, 225)).bold().bg(left_bg)),
+                .style(Style::new().bg(bg))
+        };
+        f.render_widget(
+            header(
+                "needed by",
+                self.page_label(true),
+                Color::Rgb(150, 175, 225),
+                left_bg,
+            ),
             halves[0],
         );
         f.render_widget(
-            Paragraph::new("depends on")
-                .alignment(Alignment::Center)
-                .style(Style::new().fg(Color::Rgb(225, 180, 140)).bold().bg(right_bg)),
+            header(
+                "depends on",
+                self.page_label(false),
+                Color::Rgb(225, 180, 140),
+                right_bg,
+            ),
             halves[1],
         );
 
@@ -331,7 +420,12 @@ impl GraphView {
         // Tint the two zones, leaving a neutral lane down the middle for the
         // package itself (it's neither "needed by" nor "depends on"). Bg only,
         // after the canvas renders, so the braille graph stays visible on top.
-        let mid = ca.x + ca.width / 2;
+        // Pivot on the column the canvas actually draws x=0 into, not on the
+        // geometric middle: the braille grid spans `2*cells - 1` dots, so the
+        // midpoint floors one cell to the left and the lane would sit off by one.
+        let inner_w = ca.width.saturating_sub(2) as f64;
+        let centre_dot = (0.5 * (2.0 * inner_w - 1.0)).floor().max(0.0) as u16;
+        let mid = ca.x + 1 + centre_dot / 2;
         let band = ca.width / 24; // half-width of the neutral centre lane
         let buf = f.buffer_mut();
         for y in (ca.y + 1)..(ca.y + ca.height.saturating_sub(1)) {
@@ -363,14 +457,8 @@ impl GraphView {
         f.render_widget(Paragraph::new(legend), chunks[3]);
 
         // Controls, plus a note if some neighbours were trimmed.
-        let mut controls =
-            "  ←↓↑→ / hjkl move · Enter dig in · Esc back · q quit graph".to_string();
-        if self.hidden_needed > 0 || self.hidden_deps > 0 {
-            controls.push_str(&format!(
-                " · +{} needed, +{} deps hidden",
-                self.hidden_needed, self.hidden_deps
-            ));
-        }
+        let controls =
+            "  ←↓↑→ / hjkl move · Enter dig in · Ctrl-G info · Esc back · q quit graph";
         f.render_widget(
             Paragraph::new(Line::from(Span::styled(controls, Style::new().dim()))),
             chunks[4],
@@ -384,14 +472,12 @@ impl GraphView {
 /// centre, so their labels start at different x - which is what stops long
 /// names running into each other while keeping the radial bow.
 fn place_side(
-    names: &[String],
-    cap: usize,
+    names: &[(String, Color)],
     side: Side,
-    color_of: &dyn Fn(&str) -> Color,
     nodes: &mut Vec<Node>,
     edges: &mut Vec<(usize, usize)>,
 ) {
-    let shown = names.len().min(cap);
+    let shown = names.len();
     if shown == 0 {
         return;
     }
@@ -401,7 +487,7 @@ fn place_side(
     // Alternate between the outer orbit and an inner one at 60% the distance.
     let inner_radius = RADIUS * 0.6;
 
-    for (i, name) in names.iter().take(shown).enumerate() {
+    for (i, (name, colour)) in names.iter().enumerate() {
         let frac = (i as f64 + 1.0) / (shown as f64 + 1.0); // 0..1, excludes ends
         let y = y_top - 2.0 * y_top * frac; // evenly from +y_top down to -y_top
 
@@ -423,12 +509,19 @@ fn place_side(
             name: name.clone(),
             x,
             y,
-            color: color_of(name),
+            color: *colour,
             center: false,
             side,
         });
         edges.push((0, idx));
     }
+}
+
+/// The slice of one side's neighbours that page `page` shows.
+fn page_slice(all: &[(String, Color)], page: usize) -> &[(String, Color)] {
+    let start = (page * PER_SIDE).min(all.len());
+    let end = (start + PER_SIDE).min(all.len());
+    &all[start..end]
 }
 
 fn dedup(src: &[String]) -> Vec<String> {
@@ -539,14 +632,64 @@ mod tests {
         assert!(max_x < 72.0, "a planet is drawn off-canvas (x={max_x})");
     }
 
+    /// A world whose centre is needed by `n` packages.
+    fn crowded_world(n: usize) -> World {
+        let needed: Vec<String> = (0..n).map(|i| format!("n{i:02}")).collect();
+        let edges: Vec<(&str, &str)> = needed.iter().map(|x| (x.as_str(), "center")).collect();
+        World::from_edges(&edges, &["center"])
+    }
+
     #[test]
-    fn caps_each_side_and_reports_what_it_hid() {
-        let needed: Vec<String> = (0..30).map(|i| format!("n{i:02}")).collect();
-        let edges: Vec<(&str, &str)> = needed.iter().map(|n| (n.as_str(), "center")).collect();
-        let w = World::from_edges(&edges, &["center"]);
+    fn draws_only_one_page_per_side() {
+        let w = crowded_world(30);
         let g = GraphView::build(&w, "center");
-        assert_eq!(g.nodes.iter().filter(|n| n.side == Side::Left).count(), PER_SIDE);
-        assert_eq!(g.hidden_needed, 30 - PER_SIDE);
+        assert_eq!(
+            g.nodes.iter().filter(|n| n.side == Side::Left).count(),
+            PER_SIDE,
+            "a crowded side must never draw everything at once"
+        );
+        assert_eq!(g.page_label(true).as_deref(), Some("1-16 of 30"));
+        assert_eq!(g.page_label(false), None, "no counter when it all fits");
+    }
+
+    #[test]
+    fn running_off_a_column_turns_the_page() {
+        let w = crowded_world(30);
+        let mut g = GraphView::build(&w, "center");
+        g.move_horizontal(-1); // into the crowded side
+        let first = g.selected_name().to_string();
+
+        // Walk to the bottom of page one, then one more step pages over.
+        for _ in 0..PER_SIDE {
+            g.move_vertical(1);
+        }
+        assert_eq!(g.page_label(true).as_deref(), Some("17-30 of 30"));
+        assert_ne!(g.selected_name(), first);
+        assert_eq!(g.nodes.iter().filter(|n| n.side == Side::Left).count(), 30 - PER_SIDE);
+
+        // The last page is the end of the line; it does not wrap.
+        for _ in 0..40 {
+            g.move_vertical(1);
+        }
+        assert_eq!(g.page_label(true).as_deref(), Some("17-30 of 30"));
+
+        // Walking back up returns to page one, at the top of the column.
+        for _ in 0..40 {
+            g.move_vertical(-1);
+        }
+        assert_eq!(g.page_label(true).as_deref(), Some("1-16 of 30"));
+        assert_eq!(g.selected_name(), "n00");
+    }
+
+    #[test]
+    fn paging_keeps_you_on_your_side() {
+        let w = crowded_world(30);
+        let mut g = GraphView::build(&w, "center");
+        g.move_horizontal(-1);
+        for _ in 0..60 {
+            g.move_vertical(1);
+            assert_eq!(side_of(&g, g.selected_name()), Side::Left);
+        }
     }
 
     // ── navigation ──────────────────────────────────────────────────────────

@@ -227,6 +227,11 @@ impl App {
                     || (key.modifiers.contains(KeyModifiers::CONTROL)
                         && matches!(key.code, KeyCode::Char('[')));
 
+                // Ctrl+G flips back to the dossier - for whatever package you
+                // navigated to in the graph, not the one you came in on.
+                let to_dossier = key.modifiers.contains(KeyModifiers::CONTROL)
+                    && matches!(key.code, KeyCode::Char('g'));
+
                 match key.code {
                     // Back out through the graph history; once there's nothing
                     // left to unwind, close the graph.
@@ -238,6 +243,17 @@ impl App {
                             .unwrap_or(false);
                         if !unwound {
                             self.graph = None;
+                        }
+                    }
+                    _ if to_dossier => {
+                        let target = self.graph.as_ref().map(|g| g.selected_name().to_string());
+                        self.graph = None;
+                        // If we dug somewhere new, open that package's dossier;
+                        // if we never moved, closing already lands us on it.
+                        if let Some(t) = target
+                            && self.frame().focus.as_deref() != Some(t.as_str())
+                        {
+                            self.open(t);
                         }
                     }
                     // q always leaves the graph outright.
