@@ -2,7 +2,7 @@
 
 > **Canonical:** [gitlab.com/safteinzz/whypkg](https://gitlab.com/safteinzz/whypkg) · **Mirror:** [github.com/safteinzz/whypkg](https://github.com/safteinzz/whypkg)
 
-**why the hell is this package here?** 🕵️
+**Wonder why the f\* you have that package? Know it now. 🎯**
 
 A fast, cross-distro package investigator for apt, pacman, dnf and flatpak.
 Fuzzy-find anything installed and find out: did *you* install it, or did
