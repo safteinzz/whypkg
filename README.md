@@ -2,11 +2,9 @@
 
 > **Canonical:** [gitlab.com/safteinzz/whypkg](https://gitlab.com/safteinzz/whypkg) · **Mirror:** [github.com/safteinzz/whypkg](https://github.com/safteinzz/whypkg)
 
-**Wonder why the f\* you have that package? Know it now. 🎯**
-
-A fast, cross-distro package investigator for apt, pacman, dnf and flatpak.
-Fuzzy-find anything installed and find out: did *you* install it, or did
-something drag it in?
+<!-- desc:start -->
+wonder why the f* you have that package? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, flatpak)
+<!-- desc:end -->
 
 ```bash
 cargo install whypkg

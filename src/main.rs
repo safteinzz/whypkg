@@ -32,7 +32,7 @@ Inside the browser: type to filter, Enter to open, Esc to go back.";
     name = "whypkg",
     bin_name = "whypkg",
     version,
-    about = "why the hell is this package here? - a fast, cross-distro package investigator",
+    about,
     after_help = EXAMPLES,
 )]
 struct Cli {
