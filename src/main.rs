@@ -18,20 +18,40 @@ mod model;
 
 use clap::{Parser, Subcommand};
 
-const EXAMPLES: &str = "\x1b[1mExamples:\x1b[0m
+const EXAMPLES: &str = concat!(
+    "\x1b[1mExamples:\x1b[0m
   whypkg                     Browse every installed package
   whypkg --upgradable        Browse only packages with a pending upgrade
   whypkg pending             Report every pending upgrade, grouped by why it's here
   whypkg pending --quick     One line per pending package: size + reason
   whypkg update              Update whypkg to the latest release
 
-Inside the browser: type to filter, Enter to open, Esc to go back.";
+Inside the browser: type to filter, Enter to open, Esc to go back.",
+    "\n\nby ",
+    env!("CARGO_PKG_AUTHORS"),
+    "  ",
+    env!("CARGO_PKG_REPOSITORY"),
+);
+
+/// `-V` stays a bare version string for scripts; `--version` spells out who
+/// wrote it, under what license, and where it lives. Every field comes from
+/// Cargo.toml, so none of it can drift from the manifest.
+const LONG_VERSION: &str = concat!(
+    env!("CARGO_PKG_VERSION"),
+    "\n",
+    env!("CARGO_PKG_AUTHORS"),
+    "\n",
+    env!("CARGO_PKG_LICENSE"),
+    "  ",
+    env!("CARGO_PKG_REPOSITORY"),
+);
 
 #[derive(Parser)]
 #[command(
     name = "whypkg",
     bin_name = "whypkg",
     version,
+    long_version = LONG_VERSION,
     about,
     after_help = EXAMPLES,
 )]

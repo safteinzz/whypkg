@@ -4,6 +4,7 @@ version = "0.4.1"
 edition = "2024"
 rust-version = "1.85"
 description = "wonder why the f* you have that package? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, flatpak)"
+authors = ["Pablo Antonio Hernández Hernández (safteinzz)"]
 license = "AGPL-3.0-only"
 repository = "https://gitlab.com/safteinzz/whypkg"
 keywords = ["apt", "pacman", "dnf", "flatpak", "packages"]
