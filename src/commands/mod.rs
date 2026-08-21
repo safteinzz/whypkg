@@ -1,7 +1,7 @@
 pub mod browse;
 pub mod graph;
 pub mod pending;
-pub mod update;
+pub mod selfcmd;
 
 use crate::model::World;
 

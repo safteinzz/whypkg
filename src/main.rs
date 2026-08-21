@@ -6,7 +6,8 @@
 //!   whypkg --upgradable    Same browser, scoped to packages with pending upgrades.
 //!   whypkg pending         A grouped report of every pending upgrade and *why*
 //!                          it's on your system (kernel / your apps / pulled in by…).
-//!   whypkg update          Update whypkg itself to the latest release.
+//!   whypkg self update     Reinstall the latest release from crates.io.
+//!   whypkg self check      Ask crates.io whether a newer release exists.
 //!
 //! The package-manager specifics live behind a single `Backend` trait, so apt,
 //! pacman, and dnf all feed the same analysis and the same UI.
@@ -24,7 +25,8 @@ const EXAMPLES: &str = concat!(
   whypkg --upgradable        Browse only packages with a pending upgrade
   whypkg pending             Report every pending upgrade, grouped by why it's here
   whypkg pending --quick     One line per pending package: size + reason
-  whypkg update              Update whypkg to the latest release
+  whypkg self update         Reinstall the latest release from crates.io
+  whypkg self check          Ask crates.io whether a newer release exists
 
 Inside the browser: type to filter, Enter to open, Esc to go back.",
     "\n\n",
@@ -68,8 +70,9 @@ struct Cli {
 enum Cmd {
     /// Report every pending upgrade, grouped by why it's on your system
     Pending(commands::pending::Args),
-    /// Update whypkg itself to the latest release (cargo install whypkg --force)
-    Update(commands::update::Args),
+    /// Manage whypkg itself: `self update` reinstalls, `self check` looks for a newer release
+    #[command(name = "self", subcommand)]
+    Selfie(commands::selfcmd::Cmd),
 }
 
 /// Rust starts with `SIGPIPE` ignored, so writing to a closed pipe returns an
@@ -94,7 +97,7 @@ fn main() {
 
     match cli.command {
         Some(Cmd::Pending(args)) => commands::pending::run(args),
-        Some(Cmd::Update(args)) => commands::update::run(args),
+        Some(Cmd::Selfie(cmd)) => commands::selfcmd::run(cmd),
         // No subcommand → the interactive browser (the heart of the tool).
         None => commands::browse::run(commands::browse::Args {
             upgradable: cli.upgradable,

@@ -57,7 +57,8 @@ whypkg                 # browse every installed package
 whypkg --upgradable    # browse only packages with an upgrade waiting
 whypkg pending         # full report, grouped by what pulled things in
 whypkg pending --quick # one line per package: size + reason
-whypkg update          # update whypkg itself
+whypkg self update     # reinstall whypkg from crates.io
+whypkg self check      # is there a newer release?
 ```
 
 `whypkg pending` also takes `--kernel`, `--apps`, `--auto` and `--sizes` to show
