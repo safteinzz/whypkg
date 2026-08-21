@@ -16,7 +16,7 @@ use ratatui::widgets::{Block, Borders, Paragraph};
 
 /// Which column a node lives in - drives the spatial navigation.
 #[derive(Clone, Copy, PartialEq, Debug)]
-enum Side {
+pub(crate) enum Side {
     /// Left column: packages that need the centre (reverse deps).
     Left,
     /// The centre package itself.
@@ -26,7 +26,7 @@ enum Side {
 }
 
 /// One node in the ego graph, with a laid-out canvas position.
-struct Node {
+pub(crate) struct Node {
     name: String,
     x: f64,
     y: f64,
@@ -73,7 +73,13 @@ impl GraphView {
         };
 
         let with_colour = |names: Vec<String>| -> Vec<(String, Color)> {
-            names.into_iter().map(|n| { let c = color_of(&n); (n, c) }).collect()
+            names
+                .into_iter()
+                .map(|n| {
+                    let c = color_of(&n);
+                    (n, c)
+                })
+                .collect()
         };
         let mut view = GraphView {
             centre: (center.to_string(), color_of(center)),
@@ -93,7 +99,7 @@ impl GraphView {
     }
 
     /// Lay out the current page of each side around the centre.
-    fn layout(&mut self) {
+    pub(crate) fn layout(&mut self) {
         self.nodes = vec![Node {
             name: self.centre.0.clone(),
             x: 0.0,
@@ -111,7 +117,7 @@ impl GraphView {
     }
 
     /// All neighbours on a side, and which page we're on.
-    fn side_state(&self, side: Side) -> (&[(String, Color)], usize) {
+    pub(crate) fn side_state(&self, side: Side) -> (&[(String, Color)], usize) {
         match side {
             Side::Left => (&self.all_needed, self.page_left),
             Side::Right => (&self.all_deps, self.page_right),
@@ -133,7 +139,7 @@ impl GraphView {
     }
 
     /// Move to the next/previous page of a side, if there is one.
-    fn turn_page(&mut self, side: Side, dir: isize) -> bool {
+    pub(crate) fn turn_page(&mut self, side: Side, dir: isize) -> bool {
         let (all, page) = self.side_state(side);
         let last_page = all.len().saturating_sub(1) / PER_SIDE;
         let next = page as isize + dir;
@@ -150,7 +156,7 @@ impl GraphView {
     }
 
     /// Node indices in one column, ordered top (higher y) to bottom.
-    fn column(&self, side: Side) -> Vec<usize> {
+    pub(crate) fn column(&self, side: Side) -> Vec<usize> {
         let mut v: Vec<usize> = (0..self.nodes.len())
             .filter(|&i| self.nodes[i].side == side)
             .collect();
@@ -281,14 +287,16 @@ impl GraphView {
             Span::styled("  graph: ", Style::new().dim()),
             Span::styled(center_name.to_string(), Style::new().bold().cyan()),
             Span::styled("    now: ", Style::new().dim()),
-            Span::styled(self.selected_name().to_string(), Style::new().bold().white()),
+            Span::styled(
+                self.selected_name().to_string(),
+                Style::new().bold().white(),
+            ),
         ]);
         f.render_widget(Paragraph::new(title), chunks[0]);
 
         // Zone headers, centred over each half and sitting on its zone tint.
-        let halves =
-            Layout::horizontal([Constraint::Percentage(50), Constraint::Percentage(50)])
-                .split(chunks[1]);
+        let halves = Layout::horizontal([Constraint::Percentage(50), Constraint::Percentage(50)])
+            .split(chunks[1]);
         // The "17-32 of 64" counter rides in the header, where you're already
         // looking, rather than being tucked away at the bottom of the screen.
         let header = |label: &str, page: Option<String>, fg: Color, bg: Color| {
@@ -457,8 +465,7 @@ impl GraphView {
         f.render_widget(Paragraph::new(legend), chunks[3]);
 
         // Controls, plus a note if some neighbours were trimmed.
-        let controls =
-            "  ←↓↑→ / hjkl move · Enter dig in · Ctrl-G info · Esc back · q quit graph";
+        let controls = "  ←↓↑→ / hjkl move · Enter dig in · Ctrl-G info · Esc back · q quit graph";
         f.render_widget(
             Paragraph::new(Line::from(Span::styled(controls, Style::new().dim()))),
             chunks[4],
@@ -546,7 +553,7 @@ mod tests {
     use super::*;
 
     /// A world where `center` is needed by 12 packages and depends on 5.
-    fn busy_world() -> (World, Vec<String>, Vec<String>) {
+    pub(crate) fn busy_world() -> (World, Vec<String>, Vec<String>) {
         let needed: Vec<String> = (0..12).map(|i| format!("needs-me-{i:02}")).collect();
         let deps: Vec<String> = (0..5).map(|i| format!("i-need-{i:02}")).collect();
         let mut edges: Vec<(&str, &str)> = Vec::new();
@@ -559,14 +566,14 @@ mod tests {
         (World::from_edges(&edges, &["center"]), needed, deps)
     }
 
-    fn side_of(g: &GraphView, name: &str) -> Side {
+    pub(crate) fn side_of(g: &GraphView, name: &str) -> Side {
         g.nodes.iter().find(|n| n.name == name).unwrap().side
     }
 
     // ── layout invariants (these are the visual bugs, caught in code) ────────
 
     #[test]
-    fn no_two_nodes_on_a_side_share_a_height() {
+    pub(crate) fn no_two_nodes_on_a_side_share_a_height() {
         // Two planets at the same y means their labels land on the same
         // terminal row and overwrite each other.
         let (w, _, _) = busy_world();
@@ -587,7 +594,7 @@ mod tests {
     }
 
     #[test]
-    fn planets_never_collapse_onto_the_centre_line() {
+    pub(crate) fn planets_never_collapse_onto_the_centre_line() {
         // If the arc pinches to x~0 at the poles, top/bottom planets stack up
         // and sit on each other's trails to the centre.
         let (w, _, _) = busy_world();
@@ -606,7 +613,7 @@ mod tests {
     }
 
     #[test]
-    fn sides_are_on_the_side_they_claim() {
+    pub(crate) fn sides_are_on_the_side_they_claim() {
         let (w, needed, deps) = busy_world();
         let g = GraphView::build(&w, "center");
         for n in &needed {
@@ -624,7 +631,7 @@ mod tests {
     }
 
     #[test]
-    fn labels_stay_inside_the_canvas() {
+    pub(crate) fn labels_stay_inside_the_canvas() {
         // The furthest-out planet plus its label must still fit, or names clip.
         let (w, _, _) = busy_world();
         let g = GraphView::build(&w, "center");
@@ -633,14 +640,14 @@ mod tests {
     }
 
     /// A world whose centre is needed by `n` packages.
-    fn crowded_world(n: usize) -> World {
+    pub(crate) fn crowded_world(n: usize) -> World {
         let needed: Vec<String> = (0..n).map(|i| format!("n{i:02}")).collect();
         let edges: Vec<(&str, &str)> = needed.iter().map(|x| (x.as_str(), "center")).collect();
         World::from_edges(&edges, &["center"])
     }
 
     #[test]
-    fn draws_only_one_page_per_side() {
+    pub(crate) fn draws_only_one_page_per_side() {
         let w = crowded_world(30);
         let g = GraphView::build(&w, "center");
         assert_eq!(
@@ -653,7 +660,7 @@ mod tests {
     }
 
     #[test]
-    fn running_off_a_column_turns_the_page() {
+    pub(crate) fn running_off_a_column_turns_the_page() {
         let w = crowded_world(30);
         let mut g = GraphView::build(&w, "center");
         g.move_horizontal(-1); // into the crowded side
@@ -665,7 +672,10 @@ mod tests {
         }
         assert_eq!(g.page_label(true).as_deref(), Some("17-30 of 30"));
         assert_ne!(g.selected_name(), first);
-        assert_eq!(g.nodes.iter().filter(|n| n.side == Side::Left).count(), 30 - PER_SIDE);
+        assert_eq!(
+            g.nodes.iter().filter(|n| n.side == Side::Left).count(),
+            30 - PER_SIDE
+        );
 
         // The last page is the end of the line; it does not wrap.
         for _ in 0..40 {
@@ -682,7 +692,7 @@ mod tests {
     }
 
     #[test]
-    fn paging_keeps_you_on_your_side() {
+    pub(crate) fn paging_keeps_you_on_your_side() {
         let w = crowded_world(30);
         let mut g = GraphView::build(&w, "center");
         g.move_horizontal(-1);
@@ -695,14 +705,14 @@ mod tests {
     // ── navigation ──────────────────────────────────────────────────────────
 
     #[test]
-    fn starts_on_the_package_you_are_inspecting() {
+    pub(crate) fn starts_on_the_package_you_are_inspecting() {
         let (w, _, _) = busy_world();
         let g = GraphView::build(&w, "center");
         assert_eq!(g.selected_name(), "center");
     }
 
     #[test]
-    fn vertical_movement_never_leaves_its_column() {
+    pub(crate) fn vertical_movement_never_leaves_its_column() {
         // The bug that made j/k jump from "depends on" to "needed by".
         let (w, _, _) = busy_world();
         let mut g = GraphView::build(&w, "center");
@@ -719,7 +729,7 @@ mod tests {
     }
 
     #[test]
-    fn horizontal_movement_walks_left_centre_right() {
+    pub(crate) fn horizontal_movement_walks_left_centre_right() {
         let (w, _, _) = busy_world();
         let mut g = GraphView::build(&w, "center");
         g.move_horizontal(-1);
@@ -735,7 +745,7 @@ mod tests {
     // ── history ─────────────────────────────────────────────────────────────
 
     #[test]
-    fn digging_in_and_backing_out_retraces_your_steps() {
+    pub(crate) fn digging_in_and_backing_out_retraces_your_steps() {
         let (w, _, _) = busy_world();
         let mut g = GraphView::build(&w, "center");
         g.move_horizontal(-1); // pick a neighbour
@@ -747,22 +757,28 @@ mod tests {
         assert!(g.back(&w), "Esc unwinds one step");
         assert_eq!(g.center_name(), "center");
 
-        assert!(!g.back(&w), "no history left, so the caller closes the graph");
+        assert!(
+            !g.back(&w),
+            "no history left, so the caller closes the graph"
+        );
     }
 
     #[test]
-    fn recentring_on_the_current_centre_is_a_no_op() {
+    pub(crate) fn recentring_on_the_current_centre_is_a_no_op() {
         let (w, _, _) = busy_world();
         let mut g = GraphView::build(&w, "center");
         g.recenter(&w); // selection starts on the centre
         assert_eq!(g.center_name(), "center");
-        assert!(!g.back(&w), "should not have pushed a pointless history entry");
+        assert!(
+            !g.back(&w),
+            "should not have pushed a pointless history entry"
+        );
     }
 
     // ── labels ──────────────────────────────────────────────────────────────
 
     #[test]
-    fn truncation_never_splits_a_multibyte_character() {
+    pub(crate) fn truncation_never_splits_a_multibyte_character() {
         assert_eq!(truncate("short", 10), "short");
         assert_eq!(truncate("0123456789", 5), "0123…");
         // Would panic if we sliced by bytes instead of chars.

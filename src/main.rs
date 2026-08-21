@@ -16,6 +16,7 @@ mod backend;
 mod commands;
 mod engine;
 mod model;
+mod tui;
 
 use clap::{Parser, Subcommand};
 

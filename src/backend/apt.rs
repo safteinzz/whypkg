@@ -222,7 +222,11 @@ fn parse_deb_installs() -> HashSet<String> {
     let mut paths: Vec<std::path::PathBuf> = Vec::new();
     if let Ok(entries) = std::fs::read_dir("/var/log/apt") {
         for entry in entries.flatten() {
-            if entry.file_name().to_string_lossy().starts_with("history.log") {
+            if entry
+                .file_name()
+                .to_string_lossy()
+                .starts_with("history.log")
+            {
                 paths.push(entry.path());
             }
         }

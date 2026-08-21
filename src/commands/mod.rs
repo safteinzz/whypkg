@@ -1,5 +1,4 @@
 pub mod browse;
-pub mod graph;
 pub mod pending;
 pub mod selfcmd;
 

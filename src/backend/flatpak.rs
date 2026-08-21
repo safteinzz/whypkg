@@ -65,7 +65,11 @@ pub fn augment(world: &mut World) {
     // App -> runtime dependency edges (only if the runtime is actually present).
     for (app, runtime) in edges {
         if world.packages.contains_key(&runtime) {
-            world.deps.entry(app.clone()).or_default().push(runtime.clone());
+            world
+                .deps
+                .entry(app.clone())
+                .or_default()
+                .push(runtime.clone());
             world.rdeps.entry(runtime).or_default().push(app);
         }
     }
@@ -225,13 +229,22 @@ mod tests {
         assert!(riot.installed_size > 0);
 
         // Edge points at the normalised runtime key (arch dropped).
-        assert!(edges.contains(&("im.riot.Riot".to_string(), "org.freedesktop.Platform/25.08".to_string())));
+        assert!(edges.contains(&(
+            "im.riot.Riot".to_string(),
+            "org.freedesktop.Platform/25.08".to_string()
+        )));
     }
 
     #[test]
     fn runtime_ref_normalises_to_id_branch() {
-        assert_eq!(runtime_key("org.freedesktop.Platform/x86_64/25.08"), "org.freedesktop.Platform/25.08");
-        assert_eq!(runtime_key("runtime/org.gnome.Platform/x86_64/50"), "org.gnome.Platform/50");
+        assert_eq!(
+            runtime_key("org.freedesktop.Platform/x86_64/25.08"),
+            "org.freedesktop.Platform/25.08"
+        );
+        assert_eq!(
+            runtime_key("runtime/org.gnome.Platform/x86_64/50"),
+            "org.gnome.Platform/50"
+        );
     }
 
     #[test]
