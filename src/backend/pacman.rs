@@ -1,4 +1,4 @@
-//! The pacman backend — Arch Linux and derivatives.
+//! The pacman backend - Arch Linux and derivatives.
 //!
 //! pacman is in some ways friendlier than dpkg: a single `pacman -Qi` dump gives
 //! us everything per package, including both `Depends On` *and* `Required By`
@@ -8,7 +8,7 @@
 //!
 //! The parsing lives in pure functions (`parse_qi`, `parse_log`,
 //! `apply_upgradable`) so it can be unit-tested against captured real output
-//! without needing pacman on the build machine — see the tests at the bottom.
+//! without needing pacman on the build machine - see the tests at the bottom.
 
 use super::{Backend, capture};
 use crate::model::{Origin, Package, Source, World};
@@ -28,7 +28,7 @@ impl Backend for Pacman {
         let mut world = parse_qi(&qi);
 
         // Pending upgrades. Like `apt list --upgradable`, this reflects the last
-        // database sync (`pacman -Sy`) — we never sync ourselves (needs root).
+        // database sync (`pacman -Sy`) - we never sync ourselves (needs root).
         if let Ok(qu) = capture("pacman", &["-Qu"]) {
             apply_upgradable(&mut world, &qu);
         }
@@ -163,7 +163,7 @@ pub fn apply_upgradable(world: &mut World, qu: &str) {
     }
 }
 
-/// Names from `pacman -Qm` output (`name version` per line) — the foreign
+/// Names from `pacman -Qm` output (`name version` per line) - the foreign
 /// (not-in-any-repo) packages.
 fn parse_foreign(text: &str) -> HashSet<String> {
     text.lines()

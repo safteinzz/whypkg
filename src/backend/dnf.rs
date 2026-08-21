@@ -1,4 +1,4 @@
-//! The dnf/rpm backend — Fedora, RHEL, and derivatives.
+//! The dnf/rpm backend - Fedora, RHEL, and derivatives.
 //!
 //! rpm is the awkward one: dependencies are expressed as *capabilities*
 //! (`libc.so.6()(64bit)`, `config(bash)`, `/usr/bin/sh`), not package names. So

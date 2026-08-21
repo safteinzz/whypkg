@@ -1,4 +1,4 @@
-//! The apt/dpkg backend — Debian, Ubuntu, Mint, and friends.
+//! The apt/dpkg backend - Debian, Ubuntu, Mint, and friends.
 //!
 //! It builds the entire [`World`] from a few bulk queries, the same data
 //! sources the original `apt-why`/`apt-pending` scripts used, but parsed
@@ -57,15 +57,16 @@ impl Backend for Apt {
                 // description. Collect it (capped) into `details`.
                 if let Some(name) = &last {
                     let extra = line.trim();
-                    if !extra.is_empty() && extra != "." {
-                        if let Some(pkg) = packages.get_mut(name) {
-                            let d = pkg.details.get_or_insert_with(String::new);
-                            if d.len() < 240 {
-                                if !d.is_empty() {
-                                    d.push(' ');
-                                }
-                                d.push_str(extra);
+                    if !extra.is_empty()
+                        && extra != "."
+                        && let Some(pkg) = packages.get_mut(name)
+                    {
+                        let d = pkg.details.get_or_insert_with(String::new);
+                        if d.len() < 240 {
+                            if !d.is_empty() {
+                                d.push(' ');
                             }
+                            d.push_str(extra);
                         }
                     }
                 }
@@ -190,7 +191,7 @@ impl Backend for Apt {
     }
 }
 
-/// Parse `apt list --installed` and return names tagged `[installed,local]` —
+/// Parse `apt list --installed` and return names tagged `[installed,local]` -
 /// i.e. installed but not offered by any currently-configured repository.
 fn parse_installed_local(text: &str) -> HashSet<String> {
     let mut set = HashSet::new();
@@ -305,7 +306,7 @@ fn parse_dep_field(field: &str) -> Vec<String> {
 /// Read every dpkg log (current, rotated, and gzipped) once and return all
 /// `install` events as `(epoch, package)`, sorted oldest-first. This replaces
 /// the bash version's habit of re-grepping ~1.6 MB of logs on every package
-/// open — we do it a single time at startup.
+/// open - we do it a single time at startup.
 fn parse_dpkg_logs() -> Vec<(i64, String)> {
     let mut events: Vec<(i64, String)> = Vec::new();
 

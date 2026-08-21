@@ -1,4 +1,4 @@
-//! whypkg — why the hell is this package here?
+//! whypkg - why the hell is this package here?
 //!
 //! A fast, cross-distro package investigator. Two modes share one engine:
 //!   whypkg                 Interactive browser: fuzzy-find a package, open its

@@ -1,9 +1,9 @@
-//! `whypkg pending` — understand every package with a pending upgrade, grouped
+//! `whypkg pending` - understand every package with a pending upgrade, grouped
 //! by *why* it's on your system. Run after a package-list refresh to know what
 //! you're about to pull down and which of it you actually chose.
 //!
 //! This is the port of the old `apt-pending` script. Each upgradable package is
-//! classified once — kernel/firmware, foundational system library, an app you
+//! classified once - kernel/firmware, foundational system library, an app you
 //! installed, or an auto-installed package traced back (via reverse-dep BFS) to
 //! the manual package that pulled it in.
 
@@ -217,7 +217,7 @@ fn section_auto(world: &World, pool: &[String], cat: &HashMap<String, Category>)
         }
     }
 
-    // Largest groups first — they're the most worth understanding.
+    // Largest groups first - they're the most worth understanding.
     let mut roots: Vec<(&String, &Vec<&String>)> = groups.iter().collect();
     roots.sort_by(|a, b| b.1.len().cmp(&a.1.len()).then(a.0.cmp(b.0)));
 

@@ -1,7 +1,7 @@
 //! The cross-distro seam. A [`Backend`] knows how to interrogate one package
 //! manager and produce a [`World`]; everything above this line (the engine, the
 //! report, the TUI) is distro-agnostic. Adding pacman or dnf support means
-//! implementing this one trait — nothing else changes.
+//! implementing this one trait - nothing else changes.
 
 use crate::model::World;
 use std::process::Command;

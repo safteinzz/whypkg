@@ -1,4 +1,4 @@
-//! `whypkg update` — update whypkg itself to the latest release on crates.io by
+//! `whypkg update` - update whypkg itself to the latest release on crates.io by
 //! shelling out to `cargo install whypkg --force`.
 
 use colored::Colorize;

@@ -1,6 +1,6 @@
 //! Distro-agnostic analysis over a [`World`]: the algorithms that turn raw
 //! package data into answers. None of this knows or cares whether the data came
-//! from apt, pacman, or dnf — that's the backend's job. This is the part that
+//! from apt, pacman, or dnf - that's the backend's job. This is the part that
 //! was painful in bash (graph BFS, window heuristics) and is trivial here.
 
 use crate::model::World;
@@ -66,7 +66,7 @@ pub fn bfs_root(world: &World, start: &str) -> Option<Vec<String>> {
     Some(path)
 }
 
-/// Packages installed around the same time as `pkg` — a strong context clue for
+/// Packages installed around the same time as `pkg` - a strong context clue for
 /// "what did I install this alongside?". We find `pkg`'s install time, then
 /// widen the window (3d → 1d → 12h → 6h) until it holds a manageable number of
 /// packages, mirroring the original heuristic. Returns names, deduped & sorted.

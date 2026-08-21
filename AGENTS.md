@@ -1,13 +1,25 @@
 <!--
-AI-ONLY DOCUMENT. This file exists to give an AI agent the COMPLETE operating picture for this repo. Optimize for completeness and precision for the agent, not for human readability. Humans read README.md instead. Do not remove detail to make this nicer — err toward more explicit, not less. FORMAT: machine-read, not a formatted human doc. Do NOT hard-wrap lines to a column width for readability; put each rule/point on ONE line, however long.
+AI-ONLY DOCUMENT. This file exists to give an AI agent the COMPLETE operating picture for this repo. Optimize for completeness and precision for the agent, not for human readability. Humans read README.md instead. Do not remove detail to make this nicer, err toward more explicit, not less. FORMAT: machine-read, not a formatted human doc. Do NOT hard-wrap lines to a column width for readability; put each rule/point on ONE line, however long.
 -->
-# whypkg
+# AGENTS.md
+
+Working brief for an AI coding agent, not documentation for people (the README covers that): the rules, invariants and gotchas needed to change this project correctly without rediscovering them.
 
 ## Hard rules
-- **Commit, push, and publish only when the user says to ship**; never a mid-work checkpoint.
-- Release flow, in this exact order: `cargo clippy` warning-clean + `cargo test` green -> bump `version` in `Cargo.toml` -> one commit (short conventional message, never co-authored) -> `git push origin main` -> `cargo publish` (dry-run first; publishing is irreversible) -> **tag only after publish succeeds**: `git tag vX.Y.Z && git push origin --tags`. A tag must never point at a version that failed to publish.
-- Commit messages: short, single-line, conventional prefix (`feat:`/`fix:`/`chore:`). Never a `Co-Authored-By` trailer or a verbose body.
-- **No em-dashes** anywhere user-facing (README, --help, crate description, commits); they read as AI-generated. Use `-`.
+- Commit, push, and publish only when the user says to ship; a mid-work commit is never the deliverable, because the user tests interactively first.
+- Commit messages are short single-line conventional ones (`feat:`, `fix:`, `chore:`, ...), never with a `Co-Authored-By` trailer and never with a verbose body.
+- Release flow, in this exact order: write the regression tests for what is about to ship -> bump `version` in `Cargo.toml` -> `cargo clippy-all` clean and `cargo test` green, which is also what refreshes `Cargo.lock` with the new version -> one commit -> `git push origin main` -> `cargo publish` (dry-run first, publishing is irreversible) -> tag only after publish succeeds with `git tag vX.Y.Z && git push origin --tags`; a tag must never point at a version that failed to publish, and the bump comes first because `cargo publish` fails on a `Cargo.lock` that still holds the old version.
+- Tests are written at ship time and only then: covering the behaviour that just settled is the first step of the release flow, so the suite grows once per release instead of once per commit.
+- Never write a test for behaviour that has not shipped yet, because code that is not in the last release tag is still being designed, and a test pinning a shape that is about to change is how a suite starts lying.
+- A test may only assert something the README or `--help` promises, or a pure-logic invariant (parsing, generation, path resolution, validation); never the shape of a private function and never the specific diff that was just made, since those rot on the next refactor and teach nothing about whether the program works.
+- Removing a promise from the README removes its tests in the same commit.
+- A test may only write inside a temp directory it deletes, never a real config, data, cache or content directory and never a fixed path, so a machine is left exactly as it was before the suite ran.
+- Never drive the interface to test it: build it, say what changed and what to look at, and let the user run it, because they see the screen instantly while an agent driving a pty or a tmux pane is slow and wrong about what it looks like; logic that is not visual can still be checked directly from `tests/`.
+- Never `cargo install` to test: run the release binary at `./target/release/whypkg` directly, because installing replaces the binary on PATH with a work-in-progress build; install only when the user asks.
+- `main` is protected: no force-push and no history rewrite, so a mistake is fixed with a forward commit.
+- No em-dashes anywhere (code, comments, README, `--help`, crate description, commit messages, prose), because they read as AI-generated text; use `-` instead.
+- Fix the root cause, and if a workaround must ship say the word "workaround" out loud so a silent patch never passes as a real fix; the same goes for lints, where an `#[allow]` is never the answer and the code it points at gets fixed or deleted.
+- `TODO-LIST.md` (gitignored) holds one-line ideas, and the line is deleted when the idea ships.
 - **whypkg never syncs or modifies the system.** It only reads package state; a write would betray the whole premise ("just tell me why this is here").
 
 ## Invariants and gotchas
@@ -21,16 +33,18 @@ AI-ONLY DOCUMENT. This file exists to give an AI agent the COMPLETE operating pi
 - When resolving dnf/rpm deps: they are *capabilities*, not package names, mapped to packages via a PROVIDES+FILENAMES provider map (`src/backend/dnf.rs`). pacman gives `Required By` + `Install Reason` natively.
 - Upgradables reflect the user's last sync (`pacman -Qu`, `apt list --upgradable`, `dnf repoquery --upgrades --cacheonly`), so like `apt list --upgradable` they are only as fresh as the last `apt update`; whypkg must not sync to refresh them.
 - When touching the browser: it needs a real TTY (errors cleanly otherwise). `Ctrl+J` collides with Enter and `Ctrl+I` with Tab unless the terminal speaks the kitty keyboard protocol (which `setup_terminal()` requests); arrows / `Ctrl+P` / `Ctrl+N` always work, so key hints must offer those. `Ctrl+[` is Esc at the byte level and is handled explicitly as such.
-- To test the TUI without a TTY of your own, drive it in a detached tmux session (`tmux new-session -d -s x -x 150 -y 42 ./target/release/whypkg`, then `send-keys` and `capture-pane -p`); busy-poll `capture-pane` output for an expected string instead of sleeping. Visual judgement calls belong to the user, not the agent.
 - Menu/footer items are separated by ` · `; the graph legend is not, because its `●` bullets already separate the entries.
 - Testing other distros: build inside `archlinux`/`fedora`/`cachyos/cachyos` podman containers (`CARGO_TARGET_DIR=/tmp/...`) and regenerate fixtures from there.
 - Mirror the `sluuz` crate's conventions: one clap-derive subcommand per file with `Args` + `run()`, and heavy why-focused doc comments.
 - The local dir is `apt-why`, but the crate, repo, and remote are all `whypkg`.
 
-## Build / test
-- `cargo build` / `cargo build --release` (binary at `target/release/whypkg`).
-- `cargo clippy` - keep warning-clean.
-- `cargo test` - backend parsers checked against `tests/fixtures/`; `src/engine.rs` covers `bfs_root` (including cycle safety) and `src/commands/graph.rs` covers graph layout/navigation/history invariants. `World::from_edges()` (test-only, `src/model.rs`) builds synthetic worlds. When adding a layout/algorithm test, mutation-check it: reintroduce the bug and confirm the test actually fails, since a too-loose threshold silently passes.
+## Build / lint / test
+- `cargo build --release`, binary at `target/release/whypkg`.
+- `cargo clippy-all` is the lint pass, aliased in `.cargo/config.toml` to `clippy --release --all-targets -- -D warnings`; use it rather than a bare `cargo clippy`, which skips `tests/` and `examples/` and only warns where the release flow wants a failure.
+- `cargo test`.
+- Testing other distros means building inside `archlinux`/`fedora`/`cachyos/cachyos` podman containers (`CARGO_TARGET_DIR=/tmp/...`) and regenerating fixtures from there.
+- When adding a layout or algorithm test, mutation-check it by reintroducing the bug and confirming the test actually fails, since a too-loose threshold silently passes.
+- Backend parsers are checked against captured real output in `tests/fixtures/` via `include_str!`, `src/engine.rs` covers `bfs_root` including cycle safety, and `src/commands/graph.rs` covers graph layout, navigation and history invariants, with `World::from_edges()` (test-only, `src/model.rs`) building synthetic worlds.
 - Run: `whypkg` (browse), `whypkg --upgradable`, `whypkg pending [--quick|--kernel|--apps|--auto|--sizes]`.
 - README screenshots live in `readme-assets/` (excluded from the crate) and are referenced by absolute GitLab raw URLs, because relative paths do not render reliably on crates.io; they must be pushed before publishing or the URLs 404.
 

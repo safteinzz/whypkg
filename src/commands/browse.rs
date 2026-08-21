@@ -1,8 +1,8 @@
-//! `whypkg` (default) — the interactive investigator.
+//! `whypkg` (default) - the interactive investigator.
 //!
 //! This is the soul of the tool, ported from `apt-why`: fuzzy-find a package,
-//! open its dossier (manual/auto, install date, size, upgrade), then *navigate*
-//! — every package it's needed by and everything it depends on is itself
+//! open its dossier (manual/auto, install date, size, upgrade), then *navigate*:
+//! every package it's needed by and everything it depends on is itself
 //! selectable, so you follow the thread inward and outward. Esc pops back up a
 //! level; a breadcrumb shows the trail you've drilled.
 //!
@@ -111,13 +111,13 @@ struct Frame {
     selected: usize,
     /// Packages installed in the same session as `focus`, cached at open time
     /// (computing this scans the whole install log, so we don't redo it every
-    /// render — only when the dossier is first opened).
+    /// render - only when the dossier is first opened).
     alongside: Vec<String>,
     /// Where `focus` came from, cached at open time.
     origin: Origin,
 }
 
-/// Why a focused package is on the system — the headline the tool exists to
+/// Why a focused package is on the system - the headline the tool exists to
 /// answer. Computed once when a dossier opens.
 enum Origin {
     /// Root list frame, or otherwise not applicable.
@@ -312,7 +312,7 @@ impl App {
                 return Ok(());
             }
 
-            // Esc, or Ctrl+[ — the same control byte historically, but the
+            // Esc, or Ctrl+[ - the same control byte historically, but the
             // enhanced keyboard protocol reports them separately, so treat both
             // as escape.
             let escape = matches!(key.code, KeyCode::Esc)
@@ -448,8 +448,8 @@ impl App {
         });
     }
 
-    /// The active base list for the current frame: the root pool, or — in a
-    /// dossier — whichever relation side is currently selected.
+    /// The active base list for the current frame: the root pool, or - in a
+    /// dossier - whichever relation side is currently selected.
     fn base_list(&self) -> &[String] {
         let frame = self.stack.last().unwrap();
         if frame.focus.is_none() {
@@ -651,7 +651,7 @@ impl App {
         let needed_by = self.world.rdep_count(pkg);
         let depends_on = self.world.deps_of(pkg).len();
 
-        // A "needed by: nothing" package is normally safe to remove — but never
+        // A "needed by: nothing" package is normally safe to remove - but never
         // say that about kernel/firmware, which nothing "depends on" yet must
         // not be touched.
         let needed_by_text = if needed_by == 0 {
@@ -712,7 +712,7 @@ impl App {
             lines.insert(2, Line::from(Span::styled(format!("  {text}"), dim)));
         }
 
-        // "alongside" sits high — it's context for *why here*: a few example
+        // "alongside" sits high - it's context for *why here*: a few example
         // packages installed in the same session, not just a count.
         if !frame.alongside.is_empty() {
             let preview: Vec<&str> = frame.alongside.iter().take(3).map(String::as_str).collect();
@@ -729,7 +729,7 @@ impl App {
         lines.push(kv("installed", Span::raw(installed)));
 
         // Where it came from: a repo, a sideloaded local file, or an orphan
-        // whose repo is gone. (`crate::model::Origin` by full path — this
+        // whose repo is gone. (`crate::model::Origin` by full path - this
         // module has its own `Origin` for the "why here" trace.)
         let source = if p.map(|p| p.source) == Some(crate::model::Source::Flatpak) {
             // Show the remote it came from, e.g. "flatpak (flathub)".
@@ -759,7 +759,7 @@ impl App {
 
         // The two relations are separate lists, one shown at a time (toggle with
         // ←/→). Mark whichever is active so it's always clear which packages the
-        // list below holds — even if that side happens to be empty.
+        // list below holds - even if that side happens to be empty.
         let showing = || Span::styled("  ← showing below", Style::new().bold().cyan());
         let mut needed = vec![Span::raw(needed_by_text)];
         if self.relation == Relation::NeededBy {
@@ -824,7 +824,7 @@ impl App {
     }
 }
 
-/// Truncate to at most `max` characters (UTF-8 safe — never splits a char,
+/// Truncate to at most `max` characters (UTF-8 safe - never splits a char,
 /// unlike the byte-based `substr`/`:0:n` the bash version used).
 /// Naive English pluralization for counts: `plural(1, "package")` -> "package",
 /// `plural(3, "package")` -> "packages".
@@ -850,7 +850,7 @@ fn setup_terminal() -> io::Result<Terminal<CrosstermBackend<Stdout>>> {
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen)?;
-    // Where supported, ask the terminal to report keys unambiguously — this is
+    // Where supported, ask the terminal to report keys unambiguously - this is
     // what makes Ctrl+J distinct from Enter (and gives key-repeat events).
     // Unsupported terminals simply ignore it.
     if matches!(

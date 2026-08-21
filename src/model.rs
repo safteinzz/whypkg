@@ -3,7 +3,7 @@
 //!
 //! The whole point of the Rust rewrite is here: a backend builds this `World`
 //! exactly once at startup (a handful of bulk queries), and from then on every
-//! lookup during navigation — reverse-deps, "why is this here", install date —
+//! lookup during navigation - reverse-deps, "why is this here", install date -
 //! is an in-memory `HashMap` hit. The old bash re-`grep`ped ~1.6 MB of logs on
 //! *every* dossier open; we parse everything once and never touch a subprocess
 //! again while the user is browsing.
@@ -173,14 +173,14 @@ impl World {
         self.rdeps.get(pkg).map(Vec::len).unwrap_or(0)
     }
 
-    /// All installed package names, sorted — the default browse pool.
+    /// All installed package names, sorted - the default browse pool.
     pub fn all_names_sorted(&self) -> Vec<String> {
         let mut names: Vec<String> = self.packages.keys().cloned().collect();
         names.sort();
         names
     }
 
-    /// Upgradable package names, sorted — the `--upgradable` browse pool.
+    /// Upgradable package names, sorted - the `--upgradable` browse pool.
     pub fn upgradable_names_sorted(&self) -> Vec<String> {
         let mut names: Vec<String> = self
             .packages

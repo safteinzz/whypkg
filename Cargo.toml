@@ -2,13 +2,16 @@
 name = "whypkg"
 version = "0.4.1"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.88"
 description = "wonder why the f* you have that package? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, flatpak)"
 authors = ["Pablo Antonio Hernández Hernández (safteinzz)"]
 license = "AGPL-3.0-only"
+readme = "README.md"
 repository = "https://gitlab.com/safteinzz/whypkg"
 keywords = ["apt", "pacman", "dnf", "flatpak", "packages"]
 categories = ["command-line-utilities"]
+# README screenshots are fetched over the network by crates.io via absolute raw
+# URLs, never read out of the package, so shipping them would only bloat every download.
 exclude = ["legacy/", "readme-assets/"]
 
 [[bin]]
