@@ -12,7 +12,8 @@ keywords = ["apt", "pacman", "dnf", "flatpak", "packages"]
 categories = ["command-line-utilities"]
 # README screenshots are fetched over the network by crates.io via absolute raw
 # URLs, never read out of the package, so shipping them would only bloat every download.
-exclude = ["legacy/", "readme-assets/"]
+# demo/ is the rig that renders them: needed to rebuild a picture, never at install time.
+exclude = ["legacy/", "readme-assets/", "demo/"]
 
 [[bin]]
 name = "whypkg"

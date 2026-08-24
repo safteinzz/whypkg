@@ -1,0 +1,4 @@
+code
+linux-image-amd64
+linux-headers-6.17.0-3-amd64
+intel-microcode

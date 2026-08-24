@@ -6,48 +6,50 @@
 wonder why the f* you have that package? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, flatpak)
 <!-- desc:end -->
 
+## Install
+
 ```bash
 cargo install whypkg
 ```
 
-## Browse everything
+![whypkg filtering a package list, opening a package to see what pulled it in, following the dependency graph, and printing the pending-upgrade report](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/demo.gif)
+
+## What have I actually got?
 
 `[M]` you installed it · `[A]` something pulled it in · `[F]` flatpak app · `↑` upgrade waiting
 
-![Browsing installed packages](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/browse.png)
+![The whypkg browser listing every installed package, each row tagged with how it got there](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/browse.png)
 
-Type to fuzzy-filter. It searches descriptions too, so `visual studio` finds
-`code` and `element` finds `im.riot.Riot`. `Tab` cycles all / manual / auto /
-flatpak.
+## What was that thing called?
 
-## Open a package and get the answer
+Type to filter. It matches descriptions as well as names, which is the only way
+anyone finds a flatpak app by the name on its window.
 
-![A package dossier](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/dossier.png)
+![Typing "element" as a filter, with the flatpak app im.riot.Riot at the top of the results](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/search.png)
 
-**pulled in by clang.** That is the whole point of the tool. You also get what
-it came installed alongside, whether it came from a repo or a local file you
-sideloaded (or a repo that no longer exists), what needs it, and what it needs.
-Press `Enter` on anything in the list to follow the thread, `Esc` to come back.
+## Why is this here?
 
-## See the neighbourhood
+![A package dossier: libllvm21, 133 MB, pulled in by clang, with the eleven packages that need it listed below](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/dossier.png)
 
-Press `Ctrl-G` on any package for a live dependency graph, drawn in the
-terminal. No browser, no image protocol, works over ssh and inside tmux.
+**pulled in by clang.** That is the whole point. You also get what it arrived
+alongside, whether it came from a repo or a local file you sideloaded (or a repo
+that no longer exists), what needs it and what it needs. `Enter` on anything in
+the list follows the thread; `Esc` comes back.
 
-![The dependency graph](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/graph.png)
+## What is around it?
 
-`hjkl` or the arrows to move between planets, `Enter` to re-centre on one and
-keep digging, `Esc` to retrace your steps.
+`Ctrl-G` draws the neighbourhood in the terminal. No browser, no image protocol,
+so it survives ssh and tmux.
 
-## Know what an upgrade is about to pull down
+![The dependency graph view: libllvm21 in the centre, packages that need it on the left, packages it needs on the right](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/graph.png)
 
-```bash
-whypkg pending --quick
-```
+`Enter` re-centres on a neighbour and keeps digging, `Esc` retraces.
 
-![The pending upgrade report](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/pending.png)
+## What is this upgrade about to pull down?
 
-Every package with an upgrade waiting, and why it is on your system. Pipe it,
+![The pending report: one line per upgradable package with its size and why it is installed](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/pending.png)
+
+Every package with an upgrade waiting, and why it is on your machine. Pipe it,
 grep it, diff it before and after.
 
 ## Commands
@@ -64,6 +66,27 @@ whypkg self check      # is there a newer release?
 `whypkg pending` also takes `--kernel`, `--apps`, `--auto` and `--sizes` to show
 one section at a time.
 
+## Keys
+
+| Key | In the list |
+|-----|-------------|
+| any character | filter, on names and descriptions |
+| `↑` `↓` or `Ctrl-P` `Ctrl-N` | move |
+| `Tab` | cycle all / manual / auto / flatpak |
+| `Enter` | open the highlighted package |
+| `←` `→` | inside a package, flip between what needs it and what it needs |
+| `Ctrl-G` | the dependency graph |
+| `Esc` | back one level, and quit at the top |
+| `Ctrl-C` | quit |
+
+| Key | In the graph |
+|-----|--------------|
+| `←` `↓` `↑` `→` or `hjkl` | move between packages |
+| `Enter` | re-centre on the selected package |
+| `Ctrl-G` | open that package's dossier |
+| `Esc` | retrace, then leave the graph |
+| `q` | leave the graph |
+
 ## Distro support
 
 | Distro family         | Status     |
@@ -73,24 +96,22 @@ one section at a time.
 | Fedora / RHEL (dnf)   | ✅ working  |
 | Flatpak               | ✅ working  |
 
-Flatpak apps show up alongside your system packages when flatpak is installed.
-Each package manager lives behind a single `Backend` trait, so the analysis and
-the UI are distro-agnostic.
+Flatpak apps appear alongside your system packages whenever flatpak is
+installed. Each package manager sits behind a single `Backend` trait, so the
+analysis and the interface are distro-agnostic.
 
 ## It never touches your system
 
-whypkg only reads. It will not sync, install or remove anything. Upgrade lists
-reflect your last database refresh (`apt update`, `pacman -Sy`, `dnf makecache`),
-the same way your package manager's own "what can be upgraded" listing does.
-
-## Why it is fast
+whypkg only reads. It will not sync, install or remove anything. The upgrade
+list reflects your last database refresh (`apt update`, `pacman -Sy`,
+`dnf makecache`), exactly like your package manager's own listing does.
 
 Everything loads once at startup into an in-memory graph, so every hop while you
 browse is a hash-map lookup rather than a subprocess. The slow part is your
-package manager's own queries (about half a second), not whypkg.
+package manager's own queries, about half a second.
 
-It started life as the bash `apt-why` / `apt-pending` scripts, kept in
-[`legacy/`](legacy/).
+It started as the bash `apt-why` / `apt-pending` scripts, kept in
+[`legacy/`](https://gitlab.com/safteinzz/whypkg/-/tree/main/legacy).
 
 ## License
 

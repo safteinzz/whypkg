@@ -10,3 +10,7 @@ GEMINI.md
 
 # Private reference material, never committed - see AGENTS.md
 /.nocommit
+
+# The demo rig's scratch: the fake machine stage.sh builds, rebuilt from
+# demo/fixtures/ every time. Only the rig itself is committed.
+/demo/home

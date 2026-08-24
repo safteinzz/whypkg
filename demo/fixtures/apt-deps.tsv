@@ -1,0 +1,650 @@
+adwaita-icon-theme	gtk-update-icon-cache, hicolor-icon-theme	librsvg2-common
+alacritty	libc6 (>= 2.39), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.8), libgcc-s1 (>= 4.2), libwayland-client0 (>= 1.11.0), libwayland-egl1 (>= 1.15.0), libxkbcommon-x11-0, ncurses-term	
+alsa-topology-conf		
+alsa-ucm-conf	libasound2t64 (>= 1.2.15)	
+apt	base-passwd (>= 3.6.1) | adduser, sqv (>= 1.3.0), libapt-pkg7.0 (>= 3.3.2), debian-archive-keyring, libc6 (>= 2.38), libgcc-s1 (>= 3.0), libseccomp2 (>= 2.4.2), libssl3t64 (>= 3.0.0), libstdc++6 (>= 13.1), libsystemd0	ca-certificates
+at-spi2-common		
+at-spi2-core	libatspi2.0-0t64 (= 2.61.1-1), libc6 (>= 2.34), libdbus-1-3 (>= 1.10), libglib2.0-0t64 (>= 2.80.0), libsystemd0, libx11-6, libxtst6 (>= 2:1.2.5), at-spi2-common, gsettings-desktop-schemas	
+base-files		
+base-passwd	libc6 (>= 2.34), libdebconfclient0 (>= 0.145), libselinux1 (>= 3.1~)	debconf (>= 0.5) | debconf-2.0
+bash	base-files (>= 2.1.12), debianutils (>= 5.6-0.1)	bash-completion
+bash-completion		
+bat	libc6 (>= 2.39), libgcc-s1 (>= 4.2), libgit2-1.9 (>= 1.9.0), libonig5 (>= 6.8.1)	
+binutils	libbinutils (= 2.47-2), libc6 (>= 2.38), libgcc-s1 (>= 3.0), libgprofng0 (>= 2.45.50), libstdc++6 (>= 13.1), binutils-common (= 2.47-2), binutils-x86-64-linux-gnu (= 2.47-2)	
+binutils-common		
+binutils-x86-64-linux-gnu	binutils-common (= 2.47-2), libbinutils (= 2.47-2), libc6 (>= 2.38), libctf-nobfd0 (>= 2.36), libctf0 (>= 2.36), libjansson4 (>= 2.14), libsframe3 (>= 2.45.50), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4)	
+bsdutils	libc6 (>= 2.38), libsystemd0 (>= 254)	bsdextrautils
+bubblewrap	libc6 (>= 2.38), libcap2 (>= 1:2.10), libselinux1 (>= 3.1~)	
+ca-certificates	openssl (>= 1.1.1), debconf (>= 0.5) | debconf-2.0	
+clang	clang-21 (>= 1:21.1.6-1)	
+clang-21	libc6 (>= 2.34), libclang-cpp21 (>= 1:21.1.8), libgcc-s1 (>= 3.0), libllvm21 (= 1:21.1.8-10), libstdc++6 (>= 11), libstdc++-15-dev, libgcc-15-dev, libobjc-15-dev, libclang-common-21-dev (= 1:21.1.8-10), llvm-21-linker-tools (= 1:21.1.8-10), libclang1-21 (= 1:21.1.8-10), libc6-dev, binutils	llvm-21-dev, python3, clang-tools-21
+clang-tools-21	libc6 (>= 2.38), libclang-cpp21 (>= 1:21.1.8), libclang1-21 (>= 1:21.1.4), libgcc-s1 (>= 3.3), libllvm21 (>= 1:21.1.0), libstdc++6 (>= 11), libxml2-16 (>= 2.14.1), libz3-4 (>= 4.13.3), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4), clang-21 (= 1:21.1.8-10), python3:any	
+coreutils		
+cpp	cpp-16 (>= 16.1.0-3~), cpp-x86-64-linux-gnu (= 4:16.1.0-3)	
+cpp-16	gcc-16-base (= 16.2.0-1), cpp-16-x86-64-linux-gnu (= 16.2.0-1)	
+cpp-16-x86-64-linux-gnu	gcc-16-base (= 16.2.0-1), libc6 (>= 2.38), libgmp10 (>= 2:6.3.0+dfsg), libisl23 (>= 0.15), libmpc3 (>= 1.1.0), libmpfr6 (>= 4.2.0), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4)	
+cpp-x86-64-linux-gnu	cpp-16-x86-64-linux-gnu (>= 16.1.0-3~)	
+curl	libcurl4t64 (= 8.22.0~rc2-2), libc6 (>= 2.43), zlib1g (>= 1:1.1.4)	bash-completion
+dash	debianutils (>= 5.6-0.1)	
+dbus	dbus-bin (= 1.16.2-5+b1), dbus-daemon (= 1.16.2-5+b1), dbus-system-bus-common (>= 1.16.2-5), libc6 (>= 2.34), libdbus-1-3 (= 1.16.2-5+b1), libexpat1 (>= 2.1~beta3), libsystemd0	
+dbus-bin	libc6 (>= 2.38), libdbus-1-3 (= 1.16.2-5+b1)	
+dbus-daemon	dbus-bin (= 1.16.2-5+b1), dbus-session-bus-common (>= 1.16.2-5), systemd | systemd-standalone-tmpfiles | systemd-tmpfiles, libapparmor1 (>= 2.8.94), libaudit1 (>= 1:2.2.1), libc6 (>= 2.34), libcap-ng0 (>= 0.7.9), libdbus-1-3 (= 1.16.2-5+b1), libexpat1 (>= 2.1~beta3), libselinux1 (>= 3.1~), libsystemd0	
+dbus-session-bus-common		
+dbus-system-bus-common	systemd | systemd-standalone-sysusers | systemd-sysusers	
+dbus-user-session	dbus-daemon (= 1.16.2-5+b1) | dbus-broker, dbus-session-bus-common (>= 1.16.2-5), libpam-systemd, systemd	systemd-sysv
+dconf-gsettings-backend	dconf-service (<< 0.49.0-4.1~), dconf-service (>= 0.49.0-4), libdconf1 (= 0.49.0-4+b1), libc6 (>= 2.14), libglib2.0-0t64 (>= 2.80.0)	
+dconf-service	default-dbus-session-bus | dbus-session-bus, libdconf1 (= 0.49.0-4+b1), procps, libc6 (>= 2.34), libglib2.0-0t64 (>= 2.83.0)	dconf-gsettings-backend
+debconf		apt (>= 2.9.11~) | apt-utils, debconf-i18n
+debian-archive-keyring		
+debianutils		
+diffutils		
+dmsetup	libc6 (>= 2.38), libdevmapper1.02.1 (>= 2:1.02.197)	
+dpkg	tar (>= 1.28-1)	
+ffmpeg	libavcodec62 (>= 7:8.1.2), libavdevice62 (>= 7:8.1.2), libavfilter11 (>= 7:8.1.2), libavformat62 (>= 7:8.1.2), libavutil60 (>= 7:8.1.2), libc6 (>= 2.38), libgcc-s1 (>= 3.4), libplacebo360 (>= 7.360.0), libsdl2-2.0-0 (>= 2.0.12), libswresample6 (>= 7:8.1.2), libswscale9 (>= 7:8.1.2), zlib1g (>= 1:1.1.4)	
+findutils		
+fontconfig	libc6 (>= 2.38), libfontconfig1 (>= 2.17.1), libfreetype6 (>= 2.2.1), fontconfig-config	
+fontconfig-config	debconf (>= 0.5) | debconf-2.0, fonts-dejavu-core | fonts-liberation | fonts-croscore | fonts-freefont-otf | fonts-freefont-ttf | fonts-urw-base35 | fonts-texgyre | fonts-noto-core	
+fonts-dejavu-core	fonts-dejavu-mono	
+fonts-dejavu-mono		
+fonts-droid-fallback		fonts-noto-mono
+fonts-noto-mono		
+fonts-urw-base35	xfonts-utils	
+fzf	libc6 (>= 2.34)	
+gcc-15-base		
+gcc-16-base		
+ghostscript	libgs10 (= 10.07.1~dfsg-1), libc6 (>= 2.34)	
+gir1.2-girepository-3.0	gir1.2-glib-2.0 (= 2.89.3-5), libgirepository-2.0-0 (= 2.89.3-5)	
+gir1.2-glib-2.0	libglib2.0-0t64 (= 2.89.3-5)	
+git	libc6 (>= 2.38), libcurl4-gnutls (>= 8.20.0-3~), libexpat1 (>= 2.0.1), libpcre2-8-0 (>= 10.34), zlib1g (>= 1:1.2.2), perl, liberror-perl, git-man (>> 1:2.55.0), git-man (<< 1:2.55.0-.)	ca-certificates, patch, less, ssh-client
+git-man		
+glycin-loaders	bubblewrap, libc6 (>= 2.39), libcairo2 (>= 1.4.10), libgcc-s1 (>= 4.2), libglib2.0-0t64 (>= 2.16.0), libheif1 (>= 1.17.0), libjxl0.11 (>= 0.11.0), librsvg2-2 (>= 2.52.5)	libheif-plugin-aomenc | libheif-plugin-rav1e | libheif-plugin-svtenc
+glycin-thumbnailers	glycin-loaders (>= 2~), libc6 (>= 2.34), libgcc-s1 (>= 4.2), libglib2.0-0t64 (>= 2.42.0), libglycin-2-0 (>= 2.0~beta)	
+grep		
+gsettings-desktop-schemas	dconf-gsettings-backend | gsettings-backend, user-session-migration	python3, python3-gi
+gtk-update-icon-cache	libc6 (>= 2.38), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0t64 (>= 2.80.0)	
+gzip		
+hicolor-icon-theme		
+hostname		
+htop	libc6 (>= 2.38), libncursesw6 (>= 6), libtinfo6 (>= 6), libunwind8	
+ibus-gtk3	libc6 (>= 2.4), libglib2.0-0t64 (>= 2.80.0), libibus-1.0-5 (>= 1.5.33), libpango-1.0-0 (>= 1.14.0)	
+imagemagick	imagemagick-7.q16 (>= 8:6.9.2.10+dfsg-2~)	
+imagemagick-7-common		
+imagemagick-7.q16	libc6 (>= 2.34), libmagickcore-7.q16-10 (>= 8:7.1.1.21), libmagickwand-7.q16-10 (>= 8:7.1.1.21), hicolor-icon-theme	libmagickcore-7.q16-10-extra, ghostscript, netpbm
+init-system-helpers		
+jq	libjq1 (= 1.8.2-1), libc6 (>= 2.38), libonig5 (>= 6.8.1)	
+krb5-locales		
+less	libc6 (>= 2.34), libtinfo6 (>= 6)	
+lib32gcc-s1	gcc-16-base (= 16.2.0-1), libc6-i386 (>= 2.42)	
+lib32stdc++6	gcc-16-base (= 16.2.0-1), lib32gcc-s1 (>= 16.2.0-1), libc6-i386 (>= 2.42)	
+libaacs0	libc6 (>= 2.33), libgcrypt20 (>= 1.11.0)	libbdplus0
+libabsl20260526	libc6 (>= 2.38), libgcc-s1 (>= 3.4), libstdc++6 (>= 13.1)	
+libacl1	libc6 (>= 2.38)	
+libada-url0-3	libc6 (>= 2.32), libgcc-s1 (>= 3.0), libsimdutf33 (>= 8.2.0), libstdc++6 (>= 13.1)	
+libaom3	libc6 (>= 2.34)	
+libapparmor1	libc6 (>= 2.38)	
+libapt-pkg7.0	libbz2-1.0, libc6 (>= 2.38), libgcc-s1 (>= 3.0), liblz4-1 (>= 0.0~r127), liblzma5 (>= 5.1.1alpha+20120614), libssl3t64 (>= 3.0.0), libstdc++6 (>= 14), libsystemd0 (>= 221), libudev1 (>= 183), libxxhash0 (>= 0.8), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.2.2.3)	apt (>= 3.3.2)
+libasan8	gcc-16-base (= 16.2.0-1), libc6 (>= 2.34), libgcc-s1 (>= 3.3)	
+libasound2-data		alsa-ucm-conf, alsa-topology-conf
+libasound2t64	libasound2-data (>= 1.2.16.1-1), libc6 (>= 2.38)	
+libass9	libc6 (>= 2.38), libfontconfig1 (>= 2.17.1), libfreetype6 (>= 2.3.5), libfribidi0 (>= 1.0.0), libharfbuzz0b (>= 1.2.6), libunibreak7 (>= 1.0)	
+libasyncns0	libc6 (>= 2.34)	
+libatk-bridge2.0-0t64	libatk1.0-0t64 (= 2.61.1-1), libatspi2.0-0t64 (= 2.61.1-1), libc6 (>= 2.38), libdbus-1-3 (>= 1.10), libglib2.0-0t64 (>= 2.80.0)	
+libatk1.0-0t64	libc6 (>= 2.4), libglib2.0-0t64 (>= 2.80.0), at-spi2-common	
+libatomic1	gcc-16-base (= 16.2.0-1), libc6 (>= 2.14)	
+libatspi2.0-0t64	libc6 (>= 2.38), libdbus-1-3 (>= 1.10), libglib2.0-0t64 (>= 2.80.0), libx11-6 (>= 2:1.2.99.901), libxi6 (>= 2:1.2.99.4), libxres1 (>= 2:1.2.1)	at-spi2-core (= 2.61.1-1)
+libattr1	libc6 (>= 2.4)	
+libaudit-common		
+libaudit1	libaudit-common (>= 1:4.1.2-1), libc6 (>= 2.38), libcap-ng0 (>= 0.7.9)	
+libauthen-sasl-perl	perl:any, libcrypt-urandom-perl	
+libavahi-client3	libavahi-common3 (= 0.8-18), libc6 (>= 2.34), libdbus-1-3 (>= 1.10)	
+libavahi-common-data		
+libavahi-common3	libc6 (>= 2.38), libavahi-common-data (= 0.8-18)	
+libavc1394-0	libc6 (>= 2.38), libraw1394-11 (>= 2.1.2)	
+libavcodec62	libaom3 (>= 3.2.0), libavutil60 (= 7:8.1.2-2+b3), libc6 (>= 2.35), libcairo2 (>= 1.2.4), libcodec2-1.2 (>= 1.2), libdav1d7 (>= 1.1.0), libglib2.0-0t64 (>= 2.12.0), libgsm1 (>= 1.0.18), libjxl0.11 (>= 0.8.0), liblzma5 (>= 5.1.1alpha+20120614), libmp3lame0 (>= 3.100), libopenjp2-7 (>= 2.1), libopus0 (>= 1.1), librav1e0.8 (>= 0.5.1), librsvg2-2 (>= 2.52.5), libshine3 (>= 3.1.0), libsnappy1v5 (>= 1.2.2), libspeex1 (>= 1.2~), libsvtav1enc4 (>= 4.0.1), libswresample6 (>= 7:8.1.2), libtheoradec2 (>= 1.2), libtheoraenc2 (>= 1.2), libtwolame0 (>= 0.3.10), libva2 (>= 2.9.0), libvorbis0a (>= 1.1.2), libvorbisenc2 (>= 1.1.2), libvpl2 (>= 1:2.16.0), libvpx12 (>= 1.16.0), libwebp7 (>= 1.5.0), libwebpmux3 (>= 1.5.0), libx264-165 (>= 2:0.165.3223+git20250910.0480cb0), libx265-216 (>= 4.2), libxvidcore4 (>= 1.2.2), libzvbi0t64 (>= 0.2.35), zlib1g (>= 1:1.2.0)	
+libavdevice62	libasound2t64 (>= 1.0.16), libavc1394-0 (>= 0.5.3), libavcodec62 (>= 7:8.1.2), libavfilter11 (>= 7:8.1.2), libavformat62 (= 7:8.1.2-2+b3), libavutil60 (= 7:8.1.2-2+b3), libc6 (>= 2.34), libcdio-cdda2t64 (>= 10.2+2.0.0), libcdio-paranoia2t64 (>= 10.2+2.0.0), libdc1394-25 (>= 2.2.6), libdrm2 (>= 2.4.101), libiec61883-0 (>= 1.2.0), libjack-jackd2-0 (>= 1.9.10+20150825) | libjack-0.125, libopenal1 (>= 1.14), libpulse0 (>= 0.99.1), libraw1394-11 (>= 2.1.2), libx11-6, libxcb-shape0, libxcb-shm0, libxcb-xfixes0, libxcb1, libxext6, libxv1 (>= 2:1.0.13)	
+libavfilter11	libass9 (>= 1:0.15.0), libavcodec62 (= 7:8.1.2-2+b3), libavformat62 (>= 7:8.1.2), libavutil60 (= 7:8.1.2-2+b3), libbs2b0 (>= 3.1.0+dfsg), libc6 (>= 2.38), libflite1 (>= 1.4-release-9~), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.2.1), libfribidi0 (>= 0.19.2), libharfbuzz0b (>= 1.6.0), liblilv-0-0 (>= 0.14.2~dfsg0), libmysofa1 (>= 0.7~), libopenmpt0t64 (>= 0.2.7025~beta20.1), libplacebo360 (>= 7.360.0), librubberband3 (>= 4.0.0+dfsg), libstdc++6 (>= 13.1), libswresample6 (>= 7:8.1.2), libswscale9 (>= 7:8.1.2), libva2 (>= 1.7.3), libvidstab1.2 (>= 1.1.1), libvpl2 (>= 1:2.16.0), libzimg2 (>= 0.3.1), libzmq5 (>= 3.2.3+dfsg), ocl-icd-libopencl1 | libopencl1, ocl-icd-libopencl1 (>= 1.0) | libopencl-1.2-1, zlib1g (>= 1:1.1.4)	
+libavformat62	libavcodec62 (= 7:8.1.2-2+b3), libavutil60 (= 7:8.1.2-2+b3), libbluray4 (>= 1:0.2.2), libbz2-1.0, libc6 (>= 2.35), libchromaprint1 (>= 1.3.2), libdvdnav4 (>= 6.1.0), libdvdread8t64 (>= 6.1.0), libgme0 (>= 0.5.5), libgnutls30t64 (>= 3.8.4), libopenmpt0t64 (>= 0.3.0), librabbitmq4 (>= 0.6.0), librist4 (>= 0.2.18+dfsg), libsrt1.5-gnutls (>= 1.5.6), libssh-4 (>= 0.8.0), libxml2-16 (>= 2.14.1), libzmq5 (>= 4.0.1+dfsg), zlib1g (>= 1:1.2.0.2)	
+libavutil60	libc6 (>= 2.35), libdrm2 (>= 2.4.66), libva-drm2 (>= 1.3), libva-x11-2 (>= 1.3), libva2 (>= 2.21.0), libvdpau1 (>= 0.2), libvpl2 (>= 1:2.16.0), libx11-6, ocl-icd-libopencl1 | libopencl1, ocl-icd-libopencl1 (>= 1.0) | libopencl-1.2-1, zlib1g (>= 1:1.1.4)	
+libbdplus0	libc6 (>= 2.33), libgcrypt20 (>= 1.12.0), libgpg-error0 (>= 1.14)	libaacs0
+libbinutils	libc6 (>= 2.38), libsframe3, libzstd1 (>= 1.5.5), zlib1g (>= 1:1.2.11.dfsg), binutils-common (= 2.47-2)	
+libblkid1	libc6 (>= 2.38)	
+libbluray4	libc6 (>= 2.34), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.2.1), libudfread3 (>= 1.2.0), libxml2-16 (>= 2.14.1)	libaacs0
+libbpf1	libc6 (>= 2.38), libelf1t64 (>= 0.144), zlib1g (>= 1:1.2.3.4)	
+libbrotli1	libc6 (>= 2.29)	
+libbs2b0	libc6 (>= 2.29), libstdc++6 (>= 4.1.1)	
+libbsd0	libc6 (>= 2.38), libmd0 (>= 1.0.3-2)	
+libbz2-1.0	libc6 (>= 2.4)	
+libc-bin	libc6 (>> 2.43), libc6 (<< 2.44)	manpages
+libc-dev-bin	libc6 (>> 2.43), libc6 (<< 2.44)	manpages, manpages-dev
+libc-gconv-modules-extra		
+libc6	libgcc-s1, libc-gconv-modules-extra (= 2.43-4)	libidn2-0 (>= 2.0.5~)
+libc6-dev	libc6 (= 2.43-4), libc-dev-bin (= 2.43-4), linux-libc-dev	
+libc6-i386	libc6 (= 2.43-4)	
+libcairo-gobject2	libcairo2 (= 1.18.4-3+b1), libglib2.0-0t64 (>= 2.68.0)	
+libcairo2	libc6 (>= 2.38), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.11.1), libpixman-1-0 (>= 0.40.0), libpng16-16t64 (>= 1.6.46), libx11-6, libxcb-render0, libxcb-shm0, libxcb1 (>= 1.6), libxext6, libxrender1 (>= 1:0.9.12), zlib1g (>= 1:1.1.4)	
+libcap-ng0	libc6 (>= 2.38)	
+libcap2	libc6 (>= 2.38)	
+libcares2	libc6 (>= 2.38)	
+libcbor0.10	libc6 (>= 2.14)	
+libcdio-cdda2t64	libc6 (>= 2.33), libcdio19t64 (>= 2.1.0)	
+libcdio-paranoia2t64	libc6 (>= 2.14), libcdio-cdda2t64 (>= 10.2+2.0.0), libcdio19t64 (>= 2.1.0)	
+libcdio19t64	libc6 (>= 2.38)	
+libchromaprint1	libc6 (>= 2.29), libgcc-s1 (>= 3.4), libstdc++6 (>= 13.1)	
+libcjson1	libc6 (>= 2.14)	
+libclang-common-21-dev		libclang-rt-21-dev
+libclang-cpp21	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libllvm21 (= 1:21.1.8-10), libstdc++6 (>= 12)	
+libclang-rt-21-dev	lib32stdc++6 (>= 4.1.1), libc6 (>= 2.38), libc6-i386 (>= 2.38), libstdc++6 (>= 4.1.1)	
+libclang1-21	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libllvm21 (>= 1:21.1.0), libstdc++6 (>= 11)	
+libclone-perl	perl (>= 5.42.2-3), perlapi-5.42.2, libc6 (>= 2.14)	
+libcloudproviders0	libc6 (>= 2.4), libglib2.0-0t64 (>= 2.56.0)	
+libcodec2-1.2	libc6 (>= 2.32)	
+libcolord2	libc6 (>= 2.29), libglib2.0-0t64 (>= 2.80.0), liblcms2-2 (>= 2.6), libudev1 (>= 196)	
+libcom-err2	libc6 (>= 2.38)	
+libcpuinfo0	libc6 (>= 2.34)	
+libcrypt-urandom-perl	perl (>= 5.42.2-3), perlapi-5.42.2, libc6 (>= 2.25)	
+libcrypt1	libc6 (>= 2.38)	
+libcryptsetup12	libblkid1 (>= 2.24.2), libc6 (>= 2.38), libdevmapper1.02.1 (>= 2:1.02.197), libjson-c5 (>= 0.15), libssl3t64 (>= 3.2.0), libuuid1 (>= 2.16)	
+libctf-nobfd0	libc6 (>= 2.14), zlib1g (>= 1:1.2.0)	
+libctf0	libbinutils (= 2.47-2), libc6 (>= 2.33), zlib1g (>= 1:1.2.0)	
+libcups2t64	libavahi-client3 (>= 0.6.16), libavahi-common3 (>= 0.6.16), libc6 (>= 2.38), libgnutls30t64 (>= 3.8.1), libgssapi-krb5-2 (>= 1.17), zlib1g (>= 1:1.2.0)	
+libcurl4-gnutls	libnghttp3-9 (>= 1.11.0~), libngtcp2-16 (>= 1.20.0), libbrotli1 (>= 0.6.0), libc6 (>= 2.43), libgnutls30t64 (>= 3.8.6), libgssapi-krb5-2 (>= 1.17), libidn2-0 (>= 2.0.0), libldap2 (>= 2.6.2), libnettle8t64, libnghttp2-14 (>= 1.50.0), libngtcp2-crypto-gnutls8 (>= 1.22.0), libpsl5t64 (>= 0.16.0), libssh2-1t64 (>= 1.11.1), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.2.3.4)	ca-certificates
+libcurl4t64	libnghttp3-9 (>= 1.11.0~), libngtcp2-16 (>= 1.20.0), libbrotli1 (>= 0.6.0), libc6 (>= 2.43), libgssapi-krb5-2 (>= 1.17), libidn2-0 (>= 2.0.0), libldap2 (>= 2.6.2), libnghttp2-14 (>= 1.50.0), libngtcp2-crypto-ossl0 (>= 1.24.0), libpsl5t64 (>= 0.16.0), libssh2-1t64 (>= 1.11.1), libssl3t64 (>= 3.2.0), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.2.3.4)	ca-certificates
+libdata-dump-perl	perl:any	
+libdatrie1	libc6 (>= 2.14)	
+libdav1d7	libc6 (>= 2.34)	
+libdb5.3t64	libc6 (>= 2.38)	
+libdbus-1-3	libc6 (>= 2.38), libsystemd0	
+libdc1394-25	libc6 (>= 2.34), libraw1394-11 (>= 2.1.2), libusb-1.0-0 (>= 2:1.0.9)	
+libdconf1	libc6 (>= 2.14), libglib2.0-0t64 (>= 2.80.0)	
+libde265-0	libc6 (>= 2.32), libgcc-s1 (>= 3.0), libstdc++6 (>= 12)	
+libdebconfclient0	libc6 (>= 2.38)	
+libdecor-0-0	libc6 (>= 2.38), libwayland-client0 (>= 1.20.0)	default-libdecor-0-plugin-1 | libdecor-0-plugin-1
+libdecor-0-plugin-1-gtk	libc6 (>= 2.38), libcairo2 (>= 1.14.0), libdbus-1-3 (>= 1.10), libdecor-0-0 (= 0.2.5-1+b1), libglib2.0-0t64 (>= 2.12.0), libgtk-3-0t64 (>= 3.19.12), libwayland-client0 (>= 1.20.0), libwayland-cursor0 (>= 1.0.2)	
+libdeflate0	libc6 (>= 2.14)	
+libdevmapper1.02.1	libc6 (>= 2.38), libselinux1 (>= 3.1~), libudev1 (>= 183), dmsetup (>= 2:1.02.205-2+b2~)	
+libdisplay-info3	libc6 (>= 2.27)	
+libdjvulibre-text		
+libdjvulibre21	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libjpeg62-turbo (>= 1.3.1), libstdc++6 (>= 14), libdjvulibre-text (>= 3.5.30-1)	
+libdnnl3.6	libc6 (>= 2.38), libgcc-s1 (>= 3.3.1), libgomp1 (>= 4.9), libstdc++6 (>= 14)	
+libdrm-amdgpu1	libc6 (>= 2.38), libdrm2 (>= 2.4.108)	
+libdrm-common		
+libdrm-intel1	libc6 (>= 2.34), libdrm2 (>= 2.4.108), libpciaccess0	
+libdrm2	libdrm-common (>= 2.4.134-3), libc6 (>= 2.38)	
+libdvdnav4	libc6 (>= 2.4), libdvdread8t64 (>= 6.1.0)	
+libdvdread8t64	libc6 (>= 2.34)	
+libebur128-1	libc6 (>= 2.29)	
+libedit2	libbsd0 (>= 0.1.3), libc6 (>= 2.42), libtinfo6 (>= 6)	
+libegl-mesa0	libgbm1 (= 26.1.6-1), mesa-libgallium (= 26.1.6-1), libc6 (>= 2.38), libdrm2 (>= 2.4.134-3~), libexpat1 (>= 2.0.1), libgcc-s1 (>= 3.4), libwayland-client0 (>= 1.24.0), libx11-6, libx11-xcb1, libxcb-dri3-0 (>= 1.13), libxcb-present0, libxcb-randr0 (>= 1.3), libxcb-shm0, libxcb-xfixes0, libxcb1 (>= 1.6)	
+libegl1	libc6 (>= 2.38), libglvnd0 (= 1.7.0-3+b1), libegl-mesa0	
+libelf1t64	libc6 (>= 2.38), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4)	
+libencode-locale-perl	perl:any	
+libepoxy0	libc6 (>= 2.34)	
+liberror-perl	perl:any	
+libevent-core-2.1-7t64	libc6 (>= 2.38)	
+libexpat1		
+libffi-dev	libffi8 (= 3.8.0-2)	
+libffi8	libc6 (>= 2.38)	
+libfftw3-double3	libc6 (>= 2.34), libgomp1 (>= 4.9)	
+libfftw3-single3	libc6 (>= 2.34), libgomp1 (>= 4.9)	
+libfido2-1	libc6 (>= 2.38), libcbor0.10 (>= 0.10.2), libssl3t64 (>= 3.0.0), libudev1 (>= 183), zlib1g (>= 1:1.1.4)	
+libfile-basedir-perl	perl:any, libipc-system-simple-perl	
+libfile-desktopentry-perl	perl:any, libfile-basedir-perl, liburi-perl	x-terminal-emulator
+libfile-listing-perl	perl:any, libhttp-date-perl	
+libfile-mimeinfo-perl	perl:any, libencode-locale-perl, libfile-basedir-perl, libfile-desktopentry-perl, shared-mime-info	libio-stringy-perl
+libflac14	libc6 (>= 2.34), libogg0 (>= 1.1.0)	
+libflite1	libasound2t64 (>= 1.0.16), libc6 (>= 2.38)	
+libfont-afm-perl	perl:any	
+libfontconfig1	libc6 (>= 2.38), libexpat1 (>= 2.0.1), libfreetype6 (>= 2.9.1), fontconfig-config (>= 2.17.1-5)	
+libfontenc1	libc6 (>= 2.38), zlib1g (>= 1:1.1.4)	
+libfreetype6	libbrotli1 (>= 0.6.0), libbz2-1.0, libc6 (>= 2.38), libpng16-16t64 (>= 1.6.46), zlib1g (>= 1:1.1.4)	
+libfribidi0	libc6 (>= 2.4)	
+libgbm1	mesa-libgallium (= 26.1.6-1), libc6 (>= 2.38), libdrm2 (>= 2.4.134-3~), libexpat1 (>= 2.0.1), libgcc-s1 (>= 3.4)	
+libgc1	libc6 (>= 2.38), libstdc++6 (>= 4.1.1)	
+libgcc-15-dev	gcc-15-base (= 15.3.0-2), libgcc-s1 (>= 15.3.0-2), libgomp1 (>= 15.3.0-2), libitm1 (>= 15.3.0-2), libatomic1 (>= 15.3.0-2), libasan8 (>= 15.3.0-2), liblsan0 (>= 15.3.0-2), libtsan2 (>= 15.3.0-2), libubsan1 (>= 15.3.0-2), libhwasan0 (>= 15.3.0-2), libquadmath0 (>= 15.3.0-2)	libc6-dev (>= 2.23-1~)
+libgcc-s1	gcc-16-base (= 16.2.0-1), libc6 (>= 2.35)	
+libgcrypt20	libc6 (>= 2.38), libgpg-error0 (>= 1.56)	
+libgdbm-compat4t64	libc6 (>= 2.33), libgdbm6t64 (>= 1.16)	
+libgdbm6t64	libc6 (>= 2.38)	
+libgdk-pixbuf-2.0-0	glycin-thumbnailers (>= 2.0.8), libgdk-pixbuf2.0-common (>= 2.44.7+dfsg-1), shared-mime-info, libc6 (>= 2.34), libglib2.0-0t64 (>= 2.80.0), libglycin-2-0 (>= 2.0.8)	
+libgdk-pixbuf2.0-common		
+libgirepository-2.0-0	libc6 (>= 2.38), libffi8 (>= 3.4), libglib2.0-0t64 (= 2.89.3-5)	
+libgit2-1.9	libc6 (>= 2.38), libgssapi-krb5-2 (>= 1.17), libllhttp9.4 (>= 9.3.0), libpcre2-8-0 (>= 10.22), libssh2-1t64 (>= 1.7.0), libssl3t64 (>= 3.0.0), zlib1g (>= 1:1.1.4)	
+libgl1	libc6 (>= 2.34), libglvnd0 (= 1.7.0-3+b1), libglx0 (= 1.7.0-3+b1)	
+libgl1-mesa-dri	libgbm1 (= 26.1.6-1), libvulkan1, libc6 (>= 2.34)	
+libglib2.0-0t64	libatomic1 (>= 4.8), libc6 (>= 2.43), libffi8 (>= 3.4), libmount1 (>= 2.40), libpcre2-8-0 (>= 10.22), libselinux1 (>= 3.1~), zlib1g (>= 1:1.2.2)	libglib2.0-data, shared-mime-info, xdg-user-dirs
+libglib2.0-data		
+libglvnd0	libc6 (>= 2.38)	
+libglx-mesa0	libgl1-mesa-dri, mesa-libgallium (= 26.1.6-1), libc6 (>= 2.38), libdrm2 (>= 2.4.134-3~), libexpat1 (>= 2.0.1), libgcc-s1 (>= 3.4), libx11-6 (>= 2:1.4.99.1), libx11-xcb1, libxcb-dri3-0, libxcb-glx0 (>= 1.8), libxcb-present0, libxcb-shm0, libxcb-xfixes0, libxcb1, libxext6, libxxf86vm1 (>= 1:1.1.4)	
+libglx0	libc6 (>= 2.38), libglvnd0 (= 1.7.0-3+b1), libx11-6 (>= 2:1.4.99.1), libglx-mesa0	
+libglycin-2-0	glycin-loaders (>= 2~), libc6 (>= 2.39), libfontconfig1 (>= 2.12.6), libgcc-s1 (>= 4.2), libglib2.0-0t64 (>= 2.68.0), liblcms2-2 (>= 2.2+git20110628), libseccomp2 (>= 2.1.0)	
+libgme0	libc6 (>= 2.38), libstdc++6 (>= 4.1.1), zlib1g (>= 1:1.1.4)	
+libgmp10	libc6 (>= 2.38)	
+libgnutls30t64	libc6 (>= 2.38), libgmp10 (>= 2:6.3.0+dfsg), libhogweed6t64 (>= 3.10), libidn2-0 (>= 2.0.0), libnettle8t64 (>= 3.10), libp11-kit0 (>= 0.25.1), libtasn1-6 (>= 4.14), libunistring5 (>= 1.1)	
+libgomp1	gcc-16-base (= 16.2.0-1), libc6 (>= 2.38)	
+libgpg-error-l10n		
+libgpg-error0	libc6 (>= 2.38)	libgpg-error-l10n
+libgpm2	libc6 (>= 2.38)	
+libgprofng0	libbinutils (= 2.47-2), libc6 (>= 2.38), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 14), zlib1g (>= 1:1.1.4)	
+libgraphite2-3	libc6 (>= 2.14)	
+libgs-common		
+libgs10	libgs10-common (= 10.07.1~dfsg-1), poppler-data, libc6 (>= 2.38), libcups2t64 (>= 2.3~b6), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.10.1), libidn12 (>= 1.13), libijs-0.35 (>= 0.35), libjbig2dec0 (>= 0.16+20190905), libjpeg62-turbo (>= 1.3.1), liblcms2-2 (>= 2.6), libopenjp2-7 (>= 2.0.0), libpaper2 (>= 2.2.5), libpng16-16t64 (>= 1.6.46), libtiff6 (>= 4.0.3), libx11-6, libxt6t64, zlib1g (>= 1:1.2.0)	
+libgs10-common	fonts-urw-base35 (>= 20200910), libgs-common	fonts-droid-fallback
+libgsm1	libc6 (>= 2.4)	
+libgssapi-krb5-2	libkrb5-3 (= 1.22.1-3), libc6 (>= 2.38), libcom-err2 (>= 1.43.9), libk5crypto3 (>= 1.20), libkrb5support0 (= 1.22.1-3)	
+libgtk-3-0t64	adwaita-icon-theme, hicolor-icon-theme, shared-mime-info, libatk-bridge2.0-0t64 (>= 2.15.1), libatk1.0-0t64 (>= 2.35.1), libc6 (>= 2.38), libcairo-gobject2 (>= 1.14.0), libcairo2 (>= 1.14.0), libcloudproviders0 (>= 0.3.2), libcolord2 (>= 0.1.10), libcups2t64 (>= 1.7.0), libepoxy0 (>= 1.4.3), libfontconfig1 (>= 2.12.6), libfribidi0 (>= 0.19.7), libgdk-pixbuf-2.0-0 (>= 2.40.0), libglib2.0-0t64 (>= 2.78.0), libharfbuzz0b (>= 2.2.0), libpango-1.0-0 (>= 1.45.5), libpangocairo-1.0-0 (>= 1.44.0), libpangoft2-1.0-0 (>= 1.44.0), libwayland-client0 (>= 1.23), libwayland-cursor0 (>= 1.23), libwayland-egl1 (>= 1.23), libx11-6 (>= 2:1.4.99.1), libxcomposite1 (>= 1:0.4.6), libxcursor1 (>> 1.1.2), libxdamage1 (>= 1:1.1), libxext6, libxfixes3, libxi6 (>= 2:1.2.99.4), libxinerama1 (>= 2:1.1.4), libxkbcommon0 (>= 0.5.0), libxrandr2 (>= 2:1.5.0), libgtk-3-common (>= 3.24.52-1)	ibus-gtk3, libgtk-3-bin, librsvg2-common
+libgtk-3-bin	gtk-update-icon-cache, libc6 (>= 2.38), libcairo2 (>= 1.14.0), libgdk-pixbuf-2.0-0 (>= 2.40.0), libglib2.0-0t64 (>= 2.57.2), libgtk-3-0t64 (>= 3.24.52-1), libgtk-3-common (>= 3.24.52-1)	
+libgtk-3-common	dconf-gsettings-backend | gsettings-backend	libgtk-3-0t64
+libharfbuzz0b	libc6 (>= 2.38), libfreetype6 (>= 2.11.1), libglib2.0-0t64 (>= 2.32.0), libgraphite2-3 (>= 1.2.2)	
+libhdr-histogram6	libc6 (>= 2.38), zlib1g (>= 1:1.2.0)	
+libheif-plugin-aomenc	libheif1 (= 1.23.1-1), libaom3 (>= 3.2.0), libc6 (>= 2.14), libgcc-s1 (>= 3.0), libstdc++6 (>= 13)	
+libheif-plugin-dav1d	libheif1 (= 1.23.1-1), libc6 (>= 2.14), libdav1d7 (>= 0.1.0), libgcc-s1 (>= 3.0), libstdc++6 (>= 13)	
+libheif-plugin-libde265	libheif1 (= 1.23.1-1), libc6 (>= 2.14), libde265-0 (>= 1.1.1), libgcc-s1 (>= 3.0), libstdc++6 (>= 13)	
+libheif-plugin-x265	libheif1 (= 1.23.1-1), libc6 (>= 2.14), libgcc-s1 (>= 3.0), libstdc++6 (>= 13), libx265-216 (>= 4.2)	
+libheif1	libbrotli1 (>= 0.6.0), libc6 (>= 2.38), libgcc-s1 (>= 3.0), libsharpyuv0 (>= 1.5.0), libstdc++6 (>= 13.1), zlib1g (>= 1:1.1.4), libheif-plugin-libde265 (= 1.23.1-1), libheif-plugin-dav1d (= 1.23.1-1) | libheif-plugin-aomdec (= 1.23.1-1)	libheif-plugin-x265 (= 1.23.1-1), libheif-plugin-aomenc (= 1.23.1-1)
+libhogweed6t64	libc6 (>= 2.14), libgmp10 (>= 2:6.3.0+dfsg), libnettle8t64	
+libhtml-form-perl	perl:any, libhtml-parser-perl, libhttp-message-perl (>= 7.01), liburi-perl	
+libhtml-format-perl	perl:any, libfont-afm-perl, libhtml-tree-perl	
+libhtml-parser-perl	perl (>= 5.42.2-3), perlapi-5.42.2, libc6 (>= 2.14), libhtml-tagset-perl, liburi-perl	libhttp-message-perl
+libhtml-tagset-perl	perl:any	
+libhtml-tree-perl	perl:any, libhtml-parser-perl, libhtml-tagset-perl	libhtml-format-perl, libwww-perl
+libhttp-cookies-perl	perl:any, libhttp-date-perl, libhttp-message-perl	
+libhttp-daemon-perl	perl:any, libhttp-date-perl, libhttp-message-perl, libio-socket-ip-perl, liblwp-mediatypes-perl, libsocket-perl	
+libhttp-date-perl	perl:any, libtime-local-perl (>= 1.28), libtimedate-perl	
+libhttp-message-perl	perl:any, libclone-perl, libcompress-raw-bzip2-perl, libcompress-raw-zlib-perl, libencode-locale-perl, libencode-perl, libhttp-date-perl, libio-html-perl, liblwp-mediatypes-perl, liburi-perl	libio-compress-brotli-perl
+libhttp-negotiate-perl	perl:any, libhttp-message-perl	
+libhwasan0	gcc-16-base (= 16.2.0-1), libc6 (>= 2.34), libgcc-s1 (>= 3.3)	
+libhwy1t64	libc6 (>= 2.38), libgcc-s1 (>= 13), libstdc++6 (>= 5.2)	
+libibus-1.0-5	libc6 (>= 2.38), libglib2.0-0t64 (>= 2.80.0)	
+libice6	libc6 (>= 2.38), x11-common	
+libicu78	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libstdc++6 (>= 14)	
+libidn12	libc6 (>= 2.14)	
+libidn2-0	libc6 (>= 2.14), libunistring5 (>= 1.1)	
+libiec61883-0	libc6 (>= 2.4), libraw1394-11 (>= 2.1.2)	
+libijs-0.35	libc6 (>= 2.14)	
+libimath-3-2-30	libc6 (>= 2.4), libstdc++6 (>= 13.1)	
+libio-compress-brotli-perl	perl (>= 5.42.2-3), perlapi-5.42.2, libbrotli1 (>= 0.6.0), libc6 (>= 2.4)	
+libio-html-perl	perl:any	
+libio-socket-ssl-perl	perl:any, libnet-ssleay-perl, netbase	libio-socket-ip-perl | libio-socket-inet6-perl, libsocket-perl | libsocket6-perl, liburi-perl | libnet-libidn-perl | libnet-idn-encode-perl
+libio-stringy-perl	perl:any	
+libipc-system-simple-perl	perl:any	
+libisl23	libc6 (>= 2.38), libgmp10 (>= 2:6.3.0+dfsg)	
+libitm1	gcc-16-base (= 16.2.0-1), libc6 (>= 2.34)	
+libjack-jackd2-0	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libopus0 (>= 1.3.1-2~), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 14)	
+libjansson4	libc6 (>= 2.38)	
+libjbig0	libc6 (>= 2.4)	
+libjbig2dec0	libc6 (>= 2.38)	
+libjemalloc2	libc6 (>= 2.38), libgcc-s1 (>= 3.3), libstdc++6 (>= 4.4)	
+libjpeg62-turbo	libc6 (>= 2.38)	
+libjq1	libc6 (>= 2.39), libonig5 (>= 6.8.1)	
+libjson-c5	libc6 (>= 2.38)	
+libjxl0.11	libbrotli1 (>= 0.6.0), libc6 (>= 2.43), libgcc-s1 (>= 3.4), libhwy1t64 (>= 1.0.3), liblcms2-2 (>= 2.13), libstdc++6 (>= 12)	
+libjxr-tools	libc6 (>= 2.38), libjxr0t64 (>= 1.0)	
+libjxr0t64	libc6 (>= 2.38)	
+libk5crypto3	libc6 (>= 2.38), libkrb5support0 (= 1.22.1-3)	
+libkeyutils1	libc6 (>= 2.38)	
+libkmod2	libc6 (>= 2.38), libssl3t64 (>= 3.0.0)	
+libkrb5-3	libkrb5support0 (= 1.22.1-3), libc6 (>= 2.38), libcom-err2 (>= 1.43.9), libk5crypto3 (>= 1.20), libkeyutils1 (>= 1.5.9), libssl3t64 (>= 3.0.0)	krb5-locales
+libkrb5support0	libc6 (>= 2.38)	
+liblcms2-2	libc6 (>= 2.38)	
+libldap-common		
+libldap2	libc6 (>= 2.38), libsasl2-2 (>= 2.1.28+dfsg1), libssl3t64 (>= 3.0.0)	libldap-common
+liblerc4	libc6 (>= 2.29), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 5.2)	
+liblilv-0-0	libc6 (>= 2.34), libserd-0-0 (>= 0.30.2), libsord-0-0 (>= 0.14.0~dfsg0), libsratom-0-0 (>= 0.4.6~dfsg0), libzix-0-0 (>= 0.6.2)	
+libllhttp9.4	libc6 (>= 2.3.4)	
+libllvm21	libc6 (>= 2.38), libedit2 (>= 2.11-20080614-0), libffi8 (>= 3.4), libgcc-s1 (>= 4.3), libstdc++6 (>= 12), libxml2-16 (>= 2.14.1), libz3-4 (>= 4.13.3), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.2.0)	
+liblqr-1-0	libc6 (>= 2.27), libglib2.0-0t64 (>= 2.24.0)	
+liblsan0	gcc-16-base (= 16.2.0-1), libc6 (>= 2.34), libgcc-s1 (>= 3.3)	
+libltdl7	libc6 (>= 2.38)	
+libluajit-5.1-2	libluajit-5.1-common (= 2.1.0+openresty20251030-1), libc6 (>= 2.38), libgcc-s1 (>= 3.3)	
+libluajit-5.1-common		
+liblwp-mediatypes-perl	perl:any	
+liblwp-protocol-https-perl	perl:any, ca-certificates, libio-socket-ssl-perl, libnet-http-perl, libwww-perl	
+liblz4-1	libc6 (>= 2.14), libxxhash0 (>= 0.6.5)	
+liblzma-dev	liblzma5 (= 5.8.3-1)	
+liblzma5	libc6 (>= 2.34)	
+libmagickcore-7.q16-10	libbz2-1.0, libc6 (>= 2.38), libfftw3-double3 (>= 3.3.11), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.10.1), libgcc-s1 (>= 3.3.1), libgomp1 (>= 6), libheif1 (>= 1.21.2), libjbig0 (>= 2.0), libjpeg62-turbo (>= 1:3.1.3), liblcms2-2 (>= 2.6), liblqr-1-0 (>= 0.4.0), libltdl7 (>= 2.5.4), liblzma5 (>= 5.1.1alpha+20120614), libopenjp2-7 (>= 2.0.0), libpng16-16t64 (>= 1.6.46), libraw25 (>= 0.22.0), libtiff6 (>= 4.5.0~rc1), libwebp7 (>= 1.5.0), libwebpdemux2 (>= 1.5.0), libwebpmux3 (>= 1.5.0), libx11-6, libxext6, libxml2-16 (>= 2.14.1), zlib1g (>= 1:1.2.3.4), imagemagick-7-common (>= 8:7.0.0~)	ghostscript, fonts-urw-base35
+libmagickcore-7.q16-10-extra	libc6 (>= 2.38), libcairo2 (>= 1.6.0), libdjvulibre21 (>= 3.5.30), libglib2.0-0t64 (>= 2.12.0), libmagickcore-7.q16-10 (>= 8:7.1.2.26), libmagickwand-7.q16-10 (>= 8:7.1.1.21), libopenexr-3-4-33-imath-3-2, libpango-1.0-0 (>= 1.22.0), libpangocairo-1.0-0 (>= 1.14.0), libwmflite-0.2-7 (>= 0.2.12), libxml2-16 (>= 2.14.1)	libjxr-tools
+libmagickwand-7.q16-10	libc6 (>= 2.38), libgcc-s1 (>= 3.3.1), libgomp1 (>= 4.9), libmagickcore-7.q16-10 (>= 8:7.1.2.29), libx11-6, imagemagick-7-common (>= 8:7.0.0~)	
+libmailtools-perl	perl:any, libnet-perl, libnet-smtp-ssl-perl, libtest-simple-perl, libtimedate-perl	
+libmd0	libc6 (>= 2.33)	
+libmount1	libblkid1 (= 2.42.2-2), libc6 (>= 2.38), libselinux1 (>= 3.1~), libsystemd0 (>= 251)	
+libmp3lame0	libc6 (>= 2.38), libmpg123-0t64 (>= 1.28.0)	
+libmpc3	libc6 (>= 2.4), libgmp10 (>= 2:6.3.0+dfsg), libmpfr6 (>= 4.0.0)	
+libmpfr6	libc6 (>= 2.38), libgmp10 (>= 2:6.3.0+dfsg)	
+libmpg123-0t64	libc6 (>= 2.38)	
+libmysofa1	libc6 (>= 2.38), zlib1g (>= 1:1.1.4)	
+libncurses-dev	libtinfo6 (= 6.6+20260608-2), libncurses6 (= 6.6+20260608-2), libncursesw6 (= 6.6+20260608-2), libc6-dev | libc-dev	
+libncurses6	libtinfo6 (= 6.6+20260608-2), libc6 (>= 2.38)	libgpm2
+libncursesw6	libtinfo6 (= 6.6+20260608-2), libc6 (>= 2.38)	libgpm2
+libnet-dbus-perl	perl (>= 5.42.2-3), perlapi-5.42.2, libc6 (>= 2.4), libdbus-1-3 (>= 1.10), libxml-twig-perl	
+libnet-http-perl	perl:any, libio-socket-ip-perl, liburi-perl	libio-socket-ssl-perl
+libnet-smtp-ssl-perl	libio-socket-ssl-perl, perl:any	libauthen-sasl-perl
+libnet-ssleay-perl	perl (>= 5.42.2-3), perl-openssl-abi-3, perlapi-5.42.2, libc6 (>= 2.14), libssl3t64 (>= 3.2.0)	
+libnetpbm11t64	libc6 (>= 2.38)	
+libnettle8t64	libc6 (>= 2.17)	
+libnghttp2-14	libc6 (>= 2.17)	
+libnghttp3-9	libc6 (>= 2.14)	
+libngtcp2-16	libc6 (>= 2.25)	
+libngtcp2-crypto-gnutls8	libc6 (>= 2.14), libgnutls30t64 (>= 3.8.2), libngtcp2-16 (>= 1.24.0)	
+libngtcp2-crypto-ossl0	libc6 (>= 2.14), libngtcp2-16 (>= 1.24.0), libssl3t64 (>= 3.5.1)	
+libnode137	libada-url0-3 (>= 3.4.4), libbrotli1 (>= 1.1.0), libc6 (>= 2.38), libcares2 (>= 1.28.0), libgcc-s1 (>= 13), libhdr-histogram6 (>= 0.11.8), libicu78 (>= 78.1-1~), libllhttp9.4 (>= 9.4.1), libnghttp2-14 (>= 1.57.0), libsimdjson33 (>= 4.6.6), libsimdutf33 (>= 8.2.0), libsqlite3-0 (>= 3.37.0), libssl3t64 (>= 3.4.0), libstdc++6 (>= 13.1), libuv1t64 (>= 1.52.1), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4), node-acorn (>= 8.16.0~), node-minimatch (>= 9.0.3-5), node-undici (>= 5.0.0~)	
+libnorm1t64	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libstdc++6 (>= 5)	
+libnspr4	libc6 (>= 2.38)	
+libnss-systemd	libc6 (>= 2.34)	systemd-userdbd
+libnss3	libc6 (>= 2.34), libnspr4 (>= 2:4.34), libsqlite3-0 (>= 3.5.9)	
+libnuma1	libc6 (>= 2.38)	
+libobjc-15-dev	gcc-15-base (= 15.3.0-2), libgcc-15-dev (= 15.3.0-2), libobjc4 (>= 15.3.0-2)	
+libobjc4	gcc-16-base (= 16.2.0-1), libc6 (>= 2.38), libgc1 (>= 1:7.2d), libgcc-s1 (>= 3.0)	
+libogg0	libc6 (>= 2.14)	
+libonig5	libc6 (>= 2.14)	
+libonnx1l	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libprotobuf-lite32t64 (>= 3.21.12), libstdc++6 (>= 13.1)	
+libonnxruntime-providers	libc6 (>= 2.38), libdnnl3.6 (>= 3.5.3), libgcc-s1 (>= 3.0), libstdc++6 (>= 14)	
+libonnxruntime1.23	libc6 (>= 2.38), libcpuinfo0 (>= 0.0~git20240830.fa1c679), libgcc-s1 (>= 4.0), libonnx1l (>= 1.20.0), libprotobuf32t64 (>= 3.21.12), libpthreadpool0 (>= 0.0~git20200423.6acde9c), libre2-11-absl20260526, libstdc++6 (>= 14), libxnnpack0.20241108 (>= 0.0~git20241108.4ea82e5), libonnxruntime-providers (= 1.23.2+dfsg-6+b5)	
+libopenal-data		
+libopenal1	libopenal-data (= 1:1.25.2-1), libc6 (>= 2.38), libgcc-s1 (>= 4.3), libstdc++6 (>= 14)	libpipewire-0.3-0t64, libpulse0
+libopenexr-3-4-33	libc6 (>= 2.43), libdeflate0 (>= 1.19), libgcc-s1 (>= 3.4), libimath-3-2-30 (>= 3.2.2), libopenjph0.28 (>= 0.28.1), libstdc++6 (>= 13.1)	
+libopenjp2-7	libc6 (>= 2.38)	
+libopenjph0.28	libc6 (>= 2.34), libgcc-s1 (>= 3.4), libstdc++6 (>= 13.1)	
+libopenmpt0t64	libc6 (>= 2.32), libgcc-s1 (>= 4.0), libmpg123-0t64 (>= 1.33.0), libstdc++6 (>= 13.1), libvorbis0a (>= 1.1.2), libvorbisfile3 (>= 1.1.2), zlib1g (>= 1:1.1.4)	
+libopus0	libc6 (>= 2.29)	
+libp11-kit0	libc6 (>= 2.38), libffi8 (>= 3.4)	
+libpam-modules		
+libpam-modules-bin	libaudit1 (>= 1:2.2.1), libc6 (>= 2.38), libcrypt1 (>= 1:4.3.0), libpam0g (>= 0.99.7.1), libselinux1 (>= 3.1~), libsystemd0 (>= 254)	
+libpam-runtime	debconf (>= 0.5) | debconf-2.0, libpam-modules	
+libpam-systemd	libc6 (>= 2.34), libpam0g, systemd (= 261.2-1), libpam-runtime, default-dbus-system-bus | dbus-system-bus, systemd-sysv	dbus-user-session
+libpam0g	libaudit1 (>= 1:2.2.1), libc6 (>= 2.34), debconf (>= 0.5) | debconf-2.0	
+libpango-1.0-0	fontconfig (>= 2.17.0), libc6 (>= 2.38), libfribidi0 (>= 1.0.0), libglib2.0-0t64 (>= 2.82), libharfbuzz0b (>= 11.4.5), libthai0 (>= 0.1.25)	
+libpangocairo-1.0-0	libc6 (>= 2.35), libcairo2 (>= 1.18.0), libfontconfig1 (>= 2.17.1), libglib2.0-0t64 (>= 2.82), libharfbuzz0b (>= 11.4.5), libpango-1.0-0 (= 1.58.0-1), libpangoft2-1.0-0 (= 1.58.0-1)	
+libpangoft2-1.0-0	libc6 (>= 2.38), libfontconfig1 (>= 2.17.1), libfreetype6 (>= 2.2.1), libglib2.0-0t64 (>= 2.82), libharfbuzz0b (>= 11.4.5), libpango-1.0-0 (= 1.58.0-1)	
+libpaper-utils	libpaper2 (>= 2.2.5), sensible-utils, libc6 (>= 2.38)	
+libpaper2	debconf (>= 0.5) | debconf-2.0, libc6 (>= 2.14)	libpaper-utils
+libpciaccess0	libc6 (>= 2.38), zlib1g (>= 1:1.2.3.4), pci.ids	
+libpcre2-8-0	libc6 (>= 2.34)	
+libperl5.42	libbz2-1.0, libc6 (>= 2.43), libcrypt1 (>= 1:4.1.0), libdb5.3t64, libgdbm-compat4t64 (>= 1.18-3), libgdbm6t64 (>= 1.21), zlib1g (>= 1:1.2.3.4), perl-modules-5.42 (>= 5.42.3-1)	
+libpfm4	libc6 (>= 2.38)	
+libpgm-5.3-0t64	libc6 (>= 2.38)	
+libpipewire-0.3-0t64	libspa-0.2-modules (= 1.6.8-1), libc6 (>= 2.38)	libpipewire-0.3-common
+libpipewire-0.3-common		
+libpixman-1-0	libc6 (>= 2.29)	
+libplacebo360	libc6 (>= 2.38), libgcc-s1 (>= 3.4), liblcms2-2 (>= 2.6), libstdc++6 (>= 13.1), libvulkan1 (>= 1.2.131.2)	
+libpng16-16t64	libc6 (>= 2.29), zlib1g (>= 1:1.2.3.4)	
+libproc2-1	libc6 (>= 2.38), libsystemd0	
+libprotobuf-lite32t64	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libstdc++6 (>= 14)	
+libprotobuf32t64	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libstdc++6 (>= 14), zlib1g (>= 1:1.1.4)	
+libpsl5t64	libidn2-0 (>= 0.16), libc6 (>= 2.38), libunistring5 (>= 1.1)	publicsuffix (>= 20150507)
+libpthreadpool0	libc6 (>= 2.34)	
+libpulse0	libasyncns0 (>= 0.3), libc6 (>= 2.38), libdbus-1-3 (>= 1.10), libsndfile1 (>= 1.0.20), libsystemd0, libx11-6, libx11-xcb1, libxcb1	
+libpython3-stdlib	libpython3.14-stdlib (>= 3.14.6)	
+libpython3.14-minimal	libc6 (>= 2.14), libssl3t64 (>= 3.4.0)	libpython3.14-stdlib
+libpython3.14-stdlib	libpython3.14-minimal (= 3.14.7-1), media-types | mime-support, netbase, tzdata, libbz2-1.0, libc6 (>= 2.42), libdb5.3t64, libffi8 (>= 3.4), liblzma5 (>= 5.1.1alpha+20120614), libncursesw6 (>= 6.1), libreadline8t64 (>= 7.0~beta), libsqlite3-0 (>= 3.36.0), libtinfo6 (>= 6), libuuid1 (>= 2.20.1), libzstd1 (>= 1.5.5)	
+libquadmath0	gcc-16-base (= 16.2.0-1), libc6 (>= 2.38)	
+librabbitmq4	libc6 (>= 2.17), libssl3t64 (>= 3.0.0)	
+librav1e0.8	libc6 (>= 2.34), libgcc-s1 (>= 4.2)	
+libraw1394-11	libc6 (>= 2.14)	
+libraw25	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libgomp1 (>= 6), libjpeg62-turbo (>= 1.3.1), liblcms2-2 (>= 2.2+git20110628), libstdc++6 (>= 5.2)	
+libre2-11	libabsl20260526 (>= 20260526.0-0~), libc6 (>= 2.38), libgcc-s1 (>= 3.0), libstdc++6 (>= 14)	
+libreadline8t64	readline-common, libc6 (>= 2.38), libtinfo6 (>= 6)	
+librist4	libc6 (>= 2.38), libcjson1 (>= 1.7.5), libgmp10 (>= 2:6.3.0+dfsg), libgnutls30t64 (>= 3.7.0), libhogweed6t64, liblz4-1 (>= 0.0~r130), libnettle8t64	
+librsvg2-2	libc6 (>= 2.34), libcairo-gobject2 (>= 1.10.0), libcairo2 (>= 1.15.8), libdav1d7 (>= 0.1.0), libgcc-s1 (>= 4.2), libgdk-pixbuf-2.0-0 (>= 2.25.2), libglib2.0-0t64 (>= 2.54.0), libpango-1.0-0 (>= 1.48.11), libpangocairo-1.0-0 (>= 1.48.11), libxml2-16 (>= 2.14.1)	librsvg2-common
+librsvg2-common	librsvg2-2 (= 2.62.1+dfsg-1), libc6 (>= 2.34), libgcc-s1 (>= 4.2), libgdk-pixbuf-2.0-0 (>= 2.23.5-2), libglib2.0-0t64 (>= 2.50.0)	
+librubberband3	libc6 (>= 2.34), libfftw3-double3 (>= 3.3.10), libgcc-s1 (>= 3.0), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 13.1)	
+libsamplerate0	libc6 (>= 2.14)	
+libsasl2-2	libsasl2-modules-db (>= 2.1.28+dfsg1-11), libc6 (>= 2.38), libssl3t64 (>= 3.0.0)	libsasl2-modules (>= 2.1.28+dfsg1-11)
+libsasl2-modules	libc6 (>= 2.38), libssl3t64 (>= 3.0.0)	
+libsasl2-modules-db	libc6 (>= 2.14), libdb5.3t64	
+libsdl2-2.0-0	libsdl3-0 (>= 3.2.12), libc6 (>= 2.34)	
+libsdl3-0	libasound2t64 (>= 1.0.27), libc6 (>= 2.43), libdecor-0-0 (>= 0.2.0), libdrm2 (>= 2.4.112), libfribidi0 (>= 0.19.2), libgbm1 (>= 17.1.0~rc2), libpulse0 (>= 5.0), libwayland-client0 (>= 1.23.0), libwayland-cursor0 (>= 1.0.2), libwayland-egl1 (>= 1.15.0), libx11-6 (>= 2:1.2.99.901), libxcursor1 (>> 1.1.2), libxext6, libxfixes3 (>= 1:5.0), libxi6 (>= 2:1.6.99.1), libxkbcommon0 (>= 1.12.3), libxrandr2 (>= 2:1.2.99.3), libxss1, libxtst6 (>= 2:1.2.5)	libegl1, libgl1 | libopengl0, libdbus-1-3, libudev1
+libseccomp2	libc6 (>= 2.14)	
+libsecret-1-0	libsecret-common, libc6 (>= 2.14), libgcrypt20 (>= 1.12.0), libglib2.0-0t64 (>= 2.83.0)	
+libsecret-common		
+libselinux1	libc6 (>= 2.38), libpcre2-8-0 (>= 10.22)	selinux-utils
+libsemanage-common		
+libsemanage2	libsemanage-common (>= 3.11-1), libaudit1 (>= 1:2.2.1), libbz2-1.0, libc6 (>= 2.38), libselinux1 (>= 3.11), libsepol2 (>= 3.11)	
+libsensors-config		
+libsensors5	libsensors-config, libc6 (>= 2.38)	
+libsepol2	libc6 (>= 2.38)	
+libserd-0-0	libc6 (>= 2.29)	
+libsframe3	libc6 (>= 2.14)	
+libsharpyuv0	libc6 (>= 2.29)	
+libshine3	libc6 (>= 2.29)	
+libsimdjson33	libc6 (>= 2.14), libgcc-s1 (>= 3.0), libstdc++6 (>= 13.1)	
+libsimdutf33	libc6 (>= 2.14), libgcc-s1 (>= 3.0), libstdc++6 (>= 13.1)	
+libsm6	libc6 (>= 2.14), libice6 (>= 1:1.0.0), libuuid1 (>= 2.16)	
+libsmartcols1	libc6 (>= 2.38)	
+libsnappy1v5	libc6 (>= 2.14), libstdc++6 (>= 5.2)	
+libsndfile1	libc6 (>= 2.38), libflac14 (>= 1.5.0), libmp3lame0 (>= 3.100), libmpg123-0t64 (>= 1.28.0), libogg0 (>= 1.3.0), libopus0 (>= 1.1), libvorbis0a (>= 1.2.3), libvorbisenc2 (>= 1.1.2)	
+libsodium26	libc6 (>= 2.34)	
+libsord-0-0	libc6 (>= 2.14), libserd-0-0 (>= 0.30), libzix-0-0 (>= 0.4.2)	
+libsoxr0	libc6 (>= 2.29), libgomp1 (>= 4.9)	
+libspa-0.2-modules	libasound2t64 (>= 1.2.10), libc6 (>= 2.38), libdbus-1-3 (>= 1.10), libebur128-1 (>= 1.2.0), libfftw3-single3 (>= 3.3.11), libgcc-s1 (>= 3.0), liblilv-0-0 (>= 0.14.2~dfsg0), libmysofa1 (>= 0.6~), libonnxruntime1.23 (>= 1.23.1), libsndfile1 (>= 1.0.20), libstdc++6 (>= 12), libsystemd0, libudev1 (>= 183), libwebrtc-audio-processing-1-3 (>= 1.3)	
+libspeex1	libc6 (>= 2.29)	
+libsqlite3-0	libc6 (>= 2.38)	
+libsratom-0-0	libc6 (>= 2.14), libserd-0-0 (>= 0.30.2), libsord-0-0 (>= 0.16.16)	
+libsrt1.5-gnutls	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libgnutls30t64 (>= 3.7.0), libnettle8t64, libstdc++6 (>= 14)	
+libssh-4	libc6 (>= 2.42), libfido2-1 (>= 1.8.0), libgssapi-krb5-2 (>= 1.17), libssl3t64 (>= 3.0.0), zlib1g (>= 1:1.1.4)	
+libssh2-1t64	libc6 (>= 2.38), libssl3t64 (>= 3.0.0), zlib1g (>= 1:1.1.4)	
+libssl3t64	libc6 (>= 2.38), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4), openssl-provider-legacy	
+libstdc++-15-dev	gcc-15-base (= 15.3.0-2), libgcc-15-dev (= 15.3.0-2), libstdc++6 (>= 15.3.0-2), libc6-dev (>= 2.23-1~)	
+libstdc++6	gcc-16-base (= 16.2.0-1), libc6 (>= 2.38), libgcc-s1 (>= 4.3)	
+libsvtav1enc4	libc6 (>= 2.34)	
+libswresample6	libavutil60 (>= 7:8.1.2), libc6 (>= 2.29), libsoxr0 (>= 0.1.0)	
+libswscale9	libavutil60 (= 7:8.1.2-2+b3), libc6 (>= 2.38), libstdc++6 (>= 13.1), zlib1g (>= 1:1.1.4)	
+libsystemd-shared	libc6 (>= 2.34)	libacl1, libapparmor1, libaudit1, libblkid1, libbpf1, libcrypt1, libcryptsetup12, libkmod2, libmount1, libpam0g, libseccomp2, libselinux1, libzstd1
+libsystemd0	libc6 (>= 2.34)	libzstd1
+libtasn1-6	libc6 (>= 2.38)	
+libtext-iconv-perl	perl-base (>= 5.42.2-3), perlapi-5.42.2, libc6 (>= 2.4)	
+libthai-data		
+libthai0	libthai-data, libc6 (>= 2.14), libdatrie1 (>= 0.2.1)	
+libtheoradec2	libc6 (>= 2.14), libcairo2 (>= 1.2.4)	
+libtheoraenc2	libc6 (>= 2.14), libogg0 (>= 1.1.0)	
+libtie-ixhash-perl	perl:any	
+libtiff6	libc6 (>= 2.38), libdeflate0 (>= 1.0), libjbig0 (>= 2.0), libjpeg62-turbo (>= 1:3.1.3), liblerc4 (>= 3.0), liblzma5 (>= 5.1.1alpha+20120614), libwebp7 (>= 1.5.0), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4)	
+libtimedate-perl	perl:any	
+libtinfo6	libc6 (>= 2.42)	
+libtree-sitter0.26	libc6 (>= 2.14)	
+libtry-tiny-perl	perl:any	
+libtsan2	gcc-16-base (= 16.2.0-1), libc6 (>= 2.34), libgcc-s1 (>= 3.4)	
+libtss2-esys-3.0.2-0t64	libtss2-tcti-cmd0t64, libtss2-tcti-device0t64, libtss2-tcti-mssim0t64, libtss2-tcti-swtpm0t64, libc6 (>= 2.34), libssl3t64 (>= 3.0.0), libtss2-mu-4.0.1-0t64 (>= 3.0.1), libtss2-sys1t64 (>= 4.0.1)	tpm-udev (>= 4.1.3-7)
+libtss2-mu-4.0.1-0t64	libc6 (>= 2.14)	tpm-udev (>= 4.1.3-7)
+libtss2-rc0t64	libc6 (>= 2.4)	tpm-udev (>= 4.1.3-7)
+libtss2-sys1t64	libc6 (>= 2.14), libtss2-mu-4.0.1-0t64 (>= 3.0.1)	tpm-udev (>= 4.1.3-7)
+libtss2-tcti-cmd0t64	libc6 (>= 2.4), libtss2-mu-4.0.1-0t64 (>= 3.0.1)	tpm-udev (>= 4.1.3-7)
+libtss2-tcti-device0t64	libc6 (>= 2.4), libtss2-mu-4.0.1-0t64 (>= 3.0.1)	tpm-udev (>= 4.1.3-7)
+libtss2-tcti-mssim0t64	libc6 (>= 2.38), libtss2-mu-4.0.1-0t64 (>= 3.0.1)	tpm-udev (>= 4.1.3-7)
+libtss2-tcti-swtpm0t64	libc6 (>= 2.38), libtss2-mu-4.0.1-0t64 (>= 3.0.1)	tpm-udev (>= 4.1.3-7)
+libtwolame0	libc6 (>= 2.29)	
+libubsan1	gcc-16-base (= 16.2.0-1), libc6 (>= 2.34), libgcc-s1 (>= 3.3), libstdc++6 (>= 4.1.1)	
+libudev1	libc6 (>= 2.34)	
+libudfread3	libc6 (>= 2.14)	
+libunibilium4	libc6 (>= 2.14)	
+libunibreak7	libc6 (>= 2.4)	
+libunistring5	libc6 (>= 2.34)	
+libunwind8	libc6 (>= 2.34), liblzma5 (>= 5.1.1alpha+20110809)	
+liburi-perl	perl:any, libencode-perl, libscalar-list-utils-perl	
+libusb-1.0-0	libc6 (>= 2.38), libudev1 (>= 183)	
+libutf8proc3	libc6 (>= 2.4)	
+libuuid1	libc6 (>= 2.38)	
+libuv1t64	libc6 (>= 2.38)	
+libva-drm2	libc6 (>= 2.34), libdrm2 (>= 2.4.60), libva2 (>= 2.24.1), libva2 (<< 2.24.1.1)	
+libva-x11-2	libc6 (>= 2.33), libdrm2 (>= 2.4.60), libva2 (>= 2.24.1), libva2 (<< 2.24.1.1), libx11-6 (>= 2:1.4.99.1), libx11-xcb1, libxcb-dri3-0, libxcb1, libxext6, libxfixes3	
+libva2	libc6 (>= 2.38)	va-driver-all | va-driver
+libvdpau1	libc6 (>= 2.38), libx11-6 (>= 2:1.4.99.1), libxext6	
+libvidstab1.2	libc6 (>= 2.29), libgomp1 (>= 4.9)	
+libvorbis0a	libc6 (>= 2.35), libogg0 (>= 1.1.0)	
+libvorbisenc2	libc6 (>= 2.4), libvorbis0a (= 1.3.7-3+b2)	
+libvorbisfile3	libc6 (>= 2.14), libogg0 (>= 1.1.0), libvorbis0a (= 1.3.7-3+b2)	
+libvpl2	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libstdc++6 (>= 5.2)	
+libvpx12	libc6 (>= 2.34)	
+libvulkan1	libc6 (>= 2.38)	mesa-vulkan-drivers | vulkan-icd
+libwayland-client0	libc6 (>= 2.38), libffi8 (>= 3.4)	
+libwayland-cursor0	libc6 (>= 2.28), libwayland-client0 (>= 1.20.0)	
+libwayland-egl1	libc6 (>= 2.2.5)	
+libwebp7	libc6 (>= 2.34), libsharpyuv0 (>= 1.5.0)	
+libwebpdemux2	libc6 (>= 2.14), libwebp7 (>= 1.5.0)	
+libwebpmux3	libc6 (>= 2.29), libwebp7 (>= 1.5.0)	
+libwebrtc-audio-processing-1-3	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libstdc++6 (>= 12)	
+libwmflite-0.2-7	libc6 (>= 2.38)	
+libwww-perl	perl:any, ca-certificates, libencode-locale-perl, libfile-listing-perl, libhtml-parser-perl, libhtml-tagset-perl, libhtml-tree-perl, libhttp-cookies-perl, libhttp-date-perl, libhttp-message-perl (>= 7.01), libhttp-negotiate-perl, liblwp-mediatypes-perl, liblwp-protocol-https-perl, libnet-http-perl, libtry-tiny-perl, liburi-perl, libwww-robotrules-perl, netbase	libdata-dump-perl, libhtml-form-perl, libhtml-format-perl, libhttp-daemon-perl, libmailtools-perl
+libwww-robotrules-perl	perl:any, liburi-perl	
+libx11-6	libc6 (>= 2.38), libxcb1 (>= 1.11.1), libx11-data	
+libx11-data		
+libx11-protocol-perl	perl:any	perl | libio-socket-ip-perl
+libx11-xcb1	libx11-6 (= 2:1.8.13-1)	
+libx264-165	libc6 (>= 2.38)	
+libx265-216	libc6 (>= 2.38), libnuma1 (>= 2.0.11), libstdc++6 (>= 13.1)	
+libxau6	libc6 (>= 2.33)	
+libxaw7	libc6 (>= 2.38), libx11-6, libxext6, libxmu6 (>= 2:1.1.3), libxpm4, libxt6t64	
+libxcb-dri3-0	libc6 (>= 2.4), libxcb1 (>= 1.12)	
+libxcb-glx0	libc6 (>= 2.4), libxcb1	
+libxcb-present0	libc6 (>= 2.4), libxcb1	
+libxcb-randr0	libc6 (>= 2.4), libxcb1 (>= 1.9.2)	
+libxcb-render0	libc6 (>= 2.14), libxcb1 (>= 1.8)	
+libxcb-shape0	libc6 (>= 2.4), libxcb1	
+libxcb-shm0	libc6 (>= 2.4), libxcb1 (>= 1.12)	
+libxcb-sync1	libc6 (>= 2.14), libxcb1	
+libxcb-xfixes0	libc6 (>= 2.4), libxcb1	
+libxcb-xkb1	libc6 (>= 2.14), libxcb1	
+libxcb1	libc6 (>= 2.38), libxau6 (>= 1:1.0.11), libxdmcp6 (>= 1:1.1.5)	
+libxcomposite1	libc6 (>= 2.4), libx11-6 (>= 2:1.4.99.1)	
+libxcursor1	libc6 (>= 2.38), libx11-6 (>= 2:1.4.99.1), libxfixes3, libxrender1 (>= 1:0.9.12)	
+libxdamage1	libc6 (>= 2.4), libx11-6 (>= 2:1.4.99.1)	
+libxdmcp6	libc6 (>= 2.36)	
+libxext6	libc6 (>= 2.14), libx11-6 (>= 2:1.6.0)	
+libxfixes3	libc6 (>= 2.14), libx11-6 (>= 2:1.6.0)	
+libxft2	libc6 (>= 2.38), libfontconfig1 (>= 2.12.6), libfreetype6 (>= 2.3.5), libx11-6, libxrender1 (>= 1:0.9.12)	
+libxi6	libc6 (>= 2.14), libx11-6 (>= 2:1.6.0), libxext6	
+libxinerama1	libc6 (>= 2.4), libx11-6 (>= 2:1.6.0), libxext6	
+libxkbcommon-x11-0	libxkbcommon0 (= 1.13.1-1), libc6 (>= 2.38), libxcb-xkb1, libxcb1 (>= 1.6)	
+libxkbcommon0	xkb-data, libc6 (>= 2.38)	
+libxkbfile1	libc6 (>= 2.38), libx11-6	
+libxml-parser-perl	perl (>= 5.42.2-3), perlapi-5.42.2, libc6 (>= 2.14), libexpat1 (>= 2.0.1), liburi-perl, libwww-perl	
+libxml-twig-perl	perl:any, libxml-parser-perl	libhtml-parser-perl, libtext-iconv-perl, libtie-ixhash-perl, libwww-perl, libxml-xpathengine-perl | libxml-xpath-perl
+libxml-xpathengine-perl	perl:any	
+libxml2-16	libc6 (>= 2.38), zlib1g (>= 1:1.2.2.3)	
+libxml2-dev	liblzma-dev, libxml2-16 (= 2.15.3+dfsg-1), zlib1g-dev	
+libxmu6	libc6 (>= 2.38), libx11-6, libxext6, libxt6t64	
+libxmuu1	libc6 (>= 2.4), libx11-6	
+libxnnpack0.20241108	libc6 (>= 2.38), libcpuinfo0 (>= 0.0~git20231104.d6860c4~), libgcc-s1 (>= 3.4), libpthreadpool0 (>= 0.0~git20240616.560c60d)	
+libxpm4	libc6 (>= 2.38), libx11-6	
+libxrandr2	libc6 (>= 2.14), libx11-6 (>= 2:1.6.0), libxext6, libxrender1 (>= 1:0.9.12)	
+libxrender1	libc6 (>= 2.14), libx11-6 (>= 2:1.6.0)	
+libxres1	libc6 (>= 2.4), libx11-6 (>= 2:1.6.0), libxext6	
+libxshmfence1	libc6 (>= 2.38)	
+libxss1	libc6 (>= 2.4), libx11-6 (>= 2:1.4.99.1), libxext6, x11-common	
+libxt6t64	libc6 (>= 2.38), libice6 (>= 1:1.0.0), libsm6 (>= 2:1.2.6), libx11-6	
+libxtst6	libc6 (>= 2.4), libx11-6 (>= 2:1.6.0), libxext6, x11-common	
+libxv1	libc6 (>= 2.14), libx11-6 (>= 2:1.6.0), libxext6	
+libxvidcore4	libc6 (>= 2.38)	
+libxxf86dga1	libc6 (>= 2.34), libx11-6 (>= 2:1.6.0), libxext6	
+libxxf86vm1	libc6 (>= 2.4), libx11-6 (>= 2:1.6.0), libxext6	
+libxxhash0	libc6 (>= 2.14)	
+libyaml-0-2	libc6 (>= 2.14)	
+libz3-4	libc6 (>= 2.38), libgcc-s1 (>= 3.4), libstdc++6 (>= 14)	
+libz3-dev	libz3-4 (= 4.13.3-1.1)	
+libzimg2	libc6 (>= 2.32), libgcc-s1 (>= 3.0), libstdc++6 (>= 14)	
+libzix-0-0	libc6 (>= 2.34)	
+libzmq5	libbsd0 (>= 0.0), libc6 (>= 2.38), libgcc-s1 (>= 3.0), libgssapi-krb5-2 (>= 1.17), libnorm1t64 (>= 1.5r6), libpgm-5.3-0t64 (>= 5.1.116~dfsg), libsodium26 (>= 1.0.3), libstdc++6 (>= 12)	
+libzstd1	libc6 (>= 2.34)	
+libzvbi-common		
+libzvbi0t64	libc6 (>= 2.38), libpng16-16t64 (>= 1.6.46), libzvbi-common (= 0.2.45-1)	
+linux-libc-dev		
+linux-sysctl-defaults		
+llvm-21	llvm-21-runtime (= 1:21.1.8-10), llvm-21-linker-tools (= 1:21.1.8-10), libc6 (>= 2.38), libcurl4t64 (>= 7.16.2), libgcc-s1 (>= 4.3), libllvm21 (>= 1:21.1.0), libpfm4, libstdc++6 (>= 12), libz3-4 (>= 4.13.3), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.2.0)	llvm-21-dev
+llvm-21-dev	libc6 (>= 2.2.5), libgcc-s1 (>= 3.0), libllvm21 (= 1:21.1.8-10), libstdc++6 (>= 4.1.1), libffi-dev, llvm-21 (= 1:21.1.8-10), libncurses-dev, llvm-21-tools (= 1:21.1.8-10), libclang-cpp21 (= 1:21.1.8-10), libxml2-dev, libz3-dev	
+llvm-21-linker-tools	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libllvm21 (>= 1:21.1.0), libstdc++6 (>= 11)	
+llvm-21-runtime	libc6 (>= 2.38), libgcc-s1 (>= 3.3), libllvm21 (>= 1:21.1.0), libstdc++6 (>= 12), libz3-4 (>= 4.13.3), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4)	binfmt-support | systemd
+llvm-21-tools	libc6 (>= 2.38), libgcc-s1 (>= 3.3), libllvm21 (>= 1:21.1.0), libstdc++6 (>= 11), libz3-4 (>= 4.13.3), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4), python3:any, python3-pygments, python3-yaml	
+login	libpam-modules, libpam-runtime, libaudit1 (>= 1:2.2.1), libc6 (>= 2.38), libpam0g (>= 0.99.7.1)	util-linux-extra
+login.defs		
+lua-lpeg	libc6 (>= 2.14)	
+lua-luv	libc6 (>= 2.38), libuv1t64 (>= 1.50.0)	
+luit	libc6 (>= 2.38)	
+manpages		
+manpages-dev	manpages	
+mawk	libc6 (>= 2.38)	
+media-types		
+mesa-libgallium	libc6 (>= 2.42), libdrm-amdgpu1 (>= 2.4.134-3~), libdrm-intel1 (>= 2.4.134-3~), libdrm2 (>= 2.4.134-3~), libelf1t64 (>= 0.142), libexpat1 (>= 2.0.1), libgcc-s1 (>= 3.4), libllvm21 (>= 1:21.1.0), libsensors5 (>= 1:3.5.0), libstdc++6 (>= 11), libx11-xcb1, libxcb-dri3-0 (>= 1.13), libxcb-present0, libxcb-randr0, libxcb-sync1, libxcb-xfixes0, libxcb1 (>= 1.9.2), libxshmfence1, libzstd1 (>= 1.5.5), zlib1g (>= 1:1.2.3.4)	
+mesa-vulkan-drivers	libvulkan1, libc6 (>= 2.42), libdisplay-info3 (>= 0.3.0), libdrm-amdgpu1 (>= 2.4.134-3~), libdrm2 (>= 2.4.134-3~), libelf1t64 (>= 0.142), libexpat1 (>= 2.0.1), libgcc-s1 (>= 4.2), libllvm21 (>= 1:21.1.0), libpng16-16t64 (>= 1.6.46), libstdc++6 (>= 13.1), libwayland-client0 (>= 1.24.0), libx11-xcb1, libxcb-dri3-0 (>= 1.17.0), libxcb-present0 (>= 1.17.0), libxcb-randr0 (>= 1.13), libxcb-shm0, libxcb-sync1, libxcb-xfixes0, libxcb1 (>= 1.9.2), libxshmfence1, libzstd1 (>= 1.5.5), zlib1g (>= 1:1.2.3.4)	
+mount		
+ncurses-base		
+ncurses-bin		
+ncurses-term	ncurses-base (= 6.6+20260608-2)	
+neovim	neovim-runtime (= 0.12.4-1), libc6 (>= 2.42), libluajit-5.1-2 (>= 2.0.4) | libluajit-5.1-2 (>= 2.1.0+openresty), libtree-sitter0.26 (>= 0.26), libunibilium4 (>= 2.0), libutf8proc3 (>= 2.9.0), libuv1t64 (>= 1.46.0), lua-lpeg (>= 1.1.0), lua-luv (>= 1.51.0-1)	python3-pynvim (>= 0.5.2-2~), xclip | xsel | wl-clipboard, xxd
+neovim-runtime		
+netbase		
+netpbm	libnetpbm11t64 (= 2:11.13.03+ds-2), libc6 (>= 2.38), libjpeg62-turbo (>= 1.3.1), libpng16-16t64 (>= 1.6.46), libtiff6 (>= 4.0.3), libx11-6, libxml2-16 (>= 2.14.1), zlib1g (>= 1:1.1.4)	ghostscript
+node-acorn	nodejs:any, node-xtend	
+node-balanced-match		
+node-brace-expansion	node-balanced-match	
+node-corepack	nodejs:any	
+node-debug	node-ms	
+node-llhttp	node-debug, node-semver	
+node-lru-cache		
+node-minimatch	node-brace-expansion	
+node-ms	nodejs:any	
+node-semver	nodejs:any, node-lru-cache	
+node-undici	node-llhttp (>= 9.3.3~really9.3.0~)	
+node-xtend		
+nodejs	libc6 (>= 2.34), libnode137 (= 24.19.0+dfsg+~cs24.13.3-1), node-corepack	ca-certificates, nodejs-doc
+nodejs-doc		nodejs
+ocl-icd-libopencl1	libc6 (>= 2.38)	
+openssh-client	openssh-common (= 1:10.4p1-5), systemd | systemd-standalone-sysusers | systemd-sysusers, systemd | systemd-standalone-tmpfiles | systemd-tmpfiles, libc6 (>= 2.42), libedit2 (>= 2.11-20080614-0), libselinux1 (>= 3.1~), libssl3t64 (>= 3.0.0), zlib1g (>= 1:1.1.4)	xauth
+openssh-common	libc6 (>= 2.38), libfido2-1 (>= 1.8.0), libselinux1 (>= 3.1~), libssl3t64 (>= 3.0.0)	
+openssl	libc6 (>= 2.38), libssl3t64 (>= 3.6.0)	
+openssl-provider-legacy	libc6 (>= 2.14), libssl3t64 (>= 3.6.0)	
+passwd	base-passwd (>= 3.6.4), libpam-modules, login.defs, libacl1 (>= 2.2.23), libattr1 (>= 1:2.4.44), libaudit1 (>= 1:2.2.1), libbsd0 (>= 0.11.0), libc6 (>= 2.38), libcrypt1 (>= 1:4.1.0), libpam0g (>= 0.99.7.1), libselinux1 (>= 3.1~), libsemanage2 (>= 2.0.32)	sensible-utils
+patch	libc6 (>= 2.34)	
+pci.ids		
+perl	perl-base (= 5.42.3-1), perl-modules-5.42 (>= 5.42.3-1), libperl5.42 (= 5.42.3-1)	netbase
+perl-base		
+perl-modules-5.42	perl-base (>= 5.42.3-1)	perl (>= 5.42.3-1)
+perl-openssl-defaults	libc6 (>= 2.34), libssl3t64 (>= 3.0.0)	
+poppler-data		
+procps	libc6 (>= 2.38), libncursesw6 (>= 6.1), libproc2-1 (>= 2:4.0.7), libsystemd0 (>= 254), libtinfo6 (>= 6)	psmisc, linux-sysctl-defaults
+psmisc	libc6 (>= 2.38), libtinfo6 (>= 6)	
+publicsuffix		
+python3	python3.14 (>= 3.14.6), libpython3-stdlib (= 3.14.6-1)	
+python3-gi	gir1.2-girepository-3.0 (>= 2.86.0-7~), gir1.2-glib-2.0 (>= 2.86.0-7~), python3 (<< 3.15), python3 (>= 3.13~), python3:any, libc6 (>= 2.14), libffi8 (>= 3.4), libgirepository-2.0-0 (>= 2.86.0-7~), libgirepository-2.0-0-with-libffi8 (>= 2.86.0-7~), libglib2.0-0t64 (>= 2.86.0-7~)	
+python3-greenlet	python3 (<< 3.15), python3 (>= 3.13~), python3:any, libc6 (>= 2.14), libgcc-s1 (>= 3.0), libstdc++6 (>= 14)	
+python3-minimal		
+python3-msgpack	python3 (<< 3.15), python3 (>= 3.13~), python3:any, libc6 (>= 2.14)	
+python3-pygments	python3:any	
+python3-pynvim	python3-greenlet (>= 3.0), python3-msgpack (>= 1), python3-supported-min (>= 3.12) | python3-typing-extensions, python3:any	neovim
+python3-yaml	python3 (<< 3.15), python3 (>= 3.13~), python3:any, libc6 (>= 2.14), libyaml-0-2	
+python3.14	python3.14-minimal (= 3.14.7-1), libpython3.14-stdlib (= 3.14.7-1), media-types | mime-support, tzdata	ca-certificates
+python3.14-minimal	libpython3.14-minimal (= 3.14.7-1), libexpat1 (>= 2.8.0), zlib1g (>= 1:1.2.0)	python3.14
+readline-common		
+ripgrep	libc6 (>= 2.39), libgcc-s1 (>= 4.2), libpcre2-8-0 (>= 10.22)	
+sed		
+sensible-utils		
+shared-mime-info	libc6 (>= 2.38), libgcc-s1 (>= 3.0), libglib2.0-0t64 (>= 2.76.0), libstdc++6 (>= 12), libxml2-16 (>= 2.14.1)	
+sqlite3	libc6 (>= 2.38), libreadline8t64 (>= 6.0), zlib1g (>= 1:1.2.0), libsqlite3-0 (= 3.53.4-2)	
+sqv	libc6 (>= 2.34), libgcc-s1 (>= 4.2), libgmp10 (>= 2:6.3.0+dfsg), libhogweed6t64, libnettle8t64 (>= 3.9~)	
+systemd	libblkid1, libmount1, libsystemd0 (= 261.2-1)	default-dbus-system-bus | dbus-system-bus, linux-sysctl-defaults, login, mount, systemd-timesyncd | time-daemon, systemd-tpm, systemd-cryptsetup, libacl1, libbpf1, libcryptsetup12, libgcrypt20, libpam0g, libseccomp2, libselinux1, libssl3t64
+systemd-cryptsetup	libc6 (>= 2.34), libsystemd-shared (= 261.2-1), libcryptsetup12	libssl3t64
+systemd-sysv	systemd (= 261.2-1)	libpam-systemd, libnss-systemd
+systemd-timesyncd	libc6 (>= 2.34), libsystemd-shared (= 261.2-1), systemd	
+systemd-tpm	libc6 (>= 2.34), libsystemd-shared (= 261.2-1), libssl3t64, libtss2-esys-3.0.2-0t64, libtss2-mu-4.0.1-0t64, libtss2-rc0t64, libtss2-tcti-device0t64, tpm-udev	
+systemd-userdbd	libc6 (>= 2.34), libsystemd-shared (= 261.2-1), systemd (= 261.2-1), libnss-systemd (= 261.2-1)	
+sysvinit-utils	libc6 (>= 2.38)	
+tar		
+tmux	systemd | systemd-standalone-tmpfiles | systemd-tmpfiles, libc6 (>= 2.42), libevent-core-2.1-7t64 (>= 2.1.8-stable), libjemalloc2 (>= 2.1.1), libsystemd0 (>= 237), libtinfo6 (>= 6.5)	
+tpm-udev	systemd | systemd-standalone-sysusers | systemd-sysusers, systemd | systemd-standalone-tmpfiles | systemd-tmpfiles	
+tzdata	debconf (>= 0.5) | debconf-2.0	
+user-session-migration	libc6 (>= 2.34), libglib2.0-0t64 (>= 2.76.0)	
+util-linux		sensible-utils
+x11-common	lsb-base	
+x11-utils	libc6 (>= 2.38), libfontconfig1 (>= 2.12.6), libgl1, libx11-6, libx11-xcb1 (>= 2:1.8.7), libxaw7 (>= 2:1.0.14), libxcb-shape0, libxcb1 (>= 1.6), libxcomposite1 (>= 1:0.4.5), libxext6, libxft2 (>> 2.1.1), libxi6, libxinerama1 (>= 2:1.1.4), libxkbfile1 (>= 1:1.1.0), libxmu6 (>= 2:1.1.3), libxmuu1 (>= 2:1.1.3), libxrandr2 (>= 2:1.2.0), libxrender1, libxt6t64 (>= 1:1.1.0), libxtst6, libxv1, libxxf86dga1 (>= 2:1.1.5), libxxf86vm1	luit
+x11-xserver-utils	libc6 (>= 2.38), libice6 (>= 1:1.0.0), libx11-6, libxaw7 (>= 2:1.0.16), libxcursor1 (>> 1.1.2), libxext6, libxi6, libxmu6 (>= 2:1.1.3), libxmuu1 (>= 2:1.1.3), libxrandr2 (>= 2:1.5.0), libxt6t64, libxxf86vm1, cpp	
+xauth	libc6 (>= 2.38), libx11-6, libxau6 (>= 1:1.0.11), libxext6, libxmuu1 (>= 2:1.1.3)	
+xclip	libc6 (>= 2.34), libx11-6, libxmu6 (>= 2:1.1.3)	xauth
+xdg-user-dirs	libc6 (>= 2.34)	
+xdg-utils		libfile-mimeinfo-perl, libnet-dbus-perl, libx11-protocol-perl, x11-utils, x11-xserver-utils
+xfonts-encodings	x11-common	
+xfonts-utils	libc6 (>= 2.38), libfontenc1 (>= 1:1.1.8), libfreetype6 (>= 2.6), zlib1g (>= 1:1.1.4), x11-common, xfonts-encodings	
+xkb-data		
+xxd	libc6 (>= 2.38)	
+zlib1g	libc6 (>= 2.14)	
+zlib1g-dev	zlib1g (= 1:1.3.dfsg+really1.3.2-3), libc6-dev | libc-dev	
+zsh	zsh-common (= 5.9.2-1), libc6 (>= 2.38), libcap2 (>= 1:2.10), libtinfo6 (>= 6), debianutils (>= 5.3-1~)	libgdbm6t64 (>= 1.16), libncursesw6 (>= 6), libpcre2-8-0 (>= 10.22)
+zsh-common		zsh

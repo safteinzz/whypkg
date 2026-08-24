@@ -1,0 +1,15 @@
+bat
+clang
+curl
+ffmpeg
+fzf
+git
+htop
+imagemagick
+jq
+neovim
+nodejs
+ripgrep
+sqlite3
+tmux
+zsh
