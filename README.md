@@ -10,7 +10,11 @@ wonder why the f* you have that package? know it now - a fast, cross-distro pack
 
 ```bash
 cargo install whypkg
+whypkg self check   # is a newer release out?
+whypkg self update  # install the latest
 ```
+
+No cargo yet? Rust installs the same way on every distro: [rustup.rs](https://rustup.rs).
 
 ![whypkg filtering a package list, opening a package to see what pulled it in, following the dependency graph, and printing the pending-upgrade report](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/demo.gif)
 
@@ -59,46 +63,10 @@ whypkg                 # browse every installed package
 whypkg --upgradable    # browse only packages with an upgrade waiting
 whypkg pending         # full report, grouped by what pulled things in
 whypkg pending --quick # one line per package: size + reason
-whypkg self update     # reinstall whypkg from crates.io
-whypkg self check      # is there a newer release?
 ```
 
 `whypkg pending` also takes `--kernel`, `--apps`, `--auto` and `--sizes` to show
 one section at a time.
-
-## Keys
-
-| Key | In the list |
-|-----|-------------|
-| any character | filter, on names and descriptions |
-| `↑` `↓` or `Ctrl-P` `Ctrl-N` | move |
-| `Tab` | cycle all / manual / auto / flatpak |
-| `Enter` | open the highlighted package |
-| `←` `→` | inside a package, flip between what needs it and what it needs |
-| `Ctrl-G` | the dependency graph |
-| `Esc` | back one level, and quit at the top |
-| `Ctrl-C` | quit |
-
-| Key | In the graph |
-|-----|--------------|
-| `←` `↓` `↑` `→` or `hjkl` | move between packages |
-| `Enter` | re-centre on the selected package |
-| `Ctrl-G` | open that package's dossier |
-| `Esc` | retrace, then leave the graph |
-| `q` | leave the graph |
-
-## Distro support
-
-| Distro family         | Status     |
-|-----------------------|------------|
-| Debian / Ubuntu (apt) | ✅ working  |
-| Arch (pacman)         | ✅ working  |
-| Fedora / RHEL (dnf)   | ✅ working  |
-| Flatpak               | ✅ working  |
-
-Flatpak apps appear alongside your system packages whenever flatpak is
-installed. Each package manager sits behind a single `Backend` trait, so the
-analysis and the interface are distro-agnostic.
 
 ## It never touches your system
 
@@ -113,6 +81,12 @@ package manager's own queries, about half a second.
 It started as the bash `apt-why` / `apt-pending` scripts, kept in
 [`legacy/`](https://gitlab.com/safteinzz/whypkg/-/tree/main/legacy).
 
+## Compatibility
+
+Linux: Debian/Ubuntu (apt), Arch (pacman), Fedora/RHEL (dnf), and flatpak apps
+alongside any of them. Each package manager sits behind one `Backend` trait, so
+the analysis and the interface are distro-agnostic.
+
 ## License
 
-AGPL-3.0-only.
+AGPL-3.0-only
