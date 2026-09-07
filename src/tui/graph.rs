@@ -393,11 +393,8 @@ impl GraphView {
                     } else {
                         Style::new().fg(node.color)
                     };
-                    // Labels hug their planet, just clear of the dot, and fan
-                    // diagonally *away* from the middle: nodes in the top half
-                    // get their name a row above, bottom half a row below. That
-                    // splays the names outward instead of stacking them, so
-                    // neighbours drift apart rather than collide.
+                    // Labels fan diagonally away from the middle - top half above the dot, bottom
+                    // half below - so neighbours drift apart instead of stacking.
                     const GAP: f64 = 1.9; // hugs the node marker
                     let room = match node.side {
                         Side::Left => node.x - GAP + X_SPAN,
@@ -425,12 +422,10 @@ impl GraphView {
             });
         f.render_widget(canvas, chunks[2]);
 
-        // Tint the two zones, leaving a neutral lane down the middle for the
-        // package itself (it's neither "needed by" nor "depends on"). Bg only,
-        // after the canvas renders, so the braille graph stays visible on top.
-        // Pivot on the column the canvas actually draws x=0 into, not on the
-        // geometric middle: the braille grid spans `2*cells - 1` dots, so the
-        // midpoint floors one cell to the left and the lane would sit off by one.
+        // Tint the two zones, leaving a neutral lane for the package itself. Bg only,
+        // after the canvas renders, so the braille graph stays on top. Pivot on the
+        // column the canvas draws x=0 into: the braille grid spans `2*cells - 1` dots,
+        // so the geometric middle would sit one cell off.
         let inner_w = ca.width.saturating_sub(2) as f64;
         let centre_dot = (0.5 * (2.0 * inner_w - 1.0)).floor().max(0.0) as u16;
         let mid = ca.x + 1 + centre_dot / 2;

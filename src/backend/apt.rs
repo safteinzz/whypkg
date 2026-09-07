@@ -34,10 +34,9 @@ impl Backend for Apt {
             .collect();
 
         // ── core metadata: name, version, size, synopsis ─────────────────────
-        // `${Description}` carries the full multi-line description, so a single
-        // record can span several output lines. Only the first line of a record
-        // has the 4 tab-separated fields; continuation lines (the long
-        // description) have no tabs, so we recognise records by field count.
+        // `${Description}` is multi-line, so a record spans several output lines.
+        // Only a record's first line has the 4 tab-separated fields, so records are
+        // recognised by field count.
         let meta_raw = capture(
             "dpkg-query",
             &[
