@@ -1,13 +1,11 @@
 //! whypkg - why the hell is this package here?
 //!
-//! A fast, cross-distro package investigator. Two modes share one engine:
-//!   whypkg                 Interactive browser: fuzzy-find a package, open its
-//!                          dossier, drill through what needs it / what it needs.
-//!   whypkg --upgradable    Same browser, scoped to packages with pending upgrades.
-//!   whypkg pending         A grouped report of every pending upgrade and *why*
-//!                          it's on your system (kernel / your apps / pulled in by…).
-//!   whypkg self update     Reinstall the latest release from crates.io.
-//!   whypkg self check      Ask crates.io whether a newer release exists.
+//! A fast, cross-distro package investigator. Two modes share one engine: an
+//! interactive browser and a grouped report.
+//!
+//! This file is the clap `Cmd` enum and the dispatch match; what you can run is
+//! `whypkg --help`, which renders from the manifest, those doc comments and
+//! `AFTER`, and is the only copy of that list.
 //!
 //! The package-manager specifics live behind a single `Backend` trait, so apt,
 //! pacman, and dnf all feed the same analysis and the same UI.
@@ -20,16 +18,25 @@ mod tui;
 
 use clap::{Parser, Subcommand};
 
-const EXAMPLES: &str = concat!(
-    "\x1b[1mExamples:\x1b[0m
-  whypkg                     Browse every installed package
-  whypkg --upgradable        Browse only packages with a pending upgrade
-  whypkg pending             Report every pending upgrade, grouped by why it's here
-  whypkg pending --quick     One line per pending package: size + reason
-  whypkg self update         Reinstall the latest release from crates.io
-  whypkg self check          Ask crates.io whether a newer release exists
+/// clap's own layout with one change: `{before-help}` moves from above the
+/// description to just under `Usage:`, so the shapes block lands on top of the
+/// command list rather than on top of the screen.
+const TEMPLATE: &str =
+    "{about-with-newline}\n{usage-heading} {usage}\n\n{before-help}{all-args}{after-help}\n";
 
-Inside the browser: type to filter, Enter to open, Esc to go back.",
+/// The shapes clap cannot list, because the browser is the bare invocation
+/// rather than a subcommand.
+const WAYS: &str = "\x1b[1mWays to run it (not subcommands):\x1b[0m
+  whypkg    browse every installed package (TUI)
+              type to filter, enter opens a dossier, esc goes back";
+
+/// The rest of the block: what a script can expect, then where to look next.
+const AFTER: &str = concat!(
+    "\
+`pending --quick` prints one line per package for a pipe, and ends quietly when
+the reader goes away; every other output is rendered for people, and the browser
+takes over the terminal. Failures name themselves on stderr and exit non-zero.
+Run `whypkg <command> --help` for a command's details.",
     "\n\n",
     env!("CARGO_PKG_REPOSITORY"),
     "\ncontributors: ",
@@ -56,20 +63,28 @@ const LONG_VERSION: &str = concat!(
     version,
     long_version = LONG_VERSION,
     about,
-    after_help = EXAMPLES,
+    // The shapes come first: this is a bare-first binary, so the command list is
+    // the leftovers and putting it on top answers the wrong question first.
+    help_template = TEMPLATE,
+    before_help = WAYS,
+    after_help = AFTER,
 )]
 struct Cli {
     #[command(subcommand)]
     command: Option<Cmd>,
 
-    /// (browse mode) Limit the browser to packages with a pending upgrade
-    #[arg(long, global = true)]
+    /// Limit the browser to packages with a pending upgrade
+    #[arg(long)]
     upgradable: bool,
 }
 
 #[derive(Subcommand)]
 enum Cmd {
     /// Report every pending upgrade, grouped by why it's on your system
+    ///   --quick   one line per package: size + reason
+    ///   --kernel  kernel, firmware and microcode only
+    ///   --apps    only the packages you installed yourself
+    #[command(verbatim_doc_comment)]
     Pending(commands::pending::Args),
     /// Manage whypkg itself: `self update` reinstalls, `self check` looks for a newer release
     #[command(name = "self", subcommand)]
