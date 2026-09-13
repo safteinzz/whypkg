@@ -68,6 +68,18 @@ whypkg pending --quick # one line per package: size + reason
 `whypkg pending` also takes `--kernel`, `--apps`, `--auto` and `--sizes` to show
 one section at a time.
 
+## Keys
+
+| key | does |
+| --- | --- |
+| `↑` `↓` | move |
+| `Enter` | open what is under the cursor |
+| `Esc` | step back; from the package list, quit |
+| `Ctrl-G` | the dependency graph around it, and back |
+| `Ctrl-C` | quit |
+
+Each screen's own keys are on its bottom line.
+
 ## It never touches your system
 
 whypkg only reads. It will not sync, install or remove anything. The upgrade
@@ -84,8 +96,7 @@ It started as the bash `apt-why` / `apt-pending` scripts, kept in
 ## Compatibility
 
 Linux: Debian/Ubuntu (apt), Arch (pacman), Fedora/RHEL (dnf), and flatpak apps
-alongside any of them. Each package manager sits behind one `Backend` trait, so
-the analysis and the interface are distro-agnostic.
+alongside any of them, with the same browser and the same report on every one.
 
 ## License
 
