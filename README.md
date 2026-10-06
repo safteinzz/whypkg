@@ -98,8 +98,7 @@ It started as the bash `apt-why` / `apt-pending` scripts, kept in
 ## Compatibility
 
 Linux: Debian/Ubuntu (apt), Arch (pacman), Fedora/RHEL (dnf), and flatpak apps
-alongside any of them. Each package manager sits behind one `Backend` trait, so
-the analysis and the interface are distro-agnostic.
+alongside any of them, with the same browser and the same report on every one.
 
 ## License
 
