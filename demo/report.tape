@@ -2,7 +2,7 @@
 # wide and 22 lines tall - in the browser's 112-column frame a third of the
 # picture would be empty.
 #
-#   ./demo/stage.sh && vhs demo/report.tape     (run from the repo root)
+#   ./render.sh report
 #
 # The Sleep after Screenshot is not decoration: VHS grabs the buffer a beat
 # after the command, so the next keypress can otherwise land in the picture.

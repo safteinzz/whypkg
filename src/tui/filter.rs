@@ -92,7 +92,7 @@ impl App {
             })
             .collect();
         // Highest score first; ties keep the pool's (sorted) order via stable sort.
-        scored.sort_by(|a, b| b.0.cmp(&a.0));
+        scored.sort_by_key(|a| std::cmp::Reverse(a.0));
         scored.into_iter().map(|(_, name)| name).collect()
     }
 }

@@ -1,6 +1,7 @@
 //! The event loop: every key the browser answers to.
 
 use super::*;
+use crossterm::event::KeyEvent;
 
 impl App {
     pub(crate) fn event_loop(
@@ -9,11 +10,14 @@ impl App {
     ) -> io::Result<()> {
         loop {
             // The graph view, when open, takes over the whole screen and its
-            // own keys until Esc.
+            // own keys until `esc`.
             if self.graph.is_some() {
                 terminal.draw(|f| {
                     if let Some(g) = &self.graph {
                         g.render(f, f.area());
+                    }
+                    if self.help {
+                        render::render_help(f, f.area(), self);
                     }
                 })?;
                 let Event::Key(key) = event::read()? else {
@@ -22,20 +26,18 @@ impl App {
                 if key.kind == KeyEventKind::Release {
                     continue;
                 }
-                if key.modifiers.contains(KeyModifiers::CONTROL)
-                    && matches!(key.code, KeyCode::Char('c'))
-                {
+                if self.help {
+                    self.help_key(key);
+                    continue;
+                }
+                if is_ctrl(key, 'c') {
                     return Ok(());
                 }
-                // Ctrl+[ is Esc; treat both as "step back".
-                let graph_back = matches!(key.code, KeyCode::Esc)
-                    || (key.modifiers.contains(KeyModifiers::CONTROL)
-                        && matches!(key.code, KeyCode::Char('[')));
+                let graph_back = is_escape(key);
 
-                // Ctrl+G flips back to the dossier - for whatever package you
+                // `ctrl-g` flips back to the dossier, for whatever package you
                 // navigated to in the graph, not the one you came in on.
-                let to_dossier = key.modifiers.contains(KeyModifiers::CONTROL)
-                    && matches!(key.code, KeyCode::Char('g'));
+                let to_dossier = is_ctrl(key, 'g');
 
                 match key.code {
                     // Back out through the graph history; once there's nothing
@@ -61,8 +63,8 @@ impl App {
                             self.open(t);
                         }
                     }
-                    // q always leaves the graph outright.
-                    KeyCode::Char('q') => self.graph = None,
+                    KeyCode::Char('q') => return Ok(()),
+                    KeyCode::Char('?') => self.open_help(),
                     KeyCode::Enter => {
                         if let Some(g) = &mut self.graph {
                             g.recenter(&self.world);
@@ -110,89 +112,156 @@ impl App {
                 continue;
             }
 
-            // Ctrl-C always quits.
-            if key.modifiers.contains(KeyModifiers::CONTROL)
-                && matches!(key.code, KeyCode::Char('c'))
-            {
+            if self.help {
+                self.help_key(key);
+                continue;
+            }
+
+            if self.typing {
+                self.query_key(key, visible.len());
+                continue;
+            }
+            if is_ctrl(key, 'c') {
                 return Ok(());
             }
 
-            // Esc, or Ctrl+[ - the same control byte historically, but the
-            // enhanced keyboard protocol reports them separately, so treat both
-            // as escape.
-            let escape = matches!(key.code, KeyCode::Esc)
-                || (key.modifiers.contains(KeyModifiers::CONTROL)
-                    && matches!(key.code, KeyCode::Char('[')));
-
+            let ctrl = key.modifiers.contains(KeyModifiers::CONTROL);
             match key.code {
-                _ if escape => {
-                    // Pop a level; quit if we're already at the root.
-                    if self.stack.len() == 1 {
-                        return Ok(());
+                // Out one step: a kept filter first, then the dossier. The list
+                // is the top, so `esc` never quits; `q` does.
+                _ if is_escape(key) => {
+                    if !self.frame().query.is_empty() {
+                        let frame = self.frame_mut();
+                        frame.query.clear();
+                        frame.query_back = 0;
+                        frame.selected = 0;
+                    } else if self.stack.len() > 1 {
+                        self.stack.pop();
                     }
-                    self.stack.pop();
+                }
+                KeyCode::Char('q') if !ctrl => return Ok(()),
+                KeyCode::Char('?') => self.open_help(),
+                // A new search, as in every other app: the kept query goes.
+                KeyCode::Char('/') => {
+                    self.typing = true;
+                    let frame = self.frame_mut();
+                    frame.query.clear();
+                    frame.query_back = 0;
+                    frame.selected = 0;
                 }
                 KeyCode::Enter => {
                     if let Some(pkg) = visible.get(self.frame().selected).cloned() {
                         self.open(pkg);
                     }
                 }
-                KeyCode::Tab => {
-                    // Cycle all → manual → auto → flatpak; skip the flatpak
-                    // bucket entirely on machines with no flatpak apps.
-                    self.filter = self.filter.next();
-                    if self.filter == FilterMode::Flatpak && !self.has_flatpak() {
-                        self.filter = self.filter.next();
-                    }
+                KeyCode::Tab => self.step_filter(),
+                KeyCode::Char('j') | KeyCode::Down => self.move_selection(1, visible.len()),
+                KeyCode::Char('k') | KeyCode::Up => self.move_selection(-1, visible.len()),
+                // In a dossier, flip the list between "what needs it" and "what
+                // it needs", the way the arrows switch tabs everywhere else.
+                KeyCode::Char('h' | 'l') | KeyCode::Left | KeyCode::Right
+                    if self.frame().focus.is_some() =>
+                {
+                    self.relation = self.relation.toggle();
                     self.frame_mut().selected = 0;
                 }
-                KeyCode::Up => self.move_selection(-1, visible.len()),
-                KeyCode::Down => self.move_selection(1, visible.len()),
-                KeyCode::Left | KeyCode::Right => {
-                    // In a dossier, flip the list between "what needs it" and
-                    // "what it needs". No-op on the root list.
-                    if self.frame().focus.is_some() {
-                        self.relation = self.relation.toggle();
-                        self.frame_mut().selected = 0;
-                    }
-                }
-                KeyCode::Backspace => {
-                    self.frame_mut().query.pop();
-                    self.frame_mut().selected = 0;
-                }
-                KeyCode::Char(c) => {
-                    // vim-style: Ctrl-j/k move, Ctrl-h/l flip the relation
-                    // (Ctrl-l works everywhere; Ctrl-h only where the terminal
-                    // sends it distinct from Backspace, e.g. kitty protocol).
-                    if key.modifiers.contains(KeyModifiers::CONTROL) {
-                        match c {
-                            'j' | 'n' => self.move_selection(1, visible.len()),
-                            'k' | 'p' => self.move_selection(-1, visible.len()),
-                            'h' | 'l' if self.frame().focus.is_some() => {
-                                self.relation = self.relation.toggle();
-                                self.frame_mut().selected = 0;
-                            }
-                            'g' => {
-                                // Open the graph view centred on the focused
-                                // package, or the highlighted row at the root.
-                                let target = self
-                                    .frame()
-                                    .focus
-                                    .clone()
-                                    .or_else(|| visible.get(self.frame().selected).cloned());
-                                if let Some(t) = target {
-                                    self.graph = Some(graph::GraphView::build(&self.world, &t));
-                                }
-                            }
-                            _ => {}
-                        }
-                    } else {
-                        self.frame_mut().query.push(c);
-                        self.frame_mut().selected = 0;
+                KeyCode::Char('g') if ctrl => {
+                    // Open the graph view centred on the focused package, or
+                    // the highlighted row at the root.
+                    let target = self
+                        .frame()
+                        .focus
+                        .clone()
+                        .or_else(|| visible.get(self.frame().selected).cloned());
+                    if let Some(t) = target {
+                        self.graph = Some(graph::GraphView::build(&self.world, &t));
                     }
                 }
                 _ => {}
             }
         }
     }
+
+    /// The `/` line has the keys: they edit the query like a shell line, `↵`
+    /// keeps it, and `esc` or ctrl-c drops it. `?` still opens help, since no
+    /// package name holds one, and the arrows still move the list beneath.
+    fn query_key(&mut self, key: KeyEvent, len: usize) {
+        if is_escape(key) || is_ctrl(key, 'c') {
+            self.typing = false;
+            let frame = self.frame_mut();
+            frame.query.clear();
+            frame.query_back = 0;
+            frame.selected = 0;
+            return;
+        }
+        match key.code {
+            KeyCode::Enter => self.typing = false,
+            KeyCode::Char('?') => self.open_help(),
+            KeyCode::Down => self.move_selection(1, len),
+            KeyCode::Up => self.move_selection(-1, len),
+            _ => {
+                let frame = self.frame_mut();
+                let before = frame.query.clone();
+                if line_edit::edit(&mut frame.query, &mut frame.query_back, key)
+                    && frame.query != before
+                {
+                    frame.selected = 0;
+                }
+            }
+        }
+    }
+
+    /// All, manual, auto, flatpak and round again, skipping flatpak on a
+    /// machine with no flatpak apps.
+    fn step_filter(&mut self) {
+        self.filter = self.filter.next();
+        if self.filter == FilterMode::Flatpak && !self.has_flatpak() {
+            self.filter = self.filter.next();
+        }
+        self.frame_mut().selected = 0;
+    }
+
+    fn open_help(&mut self) {
+        self.help = true;
+        self.help_scroll.set(0);
+    }
+
+    /// The help panel owns every key while it is up: it scrolls, `esc`,
+    /// `ctrl-c` and the keys that open it close it, and anything else is
+    /// swallowed.
+    fn help_key(&mut self, key: KeyEvent) {
+        if is_escape(key)
+            || is_ctrl(key, 'c')
+            || matches!(key.code, KeyCode::Char('?') | KeyCode::Char('q'))
+        {
+            self.help = false;
+            return;
+        }
+        let ctrl = key.modifiers.contains(KeyModifiers::CONTROL);
+        let half = 10;
+        let top = self.help_scroll.get();
+        let to = match key.code {
+            KeyCode::Char('d') if ctrl => top.saturating_add(half),
+            KeyCode::Char('u') if ctrl => top.saturating_sub(half),
+            KeyCode::PageDown => top.saturating_add(half),
+            KeyCode::PageUp => top.saturating_sub(half),
+            KeyCode::Char('j') | KeyCode::Down => top.saturating_add(1),
+            KeyCode::Char('k') | KeyCode::Up => top.saturating_sub(1),
+            KeyCode::Char('g') | KeyCode::Home => 0,
+            // `render_help` clamps this to the last screenful.
+            KeyCode::Char('G') | KeyCode::End => usize::MAX,
+            _ => top,
+        };
+        self.help_scroll.set(to);
+    }
+}
+
+fn is_ctrl(key: KeyEvent, c: char) -> bool {
+    key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char(c)
+}
+
+/// `esc`, or `ctrl-[`: the same control byte historically, but the enhanced
+/// keyboard protocol reports them separately.
+fn is_escape(key: KeyEvent) -> bool {
+    key.code == KeyCode::Esc || is_ctrl(key, '[')
 }

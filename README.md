@@ -26,7 +26,7 @@ No cargo yet? Rust installs the same way on every distro: [rustup.rs](https://ru
 
 ## What was that thing called?
 
-Type to filter. It matches descriptions as well as names, which is the only way
+`/` filters. It matches descriptions as well as names, which is the only way
 anyone finds a flatpak app by the name on its window.
 
 ![Typing "element" as a filter, with the flatpak app im.riot.Riot at the top of the results](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/search.png)
@@ -37,17 +37,17 @@ anyone finds a flatpak app by the name on its window.
 
 **pulled in by clang.** That is the whole point. You also get what it arrived
 alongside, whether it came from a repo or a local file you sideloaded (or a repo
-that no longer exists), what needs it and what it needs. `Enter` on anything in
-the list follows the thread; `Esc` comes back.
+that no longer exists), what needs it and what it needs. `↵` on anything in
+the list follows the thread; `esc` comes back.
 
 ## What is around it?
 
-`Ctrl-G` draws the neighbourhood in the terminal. No browser, no image protocol,
+`ctrl-g` draws the neighbourhood in the terminal. No browser, no image protocol,
 so it survives ssh and tmux.
 
 ![The dependency graph view: libllvm21 in the centre, packages that need it on the left, packages it needs on the right](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/graph.png)
 
-`Enter` re-centres on a neighbour and keeps digging, `Esc` retraces.
+`↵` re-centres on a neighbour and keeps digging, `esc` retraces.
 
 ## What is this upgrade about to pull down?
 
@@ -67,6 +67,20 @@ whypkg pending --quick # one line per package: size + reason
 
 `whypkg pending` also takes `--kernel`, `--apps`, `--auto` and `--sizes` to show
 one section at a time.
+
+## Keys
+
+| key | does |
+| --- | --- |
+| `j/k` `↑↓` | move in the list |
+| `/` | filter by name and description |
+| `↵` | open the package, or centre the graph on it |
+| `ctrl-g` | the graph of the package, and back |
+| `esc` | back one step, drop the filter, close help |
+| `?` | every key, on every screen |
+| `q` `ctrl-c` | quit; ctrl-c under help closes it |
+
+Each screen's own keys are on its bottom line, and `?` lists them all.
 
 ## It never touches your system
 

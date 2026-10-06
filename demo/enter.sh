@@ -13,8 +13,8 @@
 # before it was caught; check every path whypkg reads directly before adding one.
 #
 # The prompt is the same invented `user@host` every other crate's rig uses, and
-# no tape sets a VHS theme, so every frame across the projects is the same
-# terminal. It is not about hiding a name: these images are a build output, and
+# every tape sets the same VHS theme and font, so every frame across the
+# projects is the same terminal. It is not about hiding a name: these images are a build output, and
 # one that comes out different on every machine that regenerates it is not
 # reproducible.
 set -euo pipefail
@@ -22,6 +22,33 @@ set -euo pipefail
 cd "$(dirname "$0")"
 home=$PWD/home
 [ -d "$home/bin" ] || { echo "enter.sh: run ./stage.sh first"; exit 1; }
+
+ps1='\[\e[38;5;114m\]user@host\[\e[0m\]:\[\e[38;5;110m\]\w\[\e[0m\]\$ '
+
+# In render.sh's container the masks are the container's own mounts: a tmpfs on
+# /var/log that render.sh fills from the stage, and an empty one on
+# /var/lib/flatpak. bwrap cannot run there without privileges, so this checks
+# the masks are in place, refusing otherwise, and opens the same shell under
+# `env -i` instead.
+if [ "${DEMO_MASKS:-}" = container ]; then
+  mounted() { awk -v p="$1" '$2 == p && $3 == "tmpfs" {found=1} END {exit !found}' /proc/mounts; }
+  mounted /var/log && mounted /var/lib/flatpak \
+    && cmp -s "$home/var/log/dpkg.log" /var/log/dpkg.log \
+    && cmp -s "$home/var/log/apt/history.log" /var/log/apt/history.log \
+    && [ -z "$(ls -A /var/lib/flatpak)" ] \
+    || { echo "enter.sh: /var/log is not the stage's or /var/lib/flatpak is not empty; render with ./render.sh"; exit 1; }
+  cd "$home"
+  exec env -i \
+    PATH="$home/bin:/usr/bin:/bin" \
+    HOME="$home" \
+    PS1="$ps1" \
+    HISTFILE=/dev/null \
+    TERM="${TERM:-xterm-256color}" \
+    COLORTERM=truecolor \
+    LANG=C.UTF-8 \
+    bash --norc --noprofile "$@"
+fi
+
 command -v bwrap >/dev/null || { echo "enter.sh needs bubblewrap (bwrap)"; exit 1; }
 
 # --clearenv is the bwrap spelling of `env -i`: what follows is the whole
@@ -34,7 +61,7 @@ exec bwrap \
   --clearenv \
   --setenv PATH "$home/bin:/usr/bin:/bin" \
   --setenv HOME "$home" \
-  --setenv PS1 '\[\e[38;5;114m\]user@host\[\e[0m\]:\[\e[38;5;110m\]\w\[\e[0m\]\$ ' \
+  --setenv PS1 "$ps1" \
   --setenv HISTFILE /dev/null \
   --setenv TERM "${TERM:-xterm-256color}" \
   --setenv COLORTERM truecolor \

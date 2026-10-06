@@ -1,6 +1,6 @@
 # Every still in readme-assets/, rendered from the staged fake machine.
 #
-#   ./demo/stage.sh && vhs demo/shots.tape      (run from the repo root)
+#   ./render.sh shots
 #
 # The setup block is hidden, so a frame only ever holds the tool: no
 # multiplexer bar, no scrollback, nothing to crop afterwards.
@@ -40,15 +40,16 @@ Screenshot readme-assets/browse.png
 Sleep 1s
 
 # ── found by what it is, not what it is called ──────────────────────────────
-Type "element"
+Type "/element"
 Sleep 2s
 Screenshot readme-assets/search.png
 Sleep 1s
-Backspace 7
+Escape
 
 # ── the answer ──────────────────────────────────────────────────────────────
-Type "libllvm"
+Type "/libllvm"
 Sleep 1s
+Enter
 Enter
 Sleep 2s
 Screenshot readme-assets/dossier.png
@@ -63,7 +64,7 @@ Sleep 1s
 Hide
 Escape
 Escape
-Escape
+Type "q"
 Sleep 500ms
 Type "exit" Enter
 Sleep 500ms

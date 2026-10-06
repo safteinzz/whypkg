@@ -3,7 +3,7 @@
 //! This is the soul of the tool, ported from `apt-why`: fuzzy-find a package,
 //! open its dossier (manual/auto, install date, size, upgrade), then *navigate*:
 //! every package it's needed by and everything it depends on is itself
-//! selectable, so you follow the thread inward and outward. Esc pops back up a
+//! selectable, so you follow the thread inward and outward. `esc` pops back up a
 //! level; a breadcrumb shows the trail you've drilled.
 //!
 //! Unlike the bash original it does no work while you browse: the `World` is in
@@ -13,7 +13,9 @@
 pub mod filter;
 pub mod graph;
 mod input;
+mod line_edit;
 mod render;
+mod widgets;
 
 use filter::FilterMode;
 
@@ -65,6 +67,8 @@ pub(crate) struct Frame {
     pub(crate) depends_on: Vec<String>,
     /// Current fuzzy query.
     pub(crate) query: String,
+    /// The cursor in `query`, as characters after it (`line_edit::edit`).
+    pub(crate) query_back: usize,
     /// Selected position within the *filtered* list.
     pub(crate) selected: usize,
     /// Packages installed in the same session as `focus`, cached at open time
@@ -96,9 +100,20 @@ pub(crate) struct App {
     /// Which dependency side the dossier list shows, toggled with ←/→.
     pub(crate) relation: Relation,
     pub(crate) stack: Vec<Frame>,
-    /// When `Some`, the graph view is open over everything else (Ctrl+G).
+    /// When `Some`, the graph view is open over everything else (`ctrl-g`).
     pub(crate) graph: Option<graph::GraphView>,
+    /// The help panel is up, over whichever screen opened it.
+    pub(crate) help: bool,
+    /// The first help row on screen; `render_help` clamps it to the end.
+    pub(crate) help_scroll: std::cell::Cell<usize>,
+    /// The `/` line has the keys: letters go into the query until `↵` keeps it
+    /// or `esc` drops it.
+    pub(crate) typing: bool,
 }
+
+/// `ctrl-g` turns the graph on from the list and off again from the graph, so
+/// it keeps one word on both screens.
+pub(crate) const GRAPH_KEY: &str = "ctrl-g graph";
 
 impl App {
     pub(crate) fn run_ui(&mut self) -> io::Result<()> {
@@ -156,6 +171,7 @@ impl App {
             needed_by,
             depends_on,
             query: String::new(),
+            query_back: 0,
             selected: 0,
             alongside,
             origin,
@@ -200,8 +216,8 @@ fn setup_terminal() -> io::Result<Terminal<CrosstermBackend<Stdout>>> {
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen)?;
-    // Where supported, ask the terminal to report keys unambiguously - this is
-    // what makes Ctrl+J distinct from Enter (and gives key-repeat events).
+    // Where supported, ask the terminal to report keys unambiguously, which is
+    // what makes `ctrl-j` distinct from `↵` (and gives key-repeat events).
     // Unsupported terminals simply ignore it.
     if matches!(
         crossterm::terminal::supports_keyboard_enhancement(),

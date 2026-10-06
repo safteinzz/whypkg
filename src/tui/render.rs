@@ -3,9 +3,18 @@
 use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::style::{Color, Style};
 use ratatui::text::{Line, Span};
-use ratatui::widgets::{Block, Borders, List, ListItem, ListState, Paragraph};
+use ratatui::widgets::{Block, Borders, Clear, List, ListItem, ListState, Paragraph};
 
+use super::widgets::{
+    BACK, FIND, HELP, KEEP, QUIT, READER_KEYS, box_area, box_block, box_height, box_hint,
+    box_width, key_footer, vscrollbar,
+};
 use super::*;
+
+/// The root list's footer.
+const LIST_KEYS: &[&str] = &["↵ open", "tab filter", GRAPH_KEY, FIND, QUIT];
+/// A package's footer: the list's, one level down.
+const DOSSIER_KEYS: &[&str] = &["↵ open", "tab filter", GRAPH_KEY, BACK, FIND, QUIT];
 
 /// Truncate to at most `max` characters (UTF-8 safe - never splits a char,
 /// unlike the byte-based `substr`/`:0:n` the bash version used).
@@ -87,7 +96,26 @@ impl App {
         let list = List::new(items)
             .highlight_style(Style::new().bg(Color::Indexed(54)).bold())
             .highlight_symbol("› ");
-        f.render_stateful_widget(list, chunks[2], &mut state);
+        // The list has no border, so a scrollbar takes its last column rather
+        // than drawing over the end of a description.
+        let view = chunks[2].height as usize;
+        let list_area = if visible.len() > view {
+            Rect {
+                width: chunks[2].width.saturating_sub(1),
+                ..chunks[2]
+            }
+        } else {
+            chunks[2]
+        };
+        f.render_stateful_widget(list, list_area, &mut state);
+        // One row taller at each end, since `vscrollbar` keeps off a border
+        // row there and this list has none.
+        let edge = Rect {
+            y: chunks[2].y.saturating_sub(1),
+            height: chunks[2].height + 2,
+            ..chunks[2]
+        };
+        vscrollbar(f, edge, visible.len(), state.offset(), view);
 
         // Query input line, with the active manual/auto filter shown on the right.
         let mode_span = if self.filter == FilterMode::All {
@@ -98,26 +126,53 @@ impl App {
                 Style::new().cyan(),
             )
         };
-        f.render_widget(
-            Paragraph::new(Line::from(vec![
-                Span::styled("  filter ", Style::new().dim()),
-                Span::raw(frame.query.clone()),
-                Span::styled("▏", Style::new().cyan()),
-                mode_span,
-            ])),
-            chunks[3],
-        );
+        // The `/` query: with its cursor and the match count while it is
+        // typed, as plain text while it is kept, and nothing until then.
+        let mut query = Vec::new();
+        if self.typing {
+            query.push(Span::styled("  /", Style::new().cyan()));
+            query.extend(line_edit::with_cursor(
+                &frame.query,
+                frame.query_back,
+                Style::new(),
+            ));
+            query.push(Span::styled(
+                format!("   {} match", visible.len()),
+                Style::new().dim(),
+            ));
+        } else if !frame.query.is_empty() {
+            query.push(Span::raw(format!("  /{}", frame.query)));
+        }
+        query.push(mode_span);
+        f.render_widget(Paragraph::new(Line::from(query)), chunks[3]);
 
-        // Contextual help footer.
-        let help = if has_dossier {
-            "Enter open · Esc back · ←/→ needs-it / it-needs · Tab filter · Ctrl-G graph · Ctrl-C quit"
+        // While the query is typed, its own two keys; while it is kept, it
+        // leads the footer with the `esc` that drops it.
+        let kept = format!("/{}", frame.query);
+        let keys: Vec<&str> = if self.typing {
+            vec![KEEP, BACK]
         } else {
-            "type to filter · Tab filter · Enter open · Ctrl-G graph · Esc quit"
+            let base = if has_dossier { DOSSIER_KEYS } else { LIST_KEYS };
+            let mut keys = Vec::new();
+            if !frame.query.is_empty() {
+                keys.push(kept.as_str());
+                keys.push(BACK);
+            }
+            keys.extend(
+                base.iter()
+                    .filter(|k| frame.query.is_empty() || **k != BACK)
+                    .copied(),
+            );
+            keys
         };
         f.render_widget(
-            Paragraph::new(Line::from(Span::styled(help, Style::new().dim()))),
+            Paragraph::new(key_footer(&keys, HELP, chunks[4].width)),
             chunks[4],
         );
+
+        if self.help {
+            render_help(f, f.area(), self);
+        }
     }
 
     /// The styled info block shown above a package's navigation list. Reads the
@@ -322,5 +377,136 @@ impl App {
             Span::raw(format!(" {size:>9}  ")),
             Span::styled(desc, Style::new().dim()),
         ])
+    }
+}
+
+/// One group of the help panel: a heading, then `(keys, what they do)` rows,
+/// where a row with no keys is a note about the group.
+type HelpSection = (&'static str, &'static [(&'static str, &'static str)]);
+
+/// Every key the browser and the graph answer to, grouped by where it works.
+/// The panel scrolls, so a new row costs nothing but its line.
+const HELP_ROWS: &[HelpSection] = &[
+    (
+        "list",
+        &[
+            ("j/k ↑↓", "move"),
+            ("↵", "open the package"),
+            ("/", "filter by name and description"),
+            ("tab", "the next filter: all, manual, auto, flatpak"),
+            ("ctrl-g", "graph"),
+            ("esc", "drop the filter"),
+            ("q ctrl-c", "quit"),
+            ("?", "this help"),
+            (
+                "",
+                "[M] yours · [A] pulled in · [F] flatpak · ↑ upgrade waiting",
+            ),
+        ],
+    ),
+    (
+        "package",
+        &[
+            ("h/l ←→", "needed by or depends on"),
+            ("esc", "back, or drop the filter first"),
+            ("", "the rest as the list"),
+        ],
+    ),
+    (
+        "typing a filter",
+        &[
+            ("←→ ctrl-a/e", "move in it, like a shell line"),
+            (
+                "ctrl-w ctrl-u",
+                "erase a word, everything before the cursor",
+            ),
+            ("↑↓", "move in the list beneath"),
+            ("↵", "keep it"),
+            ("esc ctrl-c", "drop it"),
+        ],
+    ),
+    (
+        "graph",
+        &[
+            ("h/l ←→", "change side"),
+            ("j/k ↑↓", "move in a side, paging past its end"),
+            ("↵", "centre on it"),
+            ("esc", "one step back"),
+            ("ctrl-g", "open its package"),
+            ("q", "quit"),
+            ("?", "this help"),
+            ("ctrl-c", "quit"),
+        ],
+    ),
+    (
+        "in this help",
+        &[
+            ("j/k ↑↓", "scroll"),
+            ("ctrl-d ctrl-u", "half a page down, up"),
+            ("g G", "the top, the bottom"),
+            ("esc q ?", "close"),
+        ],
+    ),
+];
+
+/// The width of the key column, so every description starts in one place.
+const HELP_KEYS: usize = 16;
+
+pub(super) fn help_lines() -> Vec<Line<'static>> {
+    let mut lines = Vec::new();
+    for (section, entries) in HELP_ROWS {
+        if !lines.is_empty() {
+            lines.push(Line::raw(""));
+        }
+        lines.push(Line::styled(*section, Style::new().cyan().bold()));
+        for (keys, what) in *entries {
+            if keys.is_empty() {
+                lines.push(Line::styled(format!("  {what}"), Style::new().dim()));
+                continue;
+            }
+            lines.push(Line::from(vec![
+                Span::styled(format!("  {keys:<HELP_KEYS$}"), Style::new().yellow()),
+                Span::raw(*what),
+            ]));
+        }
+    }
+    lines
+}
+
+/// The help reader over `area`: the body scrolls under a key row that never
+/// moves, with a scrollbar on the right border once it is taller than the box.
+/// Both screens end in a footer row, so the box stops above it.
+pub(super) fn render_help(f: &mut ratatui::Frame, area: Rect, app: &App) {
+    let area = Rect {
+        height: area.height.saturating_sub(1),
+        ..area
+    };
+    let lines = help_lines();
+    let width = box_width(area.width);
+    // The body, then a blank and the key row.
+    let rect = box_area(area, width, box_height(lines.len() as u16 + 2, area.height));
+    f.render_widget(Clear, rect);
+    let block = box_block(Color::Cyan, "help");
+    let inner = block.inner(rect);
+    f.render_widget(block, rect);
+
+    let shown = inner.height.saturating_sub(2) as usize;
+    // Clamped here, where the height is known, so scrolling past the end never
+    // piles up presses that then take as many to undo.
+    let top = app.help_scroll.get().min(lines.len().saturating_sub(shown));
+    app.help_scroll.set(top);
+    let body = Rect {
+        height: shown as u16,
+        ..inner
+    };
+    f.render_widget(Paragraph::new(lines[top..].to_vec()), body);
+    let keys = Rect {
+        y: inner.y + inner.height.saturating_sub(1),
+        height: 1,
+        ..inner
+    };
+    f.render_widget(Paragraph::new(box_hint(READER_KEYS)), keys);
+    if lines.len() > shown {
+        vscrollbar(f, rect, lines.len(), top, shown);
     }
 }

@@ -1,6 +1,6 @@
 # The tour at the top of the README: what a new user would do, in order.
 #
-#   ./demo/stage.sh && vhs demo/demo.tape       (run from the repo root)
+#   ./render.sh demo
 #
 # One beat per feature, each finished before the next starts, results held for
 # a couple of seconds and keystrokes hurried through. Ctrl keys are lowercase -
@@ -29,8 +29,9 @@ Type "whypkg" Enter
 Sleep 2500ms
 
 # ── beat 2: filter down to the 133 MB library nobody asked for ──────────────
-Type "libllvm"
+Type "/libllvm"
 Sleep 1200ms
+Enter
 Enter
 Sleep 3s
 
@@ -58,7 +59,7 @@ Sleep 1s
 
 # ── beat 5: back out to the whole list ──────────────────────────────────────
 Escape
-Backspace 7
+Escape
 Sleep 800ms
 
 # ── beat 6: flatpak apps sit in the same list, found by their real name ─────
@@ -74,7 +75,7 @@ Right
 Sleep 2200ms
 Escape
 Sleep 500ms
-Escape
+Type "q"
 Sleep 800ms
 
 # ── beat 7: the report - every upgrade waiting, and why it is here ──────────

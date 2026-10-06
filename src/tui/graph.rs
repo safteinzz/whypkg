@@ -4,15 +4,22 @@
 //! terminal - including tmux - with no image protocol. It shows the *ego graph*
 //! of one package: the package in the centre, the things that need it on the
 //! left, the things it needs on the right. Arrow keys move the selection around
-//! the ring; Enter re-centres on the selected node (expanding outward); Esc
-//! closes it. Node colour matches the list tags: green = manual, yellow = auto,
-//! blue = flatpak.
+//! the ring; `↵` re-centres on the selected node (expanding outward); `esc`
+//! steps back and then closes it. Node colour matches the list tags: green =
+//! manual, yellow = auto, blue = flatpak.
 
 use crate::model::{Source, World};
 use ratatui::prelude::*;
 use ratatui::symbols::Marker;
 use ratatui::widgets::canvas::{Canvas, Circle, Line as CanvasLine, Points};
 use ratatui::widgets::{Block, Borders, Paragraph};
+
+use super::GRAPH_KEY;
+use super::widgets::{BACK, HELP, QUIT, key_footer};
+
+/// The graph's footer. Its letters are keys rather than a filter, so it takes
+/// the plain `q quit` and `? help`.
+const GRAPH_KEYS: &[&str] = &["↵ centre", GRAPH_KEY, BACK, QUIT];
 
 /// Which column a node lives in - drives the spatial navigation.
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -51,8 +58,8 @@ pub struct GraphView {
     edges: Vec<(usize, usize)>,
     /// Index of the currently selected node.
     selected: usize,
-    /// Centres visited before this one, so Esc can walk back out the way you
-    /// dug in (Enter pushes, Esc pops).
+    /// Centres visited before this one, so `esc` can walk back out the way you
+    /// dug in (`↵` pushes, `esc` pops).
     history: Vec<String>,
 }
 
@@ -235,7 +242,7 @@ impl GraphView {
             .unwrap_or("")
     }
 
-    /// Re-centre on the selected node, remembering where we came from so Esc
+    /// Re-centre on the selected node, remembering where we came from so `esc`
     /// can walk back out.
     pub fn recenter(&mut self, world: &World) {
         let name = self.nodes[self.selected].name.clone();
@@ -459,10 +466,8 @@ impl GraphView {
         ]);
         f.render_widget(Paragraph::new(legend), chunks[3]);
 
-        // Controls, plus a note if some neighbours were trimmed.
-        let controls = "  ←↓↑→ / hjkl move · Enter dig in · Ctrl-G info · Esc back · q quit graph";
         f.render_widget(
-            Paragraph::new(Line::from(Span::styled(controls, Style::new().dim()))),
+            Paragraph::new(key_footer(GRAPH_KEYS, HELP, chunks[4].width)),
             chunks[4],
         );
     }
@@ -747,9 +752,9 @@ mod tests {
         let first_hop = g.selected_name().to_string();
 
         g.recenter(&w);
-        assert_eq!(g.center_name(), first_hop, "Enter re-centres on the node");
+        assert_eq!(g.center_name(), first_hop, "↵ re-centres on the node");
 
-        assert!(g.back(&w), "Esc unwinds one step");
+        assert!(g.back(&w), "esc unwinds one step");
         assert_eq!(g.center_name(), "center");
 
         assert!(

@@ -17,7 +17,7 @@
 # "2 months ago" rather than drifting to "3 years ago" as the fixtures age.
 #
 # Everything it writes lives under demo/home/, which it deletes first and which
-# is gitignored. It never writes anywhere else.
+# is gitignored. It never writes anywhere else. `./stage.sh down` only deletes.
 set -euo pipefail
 
 cd "$(dirname "$0")"
@@ -81,6 +81,11 @@ assert_safe_to_delete() {
 if [ -d "$STAGE" ]; then
   assert_safe_to_delete
   rm -rf --one-file-system "$STAGE"
+fi
+# `./stage.sh down` stops there, which is how render.sh clears a take away.
+if [ "${1:-}" = down ]; then
+  echo "torn down"
+  exit 0
 fi
 
 binary=$demo/../target/release/whypkg
