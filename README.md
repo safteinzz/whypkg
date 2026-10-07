@@ -3,7 +3,7 @@
 > **Canonical:** [gitlab.com/safteinzz/whypkg](https://gitlab.com/safteinzz/whypkg) · **Mirror:** [github.com/safteinzz/whypkg](https://github.com/safteinzz/whypkg)
 
 <!-- desc:start -->
-wonder why the f* you have that package? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, flatpak)
+why is that package here? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, flatpak)
 <!-- desc:end -->
 
 ## Install
@@ -16,42 +16,48 @@ whypkg self update  # install the latest
 
 No cargo yet? Rust installs the same way on every distro: [rustup.rs](https://rustup.rs).
 
-![whypkg filtering a package list, opening a package to see what pulled it in, following the dependency graph, and printing the pending-upgrade report](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/demo.gif)
-
 ## What have I actually got?
-
-`[M]` you installed it · `[A]` something pulled it in · `[F]` flatpak app · `↑` upgrade waiting
 
 ![The whypkg browser listing every installed package, each row tagged with how it got there](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/browse.png)
 
+Legend: `[M]` you installed it · `[A]` something pulled it in · `[F]` flatpak app · `↑` upgrade waiting
+
+```bash
+whypkg                 # browse every installed package
+```
+
 ## What was that thing called?
 
-`/` filters. It matches descriptions as well as names, which is the only way
-anyone finds a flatpak app by the name on its window.
-
 ![Typing "element" as a filter, with the flatpak app im.riot.Riot at the top of the results](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/search.png)
+
+`/` matches descriptions as well as names, which is the only way anyone finds a
+flatpak app by the name on its window.
 
 ## Why is this here?
 
 ![A package dossier: libllvm21, 133 MB, pulled in by clang, with the eleven packages that need it listed below](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/dossier.png)
 
-**pulled in by clang.** That is the whole point. You also get what it arrived
-alongside, whether it came from a repo or a local file you sideloaded (or a repo
-that no longer exists), what needs it and what it needs. `↵` on anything in
-the list follows the thread; `esc` comes back.
+**pulled in by clang.** That is the whole point. You also get where it came
+from, what needs it and what it needs, and `↵` on anything in the list follows
+the thread.
 
 ## What is around it?
 
-`ctrl-g` draws the neighbourhood in the terminal. No browser, no image protocol,
-so it survives ssh and tmux.
-
 ![The dependency graph view: libllvm21 in the centre, packages that need it on the left, packages it needs on the right](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/graph.png)
 
-`↵` re-centres on a neighbour and keeps digging, `esc` retraces.
+`ctrl-g` draws the neighbourhood in the terminal, with no browser and no image
+protocol, so it survives ssh and tmux. `↵` re-centres on a neighbour and `esc`
+retraces.
 
 ## What is this upgrade about to pull down?
 
 ![The pending report: one line per upgradable package with its size and why it is installed](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/pending.png)
+
+```bash
+whypkg --upgradable    # browse only packages with an upgrade waiting
+whypkg pending         # full report, grouped by what pulled things in
+whypkg pending --quick # one line per package: size + reason
+```
 
 Every package with an upgrade waiting, and why it is on your machine. Pipe it,
 grep it, diff it before and after.
@@ -59,41 +65,19 @@ grep it, diff it before and after.
 ## Commands
 
 ```bash
-whypkg                 # browse every installed package
-whypkg --upgradable    # browse only packages with an upgrade waiting
-whypkg pending         # full report, grouped by what pulled things in
-whypkg pending --quick # one line per package: size + reason
+whypkg pending --kernel   # one section at a time; --apps, --auto and --sizes too
 ```
 
-`whypkg pending` also takes `--kernel`, `--apps`, `--auto` and `--sizes` to show
-one section at a time.
+`whypkg <command> --help` has the details, and `?` lists every key.
 
-## Keys
+`pending --quick` prints one line per package for a pipe, everything else is
+rendered for people, and a failure names itself on stderr and exits non-zero.
 
-| key | does |
-| --- | --- |
-| `j/k` `↑↓` | move in the list |
-| `/` | filter by name and description |
-| `↵` | open the package, or centre the graph on it |
-| `ctrl-g` | the graph of the package, and back |
-| `esc` | back one step, drop the filter, close help |
-| `?` | every key, on every screen |
-| `q` `ctrl-c` | quit; ctrl-c under help closes it |
+## Notes
 
-Each screen's own keys are on its bottom line, and `?` lists them all.
-
-## It never touches your system
-
-whypkg only reads. It will not sync, install or remove anything. The upgrade
-list reflects your last database refresh (`apt update`, `pacman -Sy`,
-`dnf makecache`), exactly like your package manager's own listing does.
-
-Everything loads once at startup into an in-memory graph, so every hop while you
-browse is a hash-map lookup rather than a subprocess. The slow part is your
-package manager's own queries, about half a second.
-
-It started as the bash `apt-why` / `apt-pending` scripts, kept in
-[`legacy/`](https://gitlab.com/safteinzz/whypkg/-/tree/main/legacy).
+- whypkg only reads: it never syncs, installs or removes anything, and the upgrade list is as fresh as your last `apt update`, `pacman -Sy` or `dnf makecache`.
+- Everything loads once into an in-memory graph, so every hop is a lookup rather than a subprocess; the slow part is your package manager's own queries, about half a second.
+- It started as the bash `apt-why` and `apt-pending` scripts, kept in [`legacy/`](https://gitlab.com/safteinzz/whypkg/-/tree/main/legacy).
 
 ## Compatibility
 
