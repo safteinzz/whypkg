@@ -35,6 +35,28 @@ pub enum Origin {
     Unknown,
 }
 
+impl Source {
+    /// The word `--json` prints for it.
+    pub fn word(self) -> &'static str {
+        match self {
+            Source::System => "system",
+            Source::Flatpak => "flatpak",
+        }
+    }
+}
+
+impl Origin {
+    /// The word `--json` prints for it.
+    pub fn word(self) -> &'static str {
+        match self {
+            Origin::Repo => "repo",
+            Origin::Local => "local",
+            Origin::Orphaned => "orphaned",
+            Origin::Unknown => "unknown",
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct Package {
     pub name: String,

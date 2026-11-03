@@ -3,7 +3,7 @@
 > **Canonical:** [gitlab.com/safteinzz/whypkg](https://gitlab.com/safteinzz/whypkg) · **Mirror:** [github.com/safteinzz/whypkg](https://github.com/safteinzz/whypkg)
 
 <!-- desc:start -->
-why is that package here? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, flatpak)
+why is that package here? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, zypper, flatpak)
 <!-- desc:end -->
 
 ## Install
@@ -65,24 +65,28 @@ grep it, diff it before and after.
 ## Commands
 
 ```bash
+whypkg why libnss3 jq     # the dossier as text, for any number of packages
+whypkg leaves             # what autoremove would take, sideloaded and orphaned packages
 whypkg pending --kernel   # one section at a time; --apps, --auto and --sizes too
 ```
 
 `whypkg <command> --help` has the details, and `?` lists every key.
 
-`pending --quick` prints one line per package for a pipe, everything else is
-rendered for people, and a failure names itself on stderr and exits non-zero.
+Nothing prompts. `--quick` prints one line per package for a pipe, `--json` on
+`why`, `leaves` and `pending` prints an array with fixed field names, and a
+failure names itself on stderr and exits non-zero.
 
 ## Notes
 
-- whypkg only reads: it never syncs, installs or removes anything, and the upgrade list is as fresh as your last `apt update`, `pacman -Sy` or `dnf makecache`.
+- whypkg only reads: it never syncs, installs or removes anything, and the upgrade list is as fresh as your last `apt update`, `pacman -Sy`, `dnf makecache` or `zypper refresh`.
 - Everything loads once into an in-memory graph, so every hop is a lookup rather than a subprocess; the slow part is your package manager's own queries, about half a second.
 - It started as the bash `apt-why` and `apt-pending` scripts, kept in [`legacy/`](https://gitlab.com/safteinzz/whypkg/-/tree/main/legacy).
 
 ## Compatibility
 
-Linux: Debian/Ubuntu (apt), Arch (pacman), Fedora/RHEL (dnf), and flatpak apps
-alongside any of them, with the same browser and the same report on every one.
+Linux: Debian/Ubuntu (apt), Arch (pacman), Fedora/RHEL (dnf), openSUSE (zypper),
+and flatpak apps alongside any of them, with the same browser and the same report
+on every one.
 
 ## License
 

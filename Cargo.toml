@@ -3,7 +3,7 @@ name = "whypkg"
 version = "0.6.0"
 edition = "2024"
 rust-version = "1.88"
-description = "why is that package here? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, flatpak)"
+description = "why is that package here? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, zypper, flatpak)"
 authors = ["Pablo Antonio Hernández Hernández (safteinzz)"]
 license = "AGPL-3.0-only"
 readme = "README.md"
@@ -27,6 +27,7 @@ crossterm      = "0.28"                                    # terminal backend / 
 nucleo-matcher = "0.3"                                     # the fuzzy matcher behind the finder (no external fzf)
 chrono         = "0.4"                                     # parse package-manager log timestamps for "same session"
 flate2         = "1"                                       # read rotated, gzipped logs (e.g. dpkg.log.2.gz)
+serde_json     = "1"                                       # the --json output of `why`, `leaves` and `pending`
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"                                               # restore default SIGPIPE so `whypkg … | head` exits quietly

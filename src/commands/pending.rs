@@ -8,13 +8,21 @@
 //! the manual package that pulled it in.
 
 use crate::commands::load_world;
-use crate::engine::{FOUNDATION_THRESHOLD, bfs_root, format_size, is_kernel_pkg};
+use crate::engine::{FOUNDATION_THRESHOLD, bfs_root, count, format_size, is_kernel_pkg};
 use crate::model::World;
 use colored::Colorize;
+use serde_json::json;
 use std::cmp::Reverse;
 use std::collections::HashMap;
 
+/// What `--json` holds, on `whypkg pending --help`.
+const FIELDS: &str = "\
+--json fields, one object per upgradable package: name, version, candidate,
+description, size_kb, reason (`kernel`, `system-lib`, `you`, `pulled-in` or `auto`)
+and root (what pulled it in, or null).";
+
 #[derive(clap::Args)]
+#[command(after_help = FIELDS)]
 pub struct Args {
     /// Kernel, firmware and microcode updates only
     #[arg(long)]
@@ -31,6 +39,9 @@ pub struct Args {
     /// Top packages by installed size
     #[arg(long)]
     pub sizes: bool,
+    /// Print a JSON array, one object per package; --kernel, --apps and --auto narrow it
+    #[arg(long, conflicts_with_all = ["quick", "sizes"])]
+    pub json: bool,
 }
 
 /// How an upgradable package is categorised (drives display + grouping).
@@ -48,7 +59,7 @@ pub fn run(args: Args) {
     let world = load_world();
 
     let upgradable = world.upgradable_names_sorted();
-    if upgradable.is_empty() {
+    if upgradable.is_empty() && !args.json && !args.quick {
         println!("\n  {}\n", "System is fully up to date.".green());
         return;
     }
@@ -66,11 +77,15 @@ pub fn run(args: Args) {
         section_quick(&world, &upgradable, &category);
         return;
     }
+    if args.json {
+        print_json(&world, &upgradable, &category, &args);
+        return;
+    }
 
     println!(
         "\n{}  {}",
         "whypkg pending".bold().cyan(),
-        format!("{} packages to upgrade", upgradable.len()).dimmed()
+        format!("{} to upgrade", count(upgradable.len(), "package")).dimmed()
     );
 
     if show_all || args.kernel {
@@ -160,8 +175,8 @@ fn section_kernel(world: &World, pool: &[String], cat: &HashMap<String, Category
         return;
     }
     header(&format!(
-        "KERNEL, FIRMWARE & SYSTEM LIBS  ({} packages)",
-        list.len()
+        "KERNEL, FIRMWARE & SYSTEM LIBS  ({})",
+        count(list.len(), "package")
     ));
     for pkg in list {
         let note = match cat.get(pkg) {
@@ -191,7 +206,10 @@ fn section_apps(world: &World, pool: &[String], cat: &HashMap<String, Category>)
     if list.is_empty() {
         return;
     }
-    header(&format!("YOUR INSTALLED APPS  ({} packages)", list.len()));
+    header(&format!(
+        "YOUR INSTALLED APPS  ({})",
+        count(list.len(), "package")
+    ));
     println!("\n  {}", "Packages you explicitly installed.".dimmed());
     for pkg in list {
         println!(
@@ -223,15 +241,15 @@ fn section_auto(world: &World, pool: &[String], cat: &HashMap<String, Category>)
 
     for (root, members) in roots {
         header(&format!(
-            "PULLED IN BY: {root}  ({} packages)",
-            members.len()
+            "PULLED IN BY: {root}  ({})",
+            count(members.len(), "package")
         ));
         println!("  {}", desc(world, root).green());
         println!(
             "  {}",
             format!(
-                "All {} packages below exist because you installed {root}.",
-                members.len()
+                "{} below because you installed {root}.",
+                count(members.len(), "package")
             )
             .dimmed()
         );
@@ -249,8 +267,8 @@ fn section_auto(world: &World, pool: &[String], cat: &HashMap<String, Category>)
 
     if !untraced.is_empty() {
         header(&format!(
-            "OTHER AUTO-INSTALLED  ({} packages)",
-            untraced.len()
+            "OTHER AUTO-INSTALLED  ({})",
+            count(untraced.len(), "package")
         ));
         println!(
             "\n  {}",
@@ -285,9 +303,9 @@ fn section_sizes(world: &World, pool: &[String], cat: &HashMap<String, Category>
     println!(
         "\n  {}",
         format!(
-            "Total: {} across {} packages",
+            "Total: {} across {}",
             format_size(total),
-            pool.len()
+            count(pool.len(), "package")
         )
         .bold()
     );
@@ -304,6 +322,45 @@ fn section_quick(world: &World, pool: &[String], cat: &HashMap<String, Category>
             reason(cat.get(pkg))
         );
     }
+}
+
+/// Every package in `pool` as a JSON array. With no section flag it holds them
+/// all; `--kernel`, `--apps` and `--auto` keep the packages their sections show.
+fn print_json(world: &World, pool: &[String], cat: &HashMap<String, Category>, args: &Args) {
+    let any = args.kernel || args.apps || args.auto;
+    let out: Vec<serde_json::Value> = pool
+        .iter()
+        .filter_map(|pkg| {
+            let c = cat.get(pkg)?;
+            let keep = !any
+                || match c {
+                    Category::Kernel | Category::Foundation => args.kernel,
+                    Category::App => args.apps,
+                    Category::PulledIn(_) | Category::Untraced => args.auto,
+                };
+            if !keep {
+                return None;
+            }
+            let (reason, root) = match c {
+                Category::Kernel => ("kernel", None),
+                Category::Foundation => ("system-lib", None),
+                Category::App => ("you", None),
+                Category::PulledIn(root) => ("pulled-in", Some(root.clone())),
+                Category::Untraced => ("auto", None),
+            };
+            let p = world.packages.get(pkg)?;
+            Some(json!({
+                "name": pkg,
+                "version": p.version,
+                "candidate": p.candidate,
+                "description": p.description,
+                "size_kb": p.installed_size,
+                "reason": reason,
+                "root": root,
+            }))
+        })
+        .collect();
+    println!("{}", serde_json::Value::Array(out));
 }
 
 /// One-word "why is it here" reason for the compact views.

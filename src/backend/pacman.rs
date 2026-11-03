@@ -22,6 +22,13 @@ impl Backend for Pacman {
         "pacman"
     }
 
+    fn unneeded(&self) -> Result<Vec<String>, String> {
+        // `-Qdtq`: installed as a dependency (`d`), required by nothing (`t`);
+        // it exits 1 when there are none.
+        let out = super::capture_checked("pacman", &["-Qdtq"], &[1])?;
+        Ok(out.split_whitespace().map(String::from).collect())
+    }
+
     fn build_world(&self) -> Result<World, String> {
         // One bulk call: full info for every installed package.
         let qi = capture("pacman", &["-Qi"])?;

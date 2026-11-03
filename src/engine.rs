@@ -1,6 +1,6 @@
 //! Distro-agnostic analysis over a [`World`]: the algorithms that turn raw
 //! package data into answers. None of this knows or cares whether the data came
-//! from apt, pacman, or dnf - that's the backend's job. This is the part that
+//! from apt, pacman, dnf or zypper, because that is the backend's job. This is the part that
 //! was painful in bash (graph BFS, window heuristics) and is trivial here.
 
 use crate::model::World;
@@ -17,6 +17,76 @@ pub fn is_kernel_pkg(name: &str) -> bool {
         || name == "amd64-microcode"
         || name.starts_with("firmware-")
         || name.starts_with("initramfs")
+        || is_rpm_kernel(name)
+        || name.starts_with("ucode-")
+        || name == "microcode_ctl"
+}
+
+/// The packages an rpm distro boots from: Fedora's `kernel`, `kernel-core` and
+/// `kernel-modules*`, openSUSE's `kernel-<flavour>` and `kernel-firmware-*`.
+/// What builds against a kernel (`kernel-devel`, `kernel-default-devel`,
+/// `kernel-headers`) or ships beside it (`kernel-tools`, `kernel-srpm-macros`)
+/// can be removed like anything else.
+fn is_rpm_kernel(name: &str) -> bool {
+    const BOOTS: [&str; 11] = [
+        "kernel-core",
+        "kernel-modules",
+        "kernel-uki-virt",
+        "kernel-firmware",
+        "kernel-default",
+        "kernel-longterm",
+        "kernel-preempt",
+        "kernel-rt",
+        "kernel-vanilla",
+        "kernel-64kb",
+        "kernel-kvmsmall",
+    ];
+    const BUILDS: [&str; 4] = ["-devel", "-headers", "-source", "-docs"];
+    if name == "kernel" {
+        return true;
+    }
+    let boots = BOOTS.iter().any(|k| {
+        name == *k
+            || name
+                .strip_prefix(k)
+                .is_some_and(|rest| rest.starts_with('-'))
+    });
+    boots && !BUILDS.iter().any(|b| name.ends_with(b))
+}
+
+/// `1 package`, `3 packages`: a count and its noun.
+pub fn count(n: usize, word: &str) -> String {
+    if n == 1 {
+        format!("{n} {word}")
+    } else {
+        format!("{n} {word}s")
+    }
+}
+
+/// Why a package is installed, as `whypkg why` and `whypkg leaves` report it.
+pub enum Why {
+    /// The user installed it.
+    You,
+    /// Something the user installed needs it: the chain from that package down
+    /// to this one, root first.
+    PulledIn(Vec<String>),
+    /// Auto-installed, and no chain leads to anything the user installed.
+    Untraced,
+}
+
+/// Answer [`Why`] for `pkg`. A manual package is [`Why::You`] even when other
+/// packages need it, because the user's own choice is the reason it stays.
+pub fn why(world: &World, pkg: &str) -> Why {
+    if world.is_manual(pkg) {
+        return Why::You;
+    }
+    match bfs_root(world, pkg) {
+        Some(mut chain) => {
+            chain.reverse();
+            Why::PulledIn(chain)
+        }
+        None => Why::Untraced,
+    }
 }
 
 /// The headline answer to "why the hell is this here": walk the reverse-dep
@@ -68,8 +138,9 @@ pub fn bfs_root(world: &World, start: &str) -> Option<Vec<String>> {
 
 /// Packages installed around the same time as `pkg` - a strong context clue for
 /// "what did I install this alongside?". We find `pkg`'s install time, then
-/// widen the window (3d → 1d → 12h → 6h) until it holds a manageable number of
-/// packages, mirroring the original heuristic. Returns names, deduped & sorted.
+/// narrow the window (3d → 1d → 12h → 6h) until it holds at most 20 packages.
+/// Returns names, deduped & sorted, and nothing when even six hours hold more:
+/// that is a system installed in one go, where "alongside" says nothing.
 pub fn same_session(world: &World, pkg: &str) -> Vec<String> {
     let anchor = match world.packages.get(pkg).and_then(|p| p.install_epoch) {
         Some(e) => e,
@@ -105,7 +176,7 @@ pub fn same_session(world: &World, pkg: &str) -> Vec<String> {
             return result;
         }
     }
-    collect(21_600)
+    Vec::new()
 }
 
 /// A rough "how long ago" string for a unix timestamp, e.g. "3 months ago".

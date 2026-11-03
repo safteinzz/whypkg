@@ -1,14 +1,14 @@
 //! whypkg - why the hell is this package here?
 //!
-//! A fast, cross-distro package investigator. Two modes share one engine: an
-//! interactive browser and a grouped report.
+//! A fast, cross-distro package investigator. The interactive browser and the
+//! `why`, `pending` and `leaves` reports share one engine.
 //!
 //! This file is the clap `Cmd` enum and the dispatch match; what you can run is
 //! `whypkg --help`, which renders from the manifest, those doc comments and
 //! `AFTER`, and is the only copy of that list.
 //!
 //! The package-manager specifics live behind a single `Backend` trait, so apt,
-//! pacman, and dnf all feed the same analysis and the same UI.
+//! pacman, dnf and zypper all feed the same analysis and the same UI.
 
 mod backend;
 mod commands;
@@ -28,14 +28,23 @@ const TEMPLATE: &str =
 /// rather than a subcommand.
 const WAYS: &str = "\x1b[1mWays to run it (not subcommands):\x1b[0m
   whypkg    browse every installed package (TUI)
-              type to filter, enter opens a dossier, esc goes back";
+              / finds, enter opens a dossier, esc goes back";
 
-/// The rest of the block: what a script can expect, then where to look next.
+/// The rest of the block: the words the output prints, what a script can
+/// expect, then where to look next.
 const AFTER: &str = concat!(
     "\
-`pending --quick` prints one line per package for a pipe, and ends quietly when
-the reader goes away; every other output is rendered for people, and the browser
-takes over the terminal. Failures name themselves on stderr and exit non-zero.
+Reasons: `you` installed it, `pulled-in` by something you installed (`← pkg` in
+`pending --quick`), or `auto` with nothing you installed needing it. `pending` adds
+`kernel` and `system lib` (`system-lib` in --json) for what more than 25 packages
+need, and `leaves` prints `unneeded`, `local` and `orphaned` instead.
+
+`--quick` prints one line per package and `--json` one array of objects, both on
+stdout and ending quietly when the reader goes away; the JSON field names and words
+are fixed and listed in each command's --help. Every other output is rendered for
+people, and the browser takes over the terminal. Nothing prompts and nothing is
+changed. Failures go to stderr and exit non-zero; `why` exits 1 when a package is
+not installed, after printing the rest.
 Run `whypkg <command> --help` for a command's details.",
     "\n\n",
     env!("CARGO_PKG_REPOSITORY"),
@@ -80,12 +89,21 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Cmd {
+    /// Explain why packages are installed, without the browser  <PKG>...
+    ///   --json    one JSON object per package
+    #[command(verbatim_doc_comment)]
+    Why(commands::why::Args),
     /// Report every pending upgrade, grouped by why it's on your system
     ///   --quick   one line per package: size + reason
     ///   --kernel  kernel, firmware and microcode only
     ///   --apps    only the packages you installed yourself
     #[command(verbatim_doc_comment)]
     Pending(commands::pending::Args),
+    /// List packages worth a second look: unneeded, sideloaded and orphaned
+    ///   --quick   one line per package: size + reason
+    ///   --json    one JSON object per package
+    #[command(verbatim_doc_comment)]
+    Leaves(commands::leaves::Args),
     /// Manage whypkg itself: `self update` reinstalls, `self check` looks for a newer release
     #[command(name = "self", subcommand)]
     Selfie(commands::selfcmd::Cmd),
@@ -112,7 +130,9 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
+        Some(Cmd::Why(args)) => commands::why::run(args),
         Some(Cmd::Pending(args)) => commands::pending::run(args),
+        Some(Cmd::Leaves(args)) => commands::leaves::run(args),
         Some(Cmd::Selfie(cmd)) => commands::selfcmd::run(cmd),
         // No subcommand → the interactive browser (the heart of the tool).
         None => commands::browse::run(commands::browse::Args {

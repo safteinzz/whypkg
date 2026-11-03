@@ -21,20 +21,23 @@ impl Backend for Dnf {
         "dnf"
     }
 
-    fn build_world(&self) -> Result<World, String> {
-        // rpm queryformat: NAME outside the `[ ]` array iterator (printed once),
-        // then the array tag inside it.
-        let meta = capture(
-            "rpm",
+    fn unneeded(&self) -> Result<Vec<String>, String> {
+        let out = super::capture_checked(
+            "dnf",
             &[
-                "-qa",
+                "repoquery",
+                "--unneeded",
                 "--qf",
-                "%{NAME}\t%{VERSION}-%{RELEASE}\t%{SIZE}\t%{INSTALLTIME}\t%{SUMMARY}\n",
+                "%{name}\n",
+                "--cacheonly",
             ],
+            &[],
         )?;
-        let provides = capture("rpm", &["-qa", "--qf", "%{NAME}\t[%{PROVIDENAME} ]\n"])?;
-        let requires = capture("rpm", &["-qa", "--qf", "%{NAME}\t[%{REQUIRENAME} ]\n"])?;
-        let files = capture("rpm", &["-qa", "--qf", "%{NAME}\t[%{FILENAMES} ]\n"])?;
+        Ok(out.split_whitespace().map(String::from).collect())
+    }
+
+    fn build_world(&self) -> Result<World, String> {
+        let rpm = RpmDump::query()?;
         // Manual set + upgrades come from dnf. `--cacheonly` keeps us offline;
         // upgrades simply come back empty if the user hasn't refreshed metadata
         // (same contract as `apt list --upgradable` needing `apt update`).
@@ -50,7 +53,7 @@ impl Backend for Dnf {
         )
         .unwrap_or_default();
 
-        let mut world = build(&meta, &provides, &requires, &files, &userinstalled);
+        let mut world = rpm.build(&userinstalled);
 
         if let Ok(up) = capture(
             "dnf",
@@ -81,6 +84,46 @@ impl Backend for Dnf {
         }
 
         Ok(world)
+    }
+}
+
+/// The four bulk `rpm -qa` dumps every rpm distro's world is built from,
+/// whichever front end (dnf, zypper) owns the manual set and the upgrades.
+pub struct RpmDump {
+    meta: String,
+    provides: String,
+    requires: String,
+    files: String,
+}
+
+impl RpmDump {
+    pub fn query() -> Result<RpmDump, String> {
+        // rpm queryformat: NAME outside the `[ ]` array iterator (printed once),
+        // then the array tag inside it.
+        Ok(RpmDump {
+            meta: capture(
+                "rpm",
+                &[
+                    "-qa",
+                    "--qf",
+                    "%{NAME}\t%{VERSION}-%{RELEASE}\t%{SIZE}\t%{INSTALLTIME}\t%{SUMMARY}\n",
+                ],
+            )?,
+            provides: capture("rpm", &["-qa", "--qf", "%{NAME}\t[%{PROVIDENAME} ]\n"])?,
+            requires: capture("rpm", &["-qa", "--qf", "%{NAME}\t[%{REQUIRENAME} ]\n"])?,
+            files: capture("rpm", &["-qa", "--qf", "%{NAME}\t[%{FILENAMES} ]\n"])?,
+        })
+    }
+
+    /// The world, with `userinstalled` (one name per line) as the manual set.
+    pub fn build(&self, userinstalled: &str) -> World {
+        build(
+            &self.meta,
+            &self.provides,
+            &self.requires,
+            &self.files,
+            userinstalled,
+        )
     }
 }
 

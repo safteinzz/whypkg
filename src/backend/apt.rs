@@ -24,6 +24,12 @@ impl Backend for Apt {
         "apt"
     }
 
+    fn unneeded(&self) -> Result<Vec<String>, String> {
+        // `-s` simulates, so this needs no root and changes nothing.
+        let out = super::capture_checked("apt-get", &["-s", "autoremove"], &[])?;
+        Ok(parse_autoremove(&out))
+    }
+
     fn build_world(&self) -> Result<World, String> {
         // ── manually-installed set ───────────────────────────────────────────
         let manual: HashSet<String> = capture("apt-mark", &["showmanual"])?
@@ -279,6 +285,16 @@ fn parse_install_targets(line: &str) -> Vec<String> {
         .collect()
 }
 
+/// Parse `apt-get -s autoremove`, whose `Remv name [version]` lines name what
+/// it would take.
+fn parse_autoremove(text: &str) -> Vec<String> {
+    text.lines()
+        .filter_map(|l| l.strip_prefix("Remv "))
+        .filter_map(|rest| rest.split_whitespace().next())
+        .map(|name| name.split(':').next().unwrap_or(name).to_string())
+        .collect()
+}
+
 /// Parse a combined `Depends,Recommends` field into bare package names.
 ///
 /// Handles the three things dpkg packs in: version constraints `(>= 1.2)`,
@@ -410,5 +426,21 @@ mod tests {
             dos2unix:amd64 (7.5.4-1), python3-msgpack:amd64 (1.1.2-4, automatic)";
         let targets = parse_install_targets(line);
         assert_eq!(targets, vec!["neovim".to_string(), "dos2unix".to_string()]);
+    }
+
+    #[test]
+    fn autoremove_lists_exactly_the_packages_it_would_remove() {
+        let text = include_str!("../../tests/fixtures/apt_autoremove.txt");
+        assert_eq!(parse_autoremove(text), vec!["jq", "libjq1", "libonig5"]);
+    }
+
+    #[test]
+    fn autoremove_names_drop_the_architecture() {
+        let text = "Remv libfoo1:i386 [1.0-1]\nRemv libbar2:amd64 [2.0-1]\n";
+        assert_eq!(
+            parse_autoremove(text),
+            vec!["libfoo1", "libbar2"],
+            "a multiarch name must match the installed package's key"
+        );
     }
 }

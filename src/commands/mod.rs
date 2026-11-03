@@ -1,6 +1,8 @@
 pub mod browse;
+pub mod leaves;
 pub mod pending;
 pub mod selfcmd;
+pub mod why;
 
 use crate::model::World;
 
@@ -27,7 +29,7 @@ pub fn load_world() -> World {
             } else {
                 eprintln!(
                     "whypkg: no supported package manager found.\n\
-                     supported: apt/dpkg, pacman, dnf (and flatpak, alongside any of them)."
+                     supported: apt/dpkg, pacman, dnf, zypper (and flatpak, alongside any of them)."
                 );
                 std::process::exit(1);
             }
