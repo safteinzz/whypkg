@@ -6,9 +6,11 @@
 //! what no repository offers, and `list-updates` the pending upgrades. All are
 //! `|`-separated tables, parsed by pure functions.
 
-use super::dnf::RpmDump;
+use super::dnf::{RpmDump, rpm_owners};
 use super::{Backend, capture_checked};
 use crate::model::{Origin, World};
+use std::collections::HashMap;
+use std::path::PathBuf;
 
 pub struct Zypper;
 
@@ -20,6 +22,10 @@ impl Backend for Zypper {
     fn unneeded(&self) -> Result<Vec<String>, String> {
         let out = zypper(&["packages", "--unneeded"])?;
         Ok(names(&out))
+    }
+
+    fn owners(&self, paths: &[PathBuf]) -> HashMap<PathBuf, String> {
+        rpm_owners(paths)
     }
 
     fn build_world(&self) -> Result<World, String> {

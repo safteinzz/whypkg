@@ -1,0 +1,4 @@
+ripgrep	15.1.0	rg	5634	61	ripgrep is a line-oriented search tool that recursively searches the current directory for a regex pattern
+fd-find	10.3.0	fd	3870	61	fd is a simple, fast and user-friendly alternative to find
+du-dust	1.2.3	dust	2410	33	A more intuitive version of du
+tokei	13.0.0	tokei	6125	12	Count your code, quickly.

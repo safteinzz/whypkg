@@ -13,6 +13,7 @@
 use super::{Backend, capture};
 use crate::model::{Origin, Package, Source, World};
 use std::collections::{HashMap, HashSet};
+use std::path::PathBuf;
 
 pub struct Dnf;
 
@@ -34,6 +35,10 @@ impl Backend for Dnf {
             &[],
         )?;
         Ok(out.split_whitespace().map(String::from).collect())
+    }
+
+    fn owners(&self, paths: &[PathBuf]) -> HashMap<PathBuf, String> {
+        rpm_owners(paths)
     }
 
     fn build_world(&self) -> Result<World, String> {
@@ -162,6 +167,9 @@ pub fn build(
         rdeps,
         manual,
         install_log,
+        uses: HashMap::new(),
+        used_by: HashMap::new(),
+        manager: None,
     }
 }
 
@@ -192,6 +200,7 @@ pub fn parse_meta(meta: &str) -> (HashMap<String, Package>, Vec<(i64, String)>) 
             name.clone(),
             Package {
                 name,
+                label: None,
                 version: f[1].to_string(),
                 candidate: None,
                 installed_size: size_kb,
@@ -303,6 +312,28 @@ fn name_caps(text: &str) -> Vec<(String, Vec<String>)> {
             let caps = rest.split_whitespace().map(String::from).collect();
             Some((name.to_string(), caps))
         })
+        .collect()
+}
+
+/// The rpm package owning each of `paths`, for dnf and zypper alike.
+pub fn rpm_owners(paths: &[PathBuf]) -> HashMap<PathBuf, String> {
+    if paths.is_empty() {
+        return HashMap::new();
+    }
+    // `rpm -qf` prints nothing that ties an owner to the path asked about, so
+    // it lists every file of each owner and the asked ones are picked out.
+    // `%{=NAME}` repeats the name on each file's line; a plain `%{NAME}` inside
+    // the file iterator is refused as an array of another size.
+    let mut args = vec!["-qf", "--qf", "[%{FILENAMES}\t%{=NAME}\n]"];
+    args.extend(paths.iter().filter_map(|p| p.to_str()));
+    let Ok(out) = capture("rpm", &args) else {
+        return HashMap::new();
+    };
+    let asked: HashSet<&PathBuf> = paths.iter().collect();
+    out.lines()
+        .filter_map(|l| l.split_once('\t'))
+        .map(|(file, name)| (PathBuf::from(file), name.to_string()))
+        .filter(|(file, _)| asked.contains(file))
         .collect()
 }
 

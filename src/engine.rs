@@ -64,6 +64,7 @@ pub fn count(n: usize, word: &str) -> String {
 }
 
 /// Why a package is installed, as `whypkg why` and `whypkg leaves` report it.
+#[derive(Clone)]
 pub enum Why {
     /// The user installed it.
     You,
@@ -140,11 +141,16 @@ pub fn bfs_root(world: &World, start: &str) -> Option<Vec<String>> {
 /// "what did I install this alongside?". We find `pkg`'s install time, then
 /// narrow the window (3d → 1d → 12h → 6h) until it holds at most 20 packages.
 /// Returns names, deduped & sorted, and nothing when even six hours hold more:
-/// that is a system installed in one go, where "alongside" says nothing.
+/// that is a system installed in one go, where "alongside" says nothing. Only
+/// a system package has an answer, since the log is the package manager's and
+/// a cargo or npm install landing the same day as an apt one is chance.
 pub fn same_session(world: &World, pkg: &str) -> Vec<String> {
-    let anchor = match world.packages.get(pkg).and_then(|p| p.install_epoch) {
-        Some(e) => e,
-        None => return Vec::new(),
+    let anchor = match world.packages.get(pkg) {
+        Some(p) if p.source == crate::model::Source::System => match p.install_epoch {
+            Some(e) => e,
+            None => return Vec::new(),
+        },
+        _ => return Vec::new(),
     };
 
     // Widest-first so we prefer more context, but fall back to tighter windows

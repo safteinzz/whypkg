@@ -1,0 +1,23 @@
+pipx	httpie	httpie	3.2.4	1	2187	requests,pygments,rich,charset-normalizer,defusedxml,multidict,setuptools,requests-toolbelt	HTTPie: modern, user-friendly command-line HTTP client for the API era.
+pipx	httpie	requests	2.32.5	0	203	charset-normalizer,idna,urllib3,certifi	Python HTTP for Humans.
+pipx	httpie	charset-normalizer	3.4.3	0	412	-	The Real First Universal Charset Detector.
+pipx	httpie	idna	3.10	0	361	-	Internationalized Domain Names in Applications (IDNA)
+pipx	httpie	urllib3	2.5.0	0	547	-	HTTP library with thread-safe connection pooling, file post, and more.
+pipx	httpie	certifi	2025.8.3	0	298	-	Python package for providing Mozilla's CA Bundle.
+pipx	httpie	pygments	2.19.2	0	4410	-	Pygments is a syntax highlighting package written in Python.
+pipx	httpie	rich	14.1.0	0	1490	markdown-it-py,pygments	Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal
+pipx	httpie	markdown-it-py	4.0.0	0	369	mdurl	Python port of markdown-it. Markdown parsing, done right!
+pipx	httpie	mdurl	0.1.2	0	31	-	Markdown URL utilities
+pipx	httpie	defusedxml	0.7.1	0	93	-	XML bomb protection for Python stdlib modules
+pipx	httpie	multidict	6.6.4	0	1187	-	multidict implementation
+pipx	httpie	requests-toolbelt	1.0.0	0	289	requests	A utility belt for advanced users of python-requests
+pipx	httpie	setuptools	80.9.0	0	3803	-	Easily download, build, install, upgrade, and uninstall Python packages
+uv	pre-commit	pre-commit	4.3.0	1	612	cfgv,identify,nodeenv,pyyaml,virtualenv	A framework for managing and maintaining multi-language pre-commit hooks.
+uv	pre-commit	cfgv	3.4.0	0	22	-	Validate configuration and produce human readable error messages.
+uv	pre-commit	identify	2.6.14	0	318	-	File identification library for Python
+uv	pre-commit	nodeenv	1.9.1	0	78	-	Node.js virtual environment builder
+uv	pre-commit	pyyaml	6.0.2	0	2470	-	YAML parser and emitter for Python
+uv	pre-commit	virtualenv	20.34.0	0	7124	distlib,filelock,platformdirs	Virtual Python Environment builder
+uv	pre-commit	distlib	0.4.0	0	1563	-	Distribution utilities
+uv	pre-commit	filelock	3.19.1	0	47	-	A platform independent file lock.
+uv	pre-commit	platformdirs	4.4.0	0	62	-	A small Python package for determining appropriate platform-specific dirs

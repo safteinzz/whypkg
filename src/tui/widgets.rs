@@ -1,5 +1,6 @@
 //! Furniture with no idea what it is drawing: the shared key words every footer
-//! is built from, the footer itself, and the house box an overlay is drawn in.
+//! is built from, the footer itself, the house box an overlay is drawn in, its
+//! key row, and the scrollbar.
 
 use ratatui::prelude::*;
 use ratatui::widgets::{Block, Borders, Padding, Scrollbar, ScrollbarOrientation, ScrollbarState};
@@ -17,8 +18,7 @@ pub(super) fn box_width(screen_w: u16) -> u16 {
 }
 
 /// How tall a box holding `body_rows` *wrapped* rows is, capped at `screen_h`,
-/// which is the area the box is drawn in and not the terminal: a box sized for
-/// the whole terminal and drawn above the footer loses its key row.
+/// which is the area the box is drawn in and not the terminal.
 pub(super) fn box_height(body_rows: u16, screen_h: u16) -> u16 {
     let floor = BOX_CHROME_H + 1;
     body_rows
@@ -50,16 +50,25 @@ pub(super) fn box_block(colour: Color, title: &str) -> Block<'static> {
 
 // The words every footer and key row is built from, so the same key reads the
 // same on every screen and a hand-typed legend stands out.
-pub(super) const QUIT: &str = "q quit";
-pub(super) const HELP: &str = "? help";
-pub(super) const BACK: &str = "esc back";
-pub(super) const CLOSE: &str = "esc close";
 pub(super) const SEP: &str = " · ";
+pub(super) const OPEN: &str = "↵ open";
+pub(super) const SHOW: &str = "s show";
+pub(super) const GRAPH: &str = "ctrl-g graph";
+pub(super) const CENTRE: &str = "↵ centre";
 pub(super) const FIND: &str = "/ find";
 pub(super) const KEEP: &str = "↵ keep";
+pub(super) const REFRESH: &str = "r refresh";
+pub(super) const BACK: &str = "esc back";
+pub(super) const CLOSE: &str = "esc close";
+pub(super) const QUIT: &str = "q quit";
+pub(super) const HELP: &str = "? help";
 
-/// The key row of a reader, drawn by the help panel.
+/// The key row of a reader and an alert.
 pub(super) const READER_KEYS: &[&str] = &[CLOSE];
+
+/// The key row of the settings box, whose changes are written as they are
+/// made, so closing it cancels nothing.
+pub(super) const OPTIONS_KEYS: &[&str] = &["↵ on/off", "d default", CLOSE];
 
 /// The line of keys a box ends with, as the last row of its body, a step
 /// quieter than anything else in the box.
@@ -73,10 +82,9 @@ pub(super) fn box_hint(keys: &[&str]) -> Line<'static> {
 }
 
 /// The row under a view: as many of `keys` as fit in `width`, whole and in
-/// order, with `help` pinned at the
-/// right edge however narrow it gets, since help is the way to every key that
-/// fell off.
-pub(super) fn key_footer(keys: &[&str], help: &str, width: u16) -> Line<'static> {
+/// order, with `help` pinned at the right edge however narrow it gets, since
+/// help is the way to every key that fell off.
+pub(super) fn key_footer(keys: &[String], help: &str, width: u16) -> Line<'static> {
     let width = width as usize;
     let help_w = help.chars().count();
     // One column of margin at each end, and a separator's width before `help`.
@@ -84,7 +92,7 @@ pub(super) fn key_footer(keys: &[&str], help: &str, width: u16) -> Line<'static>
     let mut left = String::new();
     for entry in keys {
         let next = if left.is_empty() {
-            entry.to_string()
+            entry.clone()
         } else {
             format!("{left}{SEP}{entry}")
         };
@@ -114,4 +122,12 @@ pub(super) fn vscrollbar(f: &mut Frame, area: Rect, total: usize, top: usize, vi
         .begin_symbol(None)
         .end_symbol(None);
     f.render_stateful_widget(bar, area.inner(Margin::new(0, 1)), &mut state);
+}
+
+/// How many rows `lines` take once wrapped to `width` the way a box wraps
+/// its body, so the box is measured from what it will draw.
+pub(super) fn wrapped_line_count(lines: &[Line<'static>], width: u16) -> usize {
+    ratatui::widgets::Paragraph::new(lines.to_vec())
+        .wrap(ratatui::widgets::Wrap { trim: false })
+        .line_count(width.max(1))
 }

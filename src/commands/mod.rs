@@ -4,42 +4,40 @@ pub mod pending;
 pub mod selfcmd;
 pub mod why;
 
-use crate::model::World;
+use crate::load::{Progress, Sources, read_world};
+use crate::model::{Source, World};
 
-/// Build the whole [`World`]: the system package manager's packages, plus any
-/// Flatpak apps layered on top (the two coexist). Both the browser and the
-/// report start here. On failure we print a clear message and exit.
-pub fn load_world() -> World {
-    let mut world = match crate::backend::detect() {
-        Some(backend) => match backend.build_world() {
-            Ok(world) => world,
-            Err(e) => {
-                eprintln!(
-                    "whypkg: failed to read package data ({}): {e}",
-                    backend.name()
-                );
-                std::process::exit(1);
-            }
-        },
-        None => {
-            // No system package manager. If Flatpak is present we can still be
-            // useful; otherwise there's nothing to show.
-            if crate::backend::flatpak::available() {
-                World::empty()
-            } else {
-                eprintln!(
-                    "whypkg: no supported package manager found.\n\
-                     supported: apt/dpkg, pacman, dnf, zypper (and flatpak, alongside any of them)."
-                );
-                std::process::exit(1);
-            }
-        }
-    };
+/// Parses a source's word for `--only`, so clap lists the words as its
+/// possible values.
+pub fn source_parser() -> impl clap::builder::TypedValueParser<Value = Source> {
+    use clap::builder::TypedValueParser;
+    clap::builder::PossibleValuesParser::new(Source::ALL.map(Source::word))
+        .map(|word: String| Source::from_word(&word).unwrap_or(Source::System))
+}
 
-    // Layer Flatpak apps on top of the system packages, if flatpak is installed.
-    if crate::backend::flatpak::available() {
-        crate::backend::flatpak::augment(&mut world);
+/// The sources a run reads: the ones `--only` names, or else every source but
+/// the ones the settings file skips. A broken settings file stops the run.
+pub fn sources(only: &[Source]) -> Sources {
+    if !only.is_empty() {
+        return Sources::only(only);
     }
+    match crate::config::load() {
+        Ok(config) => Sources::all_but(&config.skip),
+        Err(e) => {
+            eprintln!("whypkg: {e}");
+            std::process::exit(1);
+        }
+    }
+}
 
-    world
+/// Build the whole [`World`] from `sources` for a report. On failure we print
+/// a clear message and exit.
+pub fn load_world(sources: &Sources) -> World {
+    match read_world(sources, &Progress::default()) {
+        Ok(world) => world,
+        Err(e) => {
+            eprintln!("whypkg: {e}");
+            std::process::exit(1);
+        }
+    }
 }

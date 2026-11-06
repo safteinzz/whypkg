@@ -1,0 +1,33 @@
+typescript	typescript	5.9.3	23140	-	TypeScript is a language for application scale JavaScript development
+prettier	prettier	3.6.2	8312	-	Prettier is an opinionated code formatter
+http-server	http-server	14.1.1	140	basic-auth,chalk,corser,he,html-encoding-sniffer,http-proxy,mime,minimist,opener,portfinder,secure-compare,union,url-join	A simple zero-configuration command-line http server
+http-server	basic-auth	2.0.1	12	safe-buffer	node.js basic auth parser
+http-server	safe-buffer	5.2.1	32	-	Safer Node.js Buffer API
+http-server	chalk	4.1.2	41	ansi-styles,supports-color	Terminal string styling done right
+http-server	ansi-styles	4.3.0	17	color-convert	ANSI escape codes for styling strings in the terminal
+http-server	color-convert	2.0.1	26	color-name	Plain color conversion functions
+http-server	color-name	1.1.4	9	-	A list of color names and its values
+http-server	supports-color	7.2.0	12	has-flag	Detect whether a terminal supports color
+http-server	has-flag	4.0.0	6	-	Check if argv has a specific flag
+http-server	corser	2.0.1	15	-	A highly configurable, middleware compatible implementation of CORS.
+http-server	he	1.2.0	124	-	A robust HTML entities encoder/decoder with full Unicode support.
+http-server	html-encoding-sniffer	3.0.0	9	whatwg-encoding	Sniff the encoding from a HTML byte stream
+http-server	whatwg-encoding	2.0.0	9	iconv-lite	Decode strings according to the WHATWG Encoding Standard
+http-server	iconv-lite	0.6.3	338	safer-buffer	Convert character encodings in pure javascript.
+http-server	safer-buffer	2.1.2	42	-	Modern Buffer API polyfill without footguns
+http-server	http-proxy	1.18.1	164	eventemitter3,follow-redirects,requires-port	HTTP proxying for the masses
+http-server	eventemitter3	4.0.7	73	-	EventEmitter3 focuses on performance while maintaining a Node.js AND browser compatible interface.
+http-server	follow-redirects	1.15.11	52	-	HTTP and HTTPS modules that follow redirects.
+http-server	requires-port	1.0.0	9	-	Check if a protocol requires a certain port number to be added to an URL.
+http-server	mime	1.6.0	117	-	A comprehensive library for mime-type mapping
+http-server	minimist	1.2.8	54	-	parse argument options
+http-server	opener	1.5.2	9	-	Opens stuff, like webpages and files and executables, cross-platform.
+http-server	portfinder	1.0.37	30	async,debug	A simple tool to find an open port on the current machine
+http-server	async	3.2.6	780	-	Higher-order functions and common patterns for asynchronous code
+http-server	debug	4.4.1	42	ms	Lightweight debugging utility for Node.js and the browser
+http-server	ms	2.1.3	6	-	Tiny millisecond conversion utility
+http-server	secure-compare	3.0.1	5	-	Constant time string comparison
+http-server	union	0.5.0	26	qs	A hybrid buffered / streaming middleware kernel backwards compatible with connect.
+http-server	qs	6.14.0	260	side-channel	A querystring parser that supports nesting and arrays, with a depth limit
+http-server	side-channel	1.1.0	22	-	Store information about any JS value in a side channel.
+http-server	url-join	4.0.1	9	-	Join urls and normalize as you would with path.join.

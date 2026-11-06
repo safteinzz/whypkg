@@ -1,9 +1,9 @@
 //! `whypkg leaves`: the installed packages worth a second look, grouped by why.
 //! It only lists them; removing any of them is the package manager's job.
 
-use crate::commands::load_world;
+use crate::commands::{load_world, sources};
 use crate::engine::{count, format_size};
-use crate::model::{Origin, World};
+use crate::model::{Origin, Source, World};
 use colored::Colorize;
 use serde_json::json;
 use std::cmp::Reverse;
@@ -12,12 +12,15 @@ use std::collections::HashSet;
 /// What it prints, on `whypkg leaves --help`.
 const FIELDS: &str = "\
 Reasons: `unneeded` (the package manager's autoremove would take it), `local`
-(installed from a file) and `orphaned` (no enabled repository offers it). A package
-gets the first that fits. Flatpak runtimes are never `unneeded`, since flatpak has
-no read-only way to ask.
+(installed from a file or a folder, by any installer) and `orphaned` (no enabled
+repository offers it). A package gets the first that fits. Flatpak runtimes are
+never `unneeded`, since flatpak has no read-only way to ask. An unneeded package
+that a cargo, pipx, uv or npm install still loads or runs on says so.
 
---json fields: name, version, description, source (`system` or `flatpak`),
-installed (YYYY-MM-DD or null), size_kb and reason.";
+--json fields: name (the key, unique across sources), label, version, description,
+source (`system`, `flatpak`, `cargo`, `pipx`, `uv` or `npm`), installed (YYYY-MM-DD
+or null), size_kb, reason and used_by (packages from other installers that load or
+run on it).";
 
 #[derive(clap::Args)]
 #[command(after_help = FIELDS)]
@@ -28,6 +31,9 @@ pub struct Args {
     /// Print a JSON array, one object per package, instead of text
     #[arg(long)]
     pub json: bool,
+    /// Read only these sources, instead of every one the settings leave on
+    #[arg(long, value_delimiter = ',', value_name = "SOURCES", value_parser = crate::commands::source_parser())]
+    pub only: Vec<Source>,
 }
 
 /// Why a package is listed. Each package gets the first that fits, in this
@@ -65,7 +71,10 @@ fn classify(world: &World, unneeded: &HashSet<String>, pkg: &str) -> Option<Leaf
 
 /// Ask the system package manager for its autoremove list. Flatpak has no
 /// read-only way to ask, so its runtimes are never listed as unneeded.
-fn query_unneeded() -> HashSet<String> {
+fn query_unneeded(on: bool) -> HashSet<String> {
+    if !on {
+        return HashSet::new();
+    }
     let Some(backend) = crate::backend::detect() else {
         return HashSet::new();
     };
@@ -82,8 +91,9 @@ fn query_unneeded() -> HashSet<String> {
 }
 
 pub fn run(args: Args) {
-    let world = load_world();
-    let unneeded = query_unneeded();
+    let sources = sources(&args.only);
+    let world = load_world(&sources);
+    let unneeded = query_unneeded(sources.has(Source::System));
     let leaves: Vec<(String, Leaf)> = world
         .all_names_sorted()
         .into_iter()
@@ -95,14 +105,18 @@ pub fn run(args: Args) {
             .iter()
             .map(|(pkg, leaf)| {
                 let p = &world.packages[pkg];
+                let mut used_by = world.used_by_of(pkg).to_vec();
+                used_by.sort();
                 json!({
                     "name": pkg,
+                    "label": p.label(),
                     "version": p.version,
                     "description": p.description,
                     "source": p.source.word(),
                     "installed": p.install_date,
                     "size_kb": p.installed_size,
                     "reason": leaf.word(),
+                    "used_by": used_by,
                 })
             })
             .collect();
@@ -116,7 +130,7 @@ pub fn run(args: Args) {
         for (pkg, leaf) in by_size {
             println!(
                 "{:<36}  {:>10}   {}",
-                pkg,
+                world.label(pkg),
                 format_size(world.packages[pkg].installed_size),
                 leaf.word()
             );
@@ -189,11 +203,29 @@ fn section(world: &World, leaves: &[(String, Leaf)], which: Leaf, title: &str, n
     println!("\n  {}", note.dimmed());
     for pkg in list {
         let p = &world.packages[pkg];
+        let source = match p.source {
+            Source::System => String::new(),
+            source => format!("  {}", source.word()).dimmed().to_string(),
+        };
         println!(
-            "\n  {}  {}",
-            format!("{pkg:<32}").yellow(),
+            "\n  {}  {}{source}",
+            format!("{:<32}", p.label()).yellow(),
             format_size(p.installed_size)
         );
-        println!("  {}", p.description.dimmed());
+        if !p.description.is_empty() {
+            println!("  {}", p.description.dimmed());
+        }
+        let used_by = world.used_by_of(pkg);
+        if !used_by.is_empty() {
+            let mut names: Vec<String> = used_by
+                .iter()
+                .map(|k| format!("{} ({})", world.label(k), world.source(k).word()))
+                .collect();
+            names.sort();
+            println!(
+                "  {}",
+                format!("but {} still uses it", names.join(", ")).red()
+            );
+        }
     }
 }

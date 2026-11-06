@@ -16,6 +16,7 @@ use chrono::NaiveDateTime;
 use flate2::read::GzDecoder;
 use std::collections::{HashMap, HashSet};
 use std::io::Read;
+use std::path::PathBuf;
 
 pub struct Apt;
 
@@ -28,6 +29,39 @@ impl Backend for Apt {
         // `-s` simulates, so this needs no root and changes nothing.
         let out = super::capture_checked("apt-get", &["-s", "autoremove"], &[])?;
         Ok(parse_autoremove(&out))
+    }
+
+    fn owners(&self, paths: &[PathBuf]) -> HashMap<PathBuf, String> {
+        let asked: Vec<(String, &PathBuf)> = paths
+            .iter()
+            .flat_map(|path| {
+                usr_merge_spellings(path)
+                    .into_iter()
+                    .map(move |spelling| (spelling, path))
+            })
+            .collect();
+        if asked.is_empty() {
+            return HashMap::new();
+        }
+        let mut args = vec!["-S"];
+        args.extend(asked.iter().map(|(spelling, _)| spelling.as_str()));
+        // It exits 1 when any one path has no owner, which says nothing about
+        // the rest.
+        let Ok(out) = capture("dpkg-query", &args) else {
+            return HashMap::new();
+        };
+        let by_spelling: HashMap<&str, &PathBuf> = asked
+            .iter()
+            .map(|(spelling, path)| (spelling.as_str(), *path))
+            .collect();
+        parse_owners(&out)
+            .into_iter()
+            .filter_map(|(file, pkg)| {
+                by_spelling
+                    .get(file.as_str())
+                    .map(|path| ((*path).clone(), pkg))
+            })
+            .collect()
     }
 
     fn build_world(&self) -> Result<World, String> {
@@ -86,6 +120,7 @@ impl Backend for Apt {
                 name.clone(),
                 Package {
                     name: name.clone(),
+                    label: None,
                     version: fields[1].to_string(),
                     candidate: None,
                     installed_size: fields[2].trim().parse().unwrap_or(0),
@@ -192,6 +227,9 @@ impl Backend for Apt {
             rdeps,
             manual,
             install_log,
+            uses: HashMap::new(),
+            used_by: HashMap::new(),
+            manager: None,
         })
     }
 }
@@ -281,6 +319,43 @@ fn parse_install_targets(line: &str) -> Vec<String> {
             } else {
                 Some(head.to_string())
             }
+        })
+        .collect()
+}
+
+/// Both paths dpkg may have recorded a file under. Since the `/usr` merge,
+/// `/lib/x` and `/usr/lib/x` are one file, but each package registered the
+/// path it shipped, and `dpkg-query -S` only matches that one.
+fn usr_merge_spellings(path: &std::path::Path) -> Vec<String> {
+    const MERGED: [&str; 6] = ["bin", "sbin", "lib", "lib32", "lib64", "libx32"];
+    let path = path.to_string_lossy().into_owned();
+    let under = |rest: &str| {
+        MERGED
+            .iter()
+            .any(|dir| rest.strip_prefix(dir).is_some_and(|r| r.starts_with('/')))
+    };
+    let alias = match path.strip_prefix("/usr/") {
+        Some(rest) if under(rest) => Some(format!("/{rest}")),
+        Some(_) => None,
+        None => path
+            .strip_prefix('/')
+            .filter(|rest| under(rest))
+            .map(|_| format!("/usr{path}")),
+    };
+    std::iter::once(path).chain(alias).collect()
+}
+
+/// Parse `dpkg-query -S` (`libssl3t64:amd64: /usr/lib/…/libssl.so.3`, or
+/// `pkg-a, pkg-b: /path` for a file several packages share) into
+/// `(path, first owner)`, without the architecture.
+fn parse_owners(text: &str) -> Vec<(String, String)> {
+    text.lines()
+        .filter(|l| !l.starts_with("diversion by "))
+        .filter_map(|l| l.split_once(": "))
+        .filter_map(|(pkgs, path)| {
+            let first = pkgs.split(", ").next()?;
+            let name = first.split(':').next()?;
+            Some((path.trim().to_string(), name.to_string()))
         })
         .collect()
 }
@@ -400,6 +475,49 @@ fn epoch_to_date(epoch: i64) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn dpkg_owners_skip_diversions_and_drop_the_architecture() {
+        let text = "diversion by libc6 from: /lib64/ld-linux-x86-64.so.2\n\
+                    libc6:amd64: /usr/lib/x86_64-linux-gnu/libc.so.6\n\
+                    pkg-a, pkg-b: /usr/share/shared-file\n\
+                    openssh-client: /usr/bin/ssh\n";
+        assert_eq!(
+            parse_owners(text),
+            vec![
+                (
+                    "/usr/lib/x86_64-linux-gnu/libc.so.6".to_string(),
+                    "libc6".to_string()
+                ),
+                ("/usr/share/shared-file".to_string(), "pkg-a".to_string()),
+                ("/usr/bin/ssh".to_string(), "openssh-client".to_string()),
+            ]
+        );
+    }
+
+    #[test]
+    fn a_merged_path_is_asked_under_both_spellings() {
+        use std::path::Path;
+        assert_eq!(
+            usr_merge_spellings(Path::new("/usr/lib/x86_64-linux-gnu/libc.so.6")),
+            vec![
+                "/usr/lib/x86_64-linux-gnu/libc.so.6",
+                "/lib/x86_64-linux-gnu/libc.so.6"
+            ]
+        );
+        assert_eq!(
+            usr_merge_spellings(Path::new("/lib64/ld-linux-x86-64.so.2")),
+            vec![
+                "/lib64/ld-linux-x86-64.so.2",
+                "/usr/lib64/ld-linux-x86-64.so.2"
+            ]
+        );
+        assert_eq!(
+            usr_merge_spellings(Path::new("/usr/share/libfoo/x")),
+            vec!["/usr/share/libfoo/x"],
+            "a folder the merge did not touch has one spelling"
+        );
+    }
 
     #[test]
     fn installed_local_flags() {

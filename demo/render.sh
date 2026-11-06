@@ -4,13 +4,14 @@
 # machine that runs it.
 #
 #   ./render.sh              every tape
-#   ./render.sh demo         one tape
+#   ./render.sh shots        one tape
 #
 # Each tape runs in the image from ./Dockerfile, in a container of its own that
 # stages, records and tears down. The image is Debian, so its own /var/log holds
 # a real apt history: the container covers /var/log with an empty tmpfs that
-# gets the stage's logs, and /var/lib/flatpak with an empty one, which is what
-# enter.sh does with bwrap on a host and checks for here (`DEMO_MASKS`).
+# gets the stage's logs, and /var/lib/flatpak and /usr/local/lib/node_modules
+# with empty ones, which is what enter.sh does with bwrap on a host and checks
+# for here (`DEMO_MASKS`).
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
@@ -19,7 +20,7 @@ ENGINE="$(command -v podman || command -v docker || true)"
 IMAGE=localhost/whypkg-render
 
 TAPES=("$@")
-[ ${#TAPES[@]} -gt 0 ] || TAPES=(shots report demo)
+[ ${#TAPES[@]} -gt 0 ] || TAPES=(shots report)
 
 (cd .. && cargo build --release)
 # The Dockerfile is the whole build context: nothing in this folder is copied in.
@@ -42,7 +43,7 @@ fi
 for t in "${TAPES[@]}"; do
   echo "── $t.tape"
   "$ENGINE" run --rm --network none "${USER_ARGS[@]}" \
-    --tmpfs "$LOG_MASK" --tmpfs /var/lib/flatpak \
+    --tmpfs "$LOG_MASK" --tmpfs /var/lib/flatpak --tmpfs /usr/local/lib/node_modules \
     -v "$(cd .. && pwd):/work/whypkg:Z" -w /work/whypkg \
     -e DEMO_MASKS=container --entrypoint bash "$IMAGE" \
     -c "demo/stage.sh > /dev/null && cp -r demo/home/var/log/. /var/log/ && vhs demo/$t.tape > /dev/null; s=\$?; demo/stage.sh down > /dev/null; exit \$s"

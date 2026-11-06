@@ -9,7 +9,8 @@
 
 use crate::commands::load_world;
 use crate::engine::{FOUNDATION_THRESHOLD, bfs_root, count, format_size, is_kernel_pkg};
-use crate::model::World;
+use crate::load::Sources;
+use crate::model::{Source, World};
 use colored::Colorize;
 use serde_json::json;
 use std::cmp::Reverse;
@@ -56,7 +57,8 @@ enum Category {
 }
 
 pub fn run(args: Args) {
-    let world = load_world();
+    // Only the system package manager reports upgrades, so nothing else is read.
+    let world = load_world(&Sources::only(&[Source::System]));
 
     let upgradable = world.upgradable_names_sorted();
     if upgradable.is_empty() && !args.json && !args.quick {

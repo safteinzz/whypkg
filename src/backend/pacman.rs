@@ -14,6 +14,7 @@ use super::{Backend, capture};
 use crate::model::{Origin, Package, Source, World};
 use chrono::NaiveDateTime;
 use std::collections::{HashMap, HashSet};
+use std::path::PathBuf;
 
 pub struct Pacman;
 
@@ -27,6 +28,19 @@ impl Backend for Pacman {
         // it exits 1 when there are none.
         let out = super::capture_checked("pacman", &["-Qdtq"], &[1])?;
         Ok(out.split_whitespace().map(String::from).collect())
+    }
+
+    fn owners(&self, paths: &[PathBuf]) -> HashMap<PathBuf, String> {
+        if paths.is_empty() {
+            return HashMap::new();
+        }
+        let mut args = vec!["-Qo"];
+        args.extend(paths.iter().filter_map(|p| p.to_str()));
+        // It exits 1 when any one path has no owner, which says nothing about
+        // the rest.
+        capture("pacman", &args)
+            .map(|out| parse_owners(&out).into_iter().collect())
+            .unwrap_or_default()
     }
 
     fn build_world(&self) -> Result<World, String> {
@@ -124,6 +138,7 @@ pub fn parse_qi(text: &str) -> World {
             name.clone(),
             Package {
                 name,
+                label: None,
                 version,
                 candidate: None,
                 installed_size: size_kb,
@@ -151,6 +166,9 @@ pub fn parse_qi(text: &str) -> World {
         rdeps,
         manual,
         install_log: Vec::new(),
+        uses: HashMap::new(),
+        used_by: HashMap::new(),
+        manager: None,
     }
 }
 
@@ -250,9 +268,35 @@ fn parse_pacman_date(value: &str) -> Option<(i64, String)> {
     Some((dt.and_utc().timestamp(), dt.format("%Y-%m-%d").to_string()))
 }
 
+/// Parse `pacman -Qo` (`/usr/lib/libssl.so.3 is owned by openssl 3.5.2-1`)
+/// into `(path, owner)`.
+fn parse_owners(text: &str) -> Vec<(PathBuf, String)> {
+    text.lines()
+        .filter_map(|l| l.split_once(" is owned by "))
+        .filter_map(|(path, rest)| {
+            let name = rest.split_whitespace().next()?;
+            Some((PathBuf::from(path), name.to_string()))
+        })
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn pacman_owners_map_each_path_to_its_package() {
+        let text = "/usr/lib/libc.so.6 is owned by glibc 2.42+r3-1\n\
+                    error: No package owns /opt/nothing\n\
+                    /usr/bin/node is owned by nodejs 24.1.0-1\n";
+        assert_eq!(
+            parse_owners(text),
+            vec![
+                (PathBuf::from("/usr/lib/libc.so.6"), "glibc".to_string()),
+                (PathBuf::from("/usr/bin/node"), "nodejs".to_string()),
+            ]
+        );
+    }
 
     // Real `pacman -Qi` / pacman.log output captured from an Arch container.
     const QI: &str = include_str!("../../tests/fixtures/pacman_qi.txt");

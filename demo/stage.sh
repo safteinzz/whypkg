@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
 # Build the fake machine the demo is filmed against, in demo/home/.
 #
-# whypkg reads a system two ways: it shells out to the package manager, and it
-# reads /var/log directly. So the stage is two halves:
+# whypkg reads a system three ways: it shells out to the package manager, it
+# reads /var/log directly, and it reads what cargo, pipx, uv and npm left in the
+# home directory. So the stage is three parts:
 #
 #   * demo/home/bin/    shim `apt`, `apt-mark`, `dpkg-query` and `flatpak` that
 #                       replay fixtures/ instead of asking this machine
 #   * demo/home/var/log a dpkg log and an apt history log written from the
 #                       session data in fixtures/apt-sessions.tsv
+#   * demo/home/.cargo, .local/share/{pipx,uv}, lib/node_modules
+#                       the files those installers keep, written from
+#                       fixtures/{cargo,python-tools,npm}.tsv
 #
-# enter.sh then puts the first on PATH and bind-mounts the second over /var/log,
-# so whypkg sees an invented Debian workstation and never reads a real one. That
-# also means the rig renders the same pictures on a machine with no apt at all.
+# enter.sh then puts the first on PATH, bind-mounts the second over /var/log and
+# makes demo/home the home directory, so whypkg sees an invented Debian
+# workstation and never reads a real one. That also means the rig renders the
+# same pictures on a machine with no apt at all.
 #
 # Install dates are written relative to today, so the dossier always reads
 # "2 months ago" rather than drifting to "3 years ago" as the fixtures age.
@@ -133,7 +138,23 @@ done < "$fixtures/upgrades.tsv"
 # ── the shims ───────────────────────────────────────────────────────────────
 write_shim() { printf '#!/bin/sh\n%s\n' "$2" > "$home/bin/$1"; chmod +x "$home/bin/$1"; }
 
+# `-S` places a file in a package. whypkg asks it about the files a staged tool
+# needs: the libraries a cargo binary loads, the Python a virtualenv runs on and
+# the node npm's globals run on. They are answered by name, so the frames come
+# out the same whatever paths the machine rendering them keeps libraries at.
 write_shim dpkg-query '
+if [ "$1" = -S ]; then
+  shift
+  for path in "$@"; do
+    case "${path##*/}" in
+      libc.so.6 | libm.so.6 | ld-linux-*) echo "libc6:amd64: $path" ;;
+      libgcc_s.so.1) echo "libgcc-s1:amd64: $path" ;;
+      python3.14) echo "python3.14-minimal: $path" ;;
+      node) echo "nodejs: $path" ;;
+    esac
+  done
+  exit 0
+fi
 case "$*" in
   *Depends*) exec cat "$(dirname "$0")/../world/deps.tsv" ;;
   *)         exec cat "$(dirname "$0")/../world/meta.tsv" ;;
@@ -212,6 +233,96 @@ cut -f1 "$fixtures/flatpak-apps.tsv" | while read -r app; do
   touch -d "$(date -u -d "$offset days ago" +%Y-%m-%dT18:05:00)" \
         "$home/.local/share/flatpak/app/$app"
   offset=$((offset - 6))
+done
+
+# ── what cargo, pipx, uv and npm installed ──────────────────────────────────
+# whypkg reads these from the installers' own files and never runs them, so the
+# stage only lays the files out. A date is a file's mtime, as on a real machine.
+stamp() { touch -d "$(date -u -d "$2 days ago" +%Y-%m-%dT10:00:00)" "$1"; }
+
+# cargo: .crates2.json, a binary per crate, and the source copy cargo keeps,
+# which is where a crate's description comes from. Each binary is a copy of
+# `true`, an ELF file that loads libc as a cargo binary does, grown to a
+# believable size; whypkg only reads its headers.
+crates=$home/.cargo
+registry=$crates/registry/src/index.crates.io-1949cf8c6b5b557f
+mkdir -p "$crates/bin" "$registry"
+entries=()
+while IFS=$'\t' read -r name version bins kb days desc; do
+  [ -n "$name" ] || continue
+  list=""
+  for bin in ${bins//,/ }; do
+    cp "$(type -P true)" "$crates/bin/$bin"
+    truncate -s "${kb}K" "$crates/bin/$bin"
+    stamp "$crates/bin/$bin" "$days"
+    list="$list${list:+,}\"$bin\""
+  done
+  entries+=("\"$name $version (registry+https://github.com/rust-lang/crates.io-index)\":{\"bins\":[$list]}")
+  mkdir -p "$registry/$name-$version"
+  printf '[package]\nname = "%s"\nversion = "%s"\ndescription = "%s"\n' \
+    "$name" "$version" "$desc" > "$registry/$name-$version/Cargo.toml"
+done < "$fixtures/cargo.tsv"
+(IFS=,; printf '{"installs":{%s}}\n' "${entries[*]}") > "$crates/.crates2.json"
+
+# pipx and uv: a virtualenv per tool, a .dist-info per package in it, and the
+# receipt naming the tool. Every virtualenv runs on the stage's python3.14,
+# which the dpkg-query shim places in python3.14-minimal.
+python=$home/usr/bin/python3.14
+mkdir -p "${python%/*}"
+: > "$python"
+while IFS=$'\t' read -r installer tool dist version requested kb requires summary; do
+  [ -n "$installer" ] || continue
+  case $installer in
+    pipx) venv=$home/.local/share/pipx/venvs/$tool ;;
+    uv) venv=$home/.local/share/uv/tools/$tool ;;
+  esac
+  info=$venv/lib/python3.14/site-packages/$dist-$version.dist-info
+  mkdir -p "$info" "$venv/bin"
+  ln -sf "$python" "$venv/bin/python"
+  {
+    echo "Metadata-Version: 2.4"
+    echo "Name: $dist"
+    echo "Version: $version"
+    echo "Summary: $summary"
+    [ "$requires" = - ] || for req in ${requires//,/ }; do echo "Requires-Dist: $req"; done
+  } > "$info/METADATA"
+  echo "$dist/__init__.py,sha256=,$((kb * 1024))" > "$info/RECORD"
+  [ "$requested" = 1 ] && : > "$info/REQUESTED"
+done < "$fixtures/python-tools.tsv"
+for venv in "$home"/.local/share/pipx/venvs/*; do
+  printf '{"main_package": {"package": "%s"}, "injected_packages": {}}\n' "${venv##*/}" \
+    > "$venv/pipx_metadata.json"
+  stamp "$venv/pipx_metadata.json" 52
+done
+for venv in "$home"/.local/share/uv/tools/*; do
+  printf '[tool]\nrequirements = [{ name = "%s" }]\n' "${venv##*/}" > "$venv/uv-receipt.toml"
+  stamp "$venv/uv-receipt.toml" 19
+done
+
+# npm: node is on PATH at bin/node, so its global prefix is the stage's home
+# and its globals live in lib/node_modules, each with its own dependencies
+# under it. The dpkg-query shim places bin/node in nodejs.
+: > "$home/bin/node"
+chmod +x "$home/bin/node"
+globals=$home/lib/node_modules
+while IFS=$'\t' read -r top name version kb deps desc; do
+  [ -n "$top" ] || continue
+  if [ "$top" = "$name" ]; then
+    dir=$globals/$name
+  else
+    dir=$globals/$top/node_modules/$name
+  fi
+  mkdir -p "$dir"
+  needs=""
+  [ "$deps" = - ] || for dep in ${deps//,/ }; do needs="$needs${needs:+, }\"$dep\": \"*\""; done
+  printf '{"name": "%s", "version": "%s", "description": "%s", "dependencies": {%s}}\n' \
+    "$name" "$version" "$desc" "$needs" > "$dir/package.json"
+  truncate -s "${kb}K" "$dir/index.js"
+done < "$fixtures/npm.tsv"
+days=27
+for dir in "$globals"/*; do
+  stamp "$dir" "$days"
+  days=$((days - 8))
 done
 
 echo "staged $(wc -l < "$world/meta.tsv") packages and $(wc -l < "$log") install events in demo/home/"

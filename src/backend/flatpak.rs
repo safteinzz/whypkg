@@ -1,9 +1,10 @@
 //! Flatpak overlay.
 //!
-//! Unlike apt/dnf/pacman, Flatpak *coexists* with the system package manager -
-//! a machine has apt AND flatpak at once. So this isn't a `detect()` backend
-//! that wins; it layers its apps (and their runtimes) onto whatever `World` the
-//! system backend built, each tagged `Source::Flatpak`.
+//! Unlike apt/dnf/pacman, Flatpak *coexists* with the system package manager,
+//! so a machine has apt and flatpak at once. So this isn't a `detect()` backend
+//! that wins; it reads its apps (and their runtimes) into a [`Layer`] that is
+//! merged onto whatever `World` the system backend built, each tagged
+//! `Source::Flatpak`.
 //!
 //! The app ID (`im.riot.Riot`) is cryptic, so we key packages by the ID but lead
 //! the description with the friendly name (`Element - ...`). We also enrich each
@@ -11,18 +12,18 @@
 //! `origin` column, e.g. flathub), and a dependency edge to its runtime - so a
 //! shared runtime shows "needed by: Brave, Discord, ..." when you open it.
 
-use super::capture;
-use crate::model::{Origin, Package, Source, World};
-use std::time::UNIX_EPOCH;
+use super::{Layer, capture, home, mtime};
+use crate::model::{Origin, Package, Source};
 
 /// Whether flatpak is installed. Cheap check so we don't shell out for nothing.
 pub fn available() -> bool {
     super::have("flatpak")
 }
 
-/// Layer installed flatpak apps and runtimes into `world` (no-op if the query
-/// fails). Two bulk `flatpak list` calls, tab-separated columns.
-pub fn augment(world: &mut World) {
+/// Read installed flatpak apps and runtimes, each app with an edge to its
+/// runtime. Two bulk `flatpak list` calls, tab-separated columns; a failed one
+/// yields an empty layer.
+pub fn read() -> Layer {
     let apps_raw = match capture(
         "flatpak",
         &[
@@ -32,7 +33,7 @@ pub fn augment(world: &mut World) {
         ],
     ) {
         Ok(r) => r,
-        Err(_) => return,
+        Err(_) => return Layer::default(),
     };
     let (mut apps, edges) = parse_apps(&apps_raw);
 
@@ -55,23 +56,10 @@ pub fn augment(world: &mut World) {
     .map(|r| parse_runtimes(&r))
     .unwrap_or_default();
 
-    for pkg in apps.into_iter().chain(runtimes) {
-        if pkg.manual {
-            world.manual.insert(pkg.name.clone());
-        }
-        world.packages.insert(pkg.name.clone(), pkg);
-    }
-
-    // App -> runtime dependency edges (only if the runtime is actually present).
-    for (app, runtime) in edges {
-        if world.packages.contains_key(&runtime) {
-            world
-                .deps
-                .entry(app.clone())
-                .or_default()
-                .push(runtime.clone());
-            world.rdeps.entry(runtime).or_default().push(app);
-        }
+    Layer {
+        packages: apps.into_iter().chain(runtimes).collect(),
+        deps: edges,
+        needs: Vec::new(),
     }
 }
 
@@ -99,6 +87,7 @@ pub fn parse_apps(text: &str) -> (Vec<Package>, Vec<(String, String)>) {
 
         pkgs.push(Package {
             name: app_id,
+            label: None,
             version: version.to_string(),
             candidate: None,
             installed_size: size,
@@ -131,6 +120,7 @@ pub fn parse_runtimes(text: &str) -> Vec<Package> {
             let remote = f.get(4).map(|s| s.trim()).filter(|s| !s.is_empty());
             Some(Package {
                 name: key,
+                label: None,
                 version: version.to_string(),
                 candidate: None,
                 installed_size: size,
@@ -173,24 +163,11 @@ fn runtime_key(s: &str) -> String {
 /// The install date proxy: the mtime of the app's deploy directory (system or
 /// user install). Returns `(unix_epoch, "YYYY-MM-DD")`.
 fn deploy_date(app_id: &str) -> Option<(i64, String)> {
-    let home = std::env::var("HOME").unwrap_or_default();
-    let candidates = [
-        format!("/var/lib/flatpak/app/{app_id}"),
-        format!("{home}/.local/share/flatpak/app/{app_id}"),
-    ];
-    for path in candidates {
-        if let Ok(meta) = std::fs::metadata(&path)
-            && let Ok(mtime) = meta.modified()
-            && let Ok(since) = mtime.duration_since(UNIX_EPOCH)
-        {
-            let epoch = since.as_secs() as i64;
-            let date = chrono::DateTime::from_timestamp(epoch, 0)
-                .map(|dt| dt.format("%Y-%m-%d").to_string())
-                .unwrap_or_default();
-            return Some((epoch, date));
-        }
-    }
-    None
+    let system = std::path::PathBuf::from("/var/lib/flatpak/app").join(app_id);
+    let user = home().map(|h| h.join(".local/share/flatpak/app").join(app_id));
+    std::iter::once(system)
+        .chain(user)
+        .find_map(|path| mtime(&path))
 }
 
 /// Parse a flatpak human size like "544.4 MB" into KB (1024-based). Flatpak uses

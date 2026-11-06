@@ -5,8 +5,9 @@
 # The setup block is hidden, so a frame only ever holds the tool: no
 # multiplexer bar, no scrollback, nothing to crop afterwards.
 #
-# 1180x620 is 112 columns by 28 rows. A browser row is 107 columns wide, so
-# anything wider just adds dead space to the right of every description. The
+# 1180x620 is 112 columns by 28 rows. A browser row is 106 columns wide before
+# its description, so anything wider is spent on descriptions nobody reads in a
+# screenshot. The
 # report is half that wide and lives in report.tape, in a frame of its own.
 #
 # Ctrl keys must be lowercase here: `Ctrl+G` is Ctrl+Shift+G, which the
@@ -40,7 +41,8 @@ Screenshot readme-assets/browse.png
 Sleep 1s
 
 # ── found by what it is, not what it is called ──────────────────────────────
-Type "/element"
+# The list narrows while the query is typed, matching descriptions too.
+Type "/Element"
 Sleep 2s
 Screenshot readme-assets/search.png
 Sleep 1s
@@ -48,8 +50,8 @@ Escape
 
 # ── the answer ──────────────────────────────────────────────────────────────
 Type "/libllvm"
-Sleep 1s
 Enter
+Sleep 500ms
 Enter
 Sleep 2s
 Screenshot readme-assets/dossier.png
@@ -60,10 +62,21 @@ Ctrl+g
 Sleep 2s
 Screenshot readme-assets/graph.png
 Sleep 1s
+Escape
+Sleep 300ms
+Escape
+Sleep 300ms
+
+# ── what runs on it ─────────────────────────────────────────────────────────
+Type "/nodejs"
+Enter
+Sleep 500ms
+Enter
+Sleep 2s
+Screenshot readme-assets/uses.png
+Sleep 1s
 
 Hide
-Escape
-Escape
 Type "q"
 Sleep 500ms
 Type "exit" Enter

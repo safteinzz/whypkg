@@ -3,7 +3,7 @@ name = "whypkg"
 version = "0.6.1"
 edition = "2024"
 rust-version = "1.88"
-description = "why is that package here? know it now - a fast, cross-distro package investigator (apt, pacman, dnf, zypper, flatpak)"
+description = "why is that package here? know it now - a fast package investigator for your distro, flatpak, cargo, pipx, uv and npm"
 authors = ["Pablo Antonio Hernández Hernández (safteinzz)"]
 license = "AGPL-3.0-only"
 readme = "README.md"
@@ -15,6 +15,10 @@ categories = ["command-line-utilities"]
 # demo/ is the rig that renders them: needed to rebuild a picture, never at install time.
 exclude = ["legacy/", "readme-assets/", "demo/"]
 
+# The programs whypkg starts, for tools that ask what an install needs beside its libraries.
+[package.metadata]
+runs = ["apt", "apt-get", "apt-mark", "dpkg-query", "pacman", "dnf", "rpm", "zypper", "flatpak", "ldconfig"]
+
 [[bin]]
 name = "whypkg"
 path = "src/main.rs"
@@ -22,12 +26,12 @@ path = "src/main.rs"
 [dependencies]
 clap           = { version = "4", features = ["derive"] } # CLI argument parsing
 colored        = "2"                                       # terminal colors for the report mode
-ratatui        = "0.29"                                    # the interactive TUI (browse mode)
+ratatui        = { version = "0.29", features = ["unstable-rendered-line-info"] } # the interactive TUI; the feature measures wrapped text, so a box fits its body
 crossterm      = "0.28"                                    # terminal backend / key events for ratatui
-nucleo-matcher = "0.3"                                     # the fuzzy matcher behind the finder (no external fzf)
 chrono         = "0.4"                                     # parse package-manager log timestamps for "same session"
 flate2         = "1"                                       # read rotated, gzipped logs (e.g. dpkg.log.2.gz)
-serde_json     = "1"                                       # the --json output of `why`, `leaves` and `pending`
+serde_json     = "1"                                       # the --json output, and reading cargo's, pipx's and npm's own json
+toml_edit      = { version = "0.23", default-features = false, features = ["parse", "display"] } # the settings file, comments kept, and uv's receipts
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"                                               # restore default SIGPIPE so `whypkg … | head` exits quietly

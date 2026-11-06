@@ -10,15 +10,22 @@
 
 use std::collections::{HashMap, HashSet};
 
-/// Everything we know about a single installed package.
-/// Which packaging system a package belongs to. The system package manager
-/// (apt/dnf/pacman) and Flatpak coexist, so a `World` can hold both.
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+/// Which installer put a package there. The distro's package manager and the
+/// others coexist, so one `World` holds them all.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub enum Source {
-    /// The distro's package manager (apt, dnf, pacman).
+    /// The distro's package manager (apt, pacman, dnf, zypper).
     System,
-    /// A Flatpak app.
+    /// A Flatpak app or runtime.
     Flatpak,
+    /// `cargo install`.
+    Cargo,
+    /// `pipx install`: a tool and the packages in its own virtualenv.
+    Pipx,
+    /// `uv tool install`: a tool and the packages in its own virtualenv.
+    Uv,
+    /// `npm install -g`: a package and the ones in its own `node_modules`.
+    Npm,
 }
 
 /// Where an installed package came from, as best the backend can determine.
@@ -36,12 +43,35 @@ pub enum Origin {
 }
 
 impl Source {
-    /// The word `--json` prints for it.
+    /// Every source, in the order the browser's tabs show them.
+    pub const ALL: [Source; 6] = [
+        Source::System,
+        Source::Flatpak,
+        Source::Cargo,
+        Source::Pipx,
+        Source::Uv,
+        Source::Npm,
+    ];
+
+    /// The word `--json`, `--only` and the config file use for it.
     pub fn word(self) -> &'static str {
         match self {
             Source::System => "system",
             Source::Flatpak => "flatpak",
+            Source::Cargo => "cargo",
+            Source::Pipx => "pipx",
+            Source::Uv => "uv",
+            Source::Npm => "npm",
         }
+    }
+
+    pub fn from_word(word: &str) -> Option<Source> {
+        Source::ALL.into_iter().find(|s| s.word() == word)
+    }
+
+    /// The words of every source, for a message that lists them.
+    pub fn words() -> String {
+        Source::ALL.map(Source::word).join(", ")
     }
 }
 
@@ -57,9 +87,17 @@ impl Origin {
     }
 }
 
+/// Everything we know about a single installed package.
 #[derive(Clone)]
 pub struct Package {
+    /// The key it is stored under, unique across sources: the package
+    /// manager's name for a system package, a flatpak ID, and `<source>:<name>`
+    /// for the rest (`cargo:ripgrep`, `uv:ruff/click` for a package inside the
+    /// `ruff` tool's virtualenv).
     pub name: String,
+    /// The name a person knows it by when that is not `name` (`ripgrep` for
+    /// `cargo:ripgrep`); read it through [`Package::label`].
+    pub label: Option<String>,
     pub version: String,
     /// The version we'd upgrade to, if this package is upgradable.
     pub candidate: Option<String>,
@@ -87,6 +125,14 @@ pub struct Package {
     pub install_date: Option<String>,
 }
 
+impl Package {
+    /// The name to show: `ripgrep` for `cargo:ripgrep`, the key itself for a
+    /// system package.
+    pub fn label(&self) -> &str {
+        self.label.as_deref().unwrap_or(&self.name)
+    }
+}
+
 /// The complete picture of the system: packages + the dependency graph, built
 /// once by a [`crate::backend::Backend`].
 pub struct World {
@@ -102,6 +148,17 @@ pub struct World {
     /// Every install event from the package-manager log, oldest first:
     /// `(epoch, package)`. Powers the "installed in the same session" clue.
     pub install_log: Vec<(i64, String)>,
+    /// `uses[p]` = system packages `p` loads or runs on: a library a cargo
+    /// binary links, the Python or node a tool runs with. Kept out of `deps`
+    /// because the package manager did not install them for `p`, so they must
+    /// never answer "why is this here" or count toward a system library's
+    /// dependents; they only warn that removing one breaks `p`.
+    pub uses: HashMap<String, Vec<String>>,
+    /// The reverse of `uses`.
+    pub used_by: HashMap<String, Vec<String>>,
+    /// The system package manager that built this world (`apt`), or `None`
+    /// when there is none.
+    pub manager: Option<&'static str>,
 }
 
 #[cfg(test)]
@@ -117,6 +174,7 @@ impl World {
                 .entry(name.to_string())
                 .or_insert_with(|| Package {
                     name: name.to_string(),
+                    label: None,
                     version: "1.0".into(),
                     candidate: None,
                     installed_size: 100,
@@ -165,7 +223,118 @@ impl World {
             rdeps: HashMap::new(),
             manual: HashSet::new(),
             install_log: Vec::new(),
+            uses: HashMap::new(),
+            used_by: HashMap::new(),
+            manager: None,
         }
+    }
+
+    /// The name to show for the package stored under `key`.
+    pub fn label<'a>(&'a self, key: &'a str) -> &'a str {
+        self.packages.get(key).map_or(key, Package::label)
+    }
+
+    /// Which installer put the package stored under `key` there.
+    pub fn source(&self, key: &str) -> Source {
+        self.packages.get(key).map_or(Source::System, |p| p.source)
+    }
+
+    /// System packages `pkg` loads or runs on.
+    pub fn uses_of(&self, pkg: &str) -> &[String] {
+        self.uses.get(pkg).map(Vec::as_slice).unwrap_or(&[])
+    }
+
+    /// Packages from other installers that load or run on `pkg`.
+    pub fn used_by_of(&self, pkg: &str) -> &[String] {
+        self.used_by.get(pkg).map(Vec::as_slice).unwrap_or(&[])
+    }
+
+    /// Record that `user` loads or runs on the system package `pkg`.
+    pub fn add_use(&mut self, user: &str, pkg: &str) {
+        let uses = self.uses.entry(user.to_string()).or_default();
+        if uses.iter().any(|u| u == pkg) {
+            return;
+        }
+        uses.push(pkg.to_string());
+        self.used_by
+            .entry(pkg.to_string())
+            .or_default()
+            .push(user.to_string());
+    }
+
+    /// Record that `dependent` needs `dependency`, both already in `packages`.
+    pub fn add_dep(&mut self, dependent: &str, dependency: &str) {
+        let deps = self.deps.entry(dependent.to_string()).or_default();
+        if deps.iter().any(|d| d == dependency) {
+            return;
+        }
+        deps.push(dependency.to_string());
+        self.rdeps
+            .entry(dependency.to_string())
+            .or_default()
+            .push(dependent.to_string());
+    }
+
+    /// What needs `pkg`: the packages its installer pulled it in for, then the
+    /// ones that load or run on it.
+    pub fn needed_by_all(&self, pkg: &str) -> Vec<String> {
+        let mut out: Vec<String> = Vec::new();
+        for p in self.rdeps_of(pkg).iter().chain(self.used_by_of(pkg)) {
+            if !out.contains(p) {
+                out.push(p.clone());
+            }
+        }
+        out
+    }
+
+    /// What `pkg` needs: its own dependencies, then the system packages it
+    /// loads or runs on.
+    pub fn depends_on_all(&self, pkg: &str) -> Vec<String> {
+        let mut out: Vec<String> = Vec::new();
+        for p in self.deps_of(pkg).iter().chain(self.uses_of(pkg)) {
+            if !out.contains(p) {
+                out.push(p.clone());
+            }
+        }
+        out
+    }
+
+    /// The command that would remove `pkg`, for the dossier to show and never
+    /// run, or `None` when its installer has no command for that one package
+    /// (a package inside a tool's virtualenv goes when the tool does).
+    pub fn remove_command(&self, pkg: &str) -> Option<String> {
+        let p = self.packages.get(pkg)?;
+        let tool = |prefix: &str| {
+            let rest = pkg.strip_prefix(prefix)?;
+            (!rest.contains('/')).then_some(rest)
+        };
+        Some(match p.source {
+            Source::System => {
+                let verb = match self.manager? {
+                    "apt" => "apt remove",
+                    "pacman" => "pacman -R",
+                    "dnf" => "dnf remove",
+                    "zypper" => "zypper remove",
+                    _ => return None,
+                };
+                format!("sudo {verb} {pkg}")
+            }
+            Source::Flatpak if p.manual => format!("flatpak uninstall {pkg}"),
+            Source::Flatpak => return None,
+            Source::Cargo => format!("cargo uninstall {}", p.label()),
+            Source::Pipx => format!("pipx uninstall {}", tool("pipx:")?),
+            Source::Uv => format!("uv tool uninstall {}", tool("uv:")?),
+            Source::Npm if p.manual => format!("npm uninstall -g {}", p.label()),
+            Source::Npm => return None,
+        })
+    }
+
+    /// Add a package, marking it manual when it is.
+    pub fn insert(&mut self, pkg: Package) {
+        if pkg.manual {
+            self.manual.insert(pkg.name.clone());
+        }
+        self.packages.insert(pkg.name.clone(), pkg);
     }
 
     pub fn is_manual(&self, pkg: &str) -> bool {

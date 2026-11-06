@@ -11,6 +11,8 @@
 # at the system-wide path before the per-user one - so without the mask a real
 # machine's real install dates end up in the pictures. That leak was in a frame
 # before it was caught; check every path whypkg reads directly before adding one.
+# /usr/local/lib/node_modules is the other one: whypkg reads npm's globals there
+# whatever node's own prefix is, so a machine with any would show them.
 #
 # The prompt is the same invented `user@host` every other crate's rig uses, and
 # every tape sets the same VHS theme and font, so every frame across the
@@ -32,11 +34,12 @@ ps1='\[\e[38;5;114m\]user@host\[\e[0m\]:\[\e[38;5;110m\]\w\[\e[0m\]\$ '
 # `env -i` instead.
 if [ "${DEMO_MASKS:-}" = container ]; then
   mounted() { awk -v p="$1" '$2 == p && $3 == "tmpfs" {found=1} END {exit !found}' /proc/mounts; }
-  mounted /var/log && mounted /var/lib/flatpak \
+  mounted /var/log && mounted /var/lib/flatpak && mounted /usr/local/lib/node_modules \
     && cmp -s "$home/var/log/dpkg.log" /var/log/dpkg.log \
     && cmp -s "$home/var/log/apt/history.log" /var/log/apt/history.log \
     && [ -z "$(ls -A /var/lib/flatpak)" ] \
-    || { echo "enter.sh: /var/log is not the stage's or /var/lib/flatpak is not empty; render with ./render.sh"; exit 1; }
+    && [ -z "$(ls -A /usr/local/lib/node_modules)" ] \
+    || { echo "enter.sh: /var/log is not the stage's, or /var/lib/flatpak or /usr/local/lib/node_modules is not empty; render with ./render.sh"; exit 1; }
   cd "$home"
   exec env -i \
     PATH="$home/bin:/usr/bin:/bin" \
@@ -54,10 +57,16 @@ command -v bwrap >/dev/null || { echo "enter.sh needs bubblewrap (bwrap)"; exit 
 # --clearenv is the bwrap spelling of `env -i`: what follows is the whole
 # environment, not the real one plus overrides, so no variable nobody thought of
 # survives to point whypkg at something real.
+# A tmpfs needs somewhere to go, and a machine without npm globals has nothing
+# there to hide.
+npm_mask=()
+[ -d /usr/local/lib/node_modules ] && npm_mask=(--tmpfs /usr/local/lib/node_modules)
+
 exec bwrap \
   --dev-bind / / \
   --bind "$home/var/log" /var/log \
   --tmpfs /var/lib/flatpak \
+  "${npm_mask[@]}" \
   --clearenv \
   --setenv PATH "$home/bin:/usr/bin:/bin" \
   --setenv HOME "$home" \

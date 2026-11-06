@@ -1,25 +1,20 @@
-//! An in-terminal dependency graph view (prototype).
+//! An in-terminal dependency graph view.
 //!
 //! Drawn with ratatui's `Canvas` (braille "pixels"), so it works in every
-//! terminal - including tmux - with no image protocol. It shows the *ego graph*
+//! terminal, tmux included, with no image protocol. It shows the *ego graph*
 //! of one package: the package in the centre, the things that need it on the
-//! left, the things it needs on the right. Arrow keys move the selection around
-//! the ring; `↵` re-centres on the selected node (expanding outward); `esc`
-//! steps back and then closes it. Node colour matches the list tags: green =
-//! manual, yellow = auto, blue = flatpak.
+//! left, the things it needs on the right. `h`/`l` and `j`/`k` move the
+//! selection around the ring; `↵` re-centres on the selected node (expanding
+//! outward); `esc` steps back to the centre before, then closes it. Node colour matches the
+//! list marks: green = manual, yellow = auto, blue = from an installer other
+//! than the system's.
 
 use crate::model::{Source, World};
 use ratatui::prelude::*;
 use ratatui::symbols::Marker;
 use ratatui::widgets::canvas::{Canvas, Circle, Line as CanvasLine, Points};
 use ratatui::widgets::{Block, Borders, Paragraph};
-
-use super::GRAPH_KEY;
-use super::widgets::{BACK, HELP, QUIT, key_footer};
-
-/// The graph's footer. Its letters are keys rather than a filter, so it takes
-/// the plain `q quit` and `? help`.
-const GRAPH_KEYS: &[&str] = &["↵ centre", GRAPH_KEY, BACK, QUIT];
+use std::collections::HashMap;
 
 /// Which column a node lives in - drives the spatial navigation.
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -35,6 +30,7 @@ pub(crate) enum Side {
 /// One node in the ego graph, with a laid-out canvas position.
 pub(crate) struct Node {
     name: String,
+    label: String,
     x: f64,
     y: f64,
     color: Color,
@@ -58,9 +54,11 @@ pub struct GraphView {
     edges: Vec<(usize, usize)>,
     /// Index of the currently selected node.
     selected: usize,
-    /// Centres visited before this one, so `esc` can walk back out the way you
-    /// dug in (`↵` pushes, `esc` pops).
+    /// Centres visited before this one, so `esc` can walk back out the way
+    /// you dug in (`↵` pushes, `esc` pops).
     history: Vec<String>,
+    /// The name to draw for each key on screen (`ripgrep` for `cargo:ripgrep`).
+    labels: HashMap<String, String>,
 }
 
 /// How many neighbours to show per side before it turns into a hairball.
@@ -73,7 +71,7 @@ impl GraphView {
     pub fn build(world: &World, center: &str) -> GraphView {
         let color_of = |name: &str| -> Color {
             match world.packages.get(name) {
-                Some(p) if p.source == Source::Flatpak => Color::Blue,
+                Some(p) if p.source != Source::System => Color::Blue,
                 _ if world.is_manual(name) => Color::Green,
                 _ => Color::Yellow,
             }
@@ -90,8 +88,8 @@ impl GraphView {
         };
         let mut view = GraphView {
             centre: (center.to_string(), color_of(center)),
-            all_needed: with_colour(dedup(world.rdeps_of(center))),
-            all_deps: with_colour(dedup(world.deps_of(center))),
+            all_needed: with_colour(world.needed_by_all(center)),
+            all_deps: with_colour(world.depends_on_all(center)),
             page_left: 0,
             page_right: 0,
             nodes: Vec::new(),
@@ -100,15 +98,33 @@ impl GraphView {
             // h/l steps out into either side from there.
             selected: 0,
             history: Vec::new(),
+            labels: HashMap::new(),
         };
+        let keys = std::iter::once(center.to_string())
+            .chain(view.all_needed.iter().map(|(k, _)| k.clone()))
+            .chain(view.all_deps.iter().map(|(k, _)| k.clone()));
+        view.labels = keys
+            .map(|k| {
+                let label = world.label(&k).to_string();
+                (k, label)
+            })
+            .collect();
         view.layout();
         view
+    }
+
+    fn label_of(&self, key: &str) -> String {
+        self.labels
+            .get(key)
+            .cloned()
+            .unwrap_or_else(|| key.to_string())
     }
 
     /// Lay out the current page of each side around the centre.
     pub(crate) fn layout(&mut self) {
         self.nodes = vec![Node {
             name: self.centre.0.clone(),
+            label: self.label_of(&self.centre.0),
             x: 0.0,
             y: 0.0,
             color: self.centre.1,
@@ -120,6 +136,13 @@ impl GraphView {
         let right = page_slice(&self.all_deps, self.page_right);
         place_side(left, Side::Left, &mut self.nodes, &mut self.edges);
         place_side(right, Side::Right, &mut self.nodes, &mut self.edges);
+        for node in &mut self.nodes {
+            node.label = self
+                .labels
+                .get(&node.name)
+                .cloned()
+                .unwrap_or_else(|| node.name.clone());
+        }
         self.selected = self.selected.min(self.nodes.len().saturating_sub(1));
     }
 
@@ -242,8 +265,8 @@ impl GraphView {
             .unwrap_or("")
     }
 
-    /// Re-centre on the selected node, remembering where we came from so `esc`
-    /// can walk back out.
+    /// Re-centre on the selected node, remembering where we came from so
+    /// `esc` can walk back out.
     pub fn recenter(&mut self, world: &World) {
         let name = self.nodes[self.selected].name.clone();
         if name == self.center_name() {
@@ -267,7 +290,7 @@ impl GraphView {
         true
     }
 
-    /// The name of the node under the cursor (for the title bar).
+    /// The key of the node under the cursor.
     pub fn selected_name(&self) -> &str {
         &self.nodes[self.selected].name
     }
@@ -285,17 +308,16 @@ impl GraphView {
             Constraint::Length(1), // zone headers
             Constraint::Min(3),    // the graph canvas
             Constraint::Length(1), // legend (colour key)
-            Constraint::Length(1), // controls
         ])
         .split(area);
 
         // Title: the package we're centred on, and the node under the cursor.
         let title = Line::from(vec![
             Span::styled("  graph: ", Style::new().dim()),
-            Span::styled(center_name.to_string(), Style::new().bold().cyan()),
+            Span::styled(self.label_of(center_name), Style::new().bold().cyan()),
             Span::styled("    now: ", Style::new().dim()),
             Span::styled(
-                self.selected_name().to_string(),
+                self.label_of(self.selected_name()),
                 Style::new().bold().white(),
             ),
         ]);
@@ -409,7 +431,7 @@ impl GraphView {
                         Side::Center => X_SPAN,
                     };
                     let fits = ((room / char_w).floor() as usize).clamp(6, 26);
-                    let label = truncate(&node.name, fits);
+                    let label = truncate(&node.label, fits);
                     let width = label.chars().count() as f64 * char_w;
                     // Away from the centre line; nodes near it stay level.
                     let lift = if node.y > row_h {
@@ -462,14 +484,9 @@ impl GraphView {
             Span::raw("    "),
             Span::styled("● auto", Style::new().yellow()),
             Span::raw("    "),
-            Span::styled("● flatpak", Style::new().blue()),
+            Span::styled("● another installer", Style::new().blue()),
         ]);
         f.render_widget(Paragraph::new(legend), chunks[3]);
-
-        f.render_widget(
-            Paragraph::new(key_footer(GRAPH_KEYS, HELP, chunks[4].width)),
-            chunks[4],
-        );
     }
 }
 
@@ -514,6 +531,7 @@ fn place_side(
         let idx = nodes.len();
         nodes.push(Node {
             name: name.clone(),
+            label: name.clone(),
             x,
             y,
             color: *colour,
@@ -529,14 +547,6 @@ fn page_slice(all: &[(String, Color)], page: usize) -> &[(String, Color)] {
     let start = (page * PER_SIDE).min(all.len());
     let end = (start + PER_SIDE).min(all.len());
     &all[start..end]
-}
-
-fn dedup(src: &[String]) -> Vec<String> {
-    let mut seen = std::collections::HashSet::new();
-    src.iter()
-        .filter(|s| seen.insert((*s).clone()))
-        .cloned()
-        .collect()
 }
 
 /// Truncate a label to `max` chars (UTF-8 safe).
