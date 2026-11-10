@@ -1,7 +1,5 @@
 # whypkg
 
-> **Canonical:** [gitlab.com/safteinzz/whypkg](https://gitlab.com/safteinzz/whypkg) · **Mirror:** [github.com/safteinzz/whypkg](https://github.com/safteinzz/whypkg)
-
 <!-- desc:start -->
 why is that package here? know it now - a fast package investigator for your distro, flatpak, cargo, pipx, uv and npm
 <!-- desc:end -->
@@ -18,7 +16,7 @@ No cargo yet? Rust installs the same way on every distro: [rustup.rs](https://ru
 
 ## What have I actually got?
 
-![The whypkg browser: every installed package in one list, with a tab for each installer: system, flatpak, cargo, pipx, uv and npm](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/browse.png)
+![The whypkg browser: every installed package in one list, with a tab for each installer: system, flatpak, cargo, pipx, uv and npm](https://raw.githubusercontent.com/safteinzz/whypkg/main/readme-assets/browse.png)
 
 Legend: `●` you installed it · `○` something pulled it in · `← clang` pulled in by clang · `↑` upgrade waiting
 
@@ -30,14 +28,14 @@ What your distro installed, and what flatpak, cargo, pipx, uv and npm did beside
 
 ## What was that thing called?
 
-![Typing /Element narrows the list to five packages, the flatpak app im.riot.Riot first](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/search.png)
+![Typing /Element narrows the list to five packages, the flatpak app im.riot.Riot first](https://raw.githubusercontent.com/safteinzz/whypkg/main/readme-assets/search.png)
 
 `/` filters by descriptions as well as names, which is the only way anyone finds
 a flatpak app by the name on its window.
 
 ## Why is this here?
 
-![A package dossier: libllvm21, 133 MB, pulled in by clang, with the eleven packages that need it beside the nine it needs](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/dossier.png)
+![A package dossier: libllvm21, 133 MB, pulled in by clang, with the eleven packages that need it beside the nine it needs](https://raw.githubusercontent.com/safteinzz/whypkg/main/readme-assets/dossier.png)
 
 **pulled in by clang.** That is the whole point. You also get where it came
 from, what needs it and what it needs; `↵` on anything in the lists follows the
@@ -45,7 +43,7 @@ thread and `esc` walks back.
 
 ## What breaks if I remove it?
 
-![The nodejs dossier: three npm globals run on it, so removing it breaks them](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/uses.png)
+![The nodejs dossier: three npm globals run on it, so removing it breaks them](https://raw.githubusercontent.com/safteinzz/whypkg/main/readme-assets/uses.png)
 
 A cargo binary loads system libraries, and a pipx, uv or npm tool runs on the
 system's Python or node, but no package manager records either. whypkg reads
@@ -53,7 +51,7 @@ both, so the package apt would happily remove names what still needs it.
 
 ## What is around it?
 
-![The dependency graph view: libllvm21 in the centre, packages that need it on the left, packages it needs on the right](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/graph.png)
+![The dependency graph view: libllvm21 in the centre, packages that need it on the left, packages it needs on the right](https://raw.githubusercontent.com/safteinzz/whypkg/main/readme-assets/graph.png)
 
 `ctrl-g` draws the neighbourhood in the terminal, with no browser and no image
 protocol, so it survives ssh and tmux. `↵` re-centres on a neighbour and `esc`
@@ -61,7 +59,7 @@ retraces.
 
 ## What is this upgrade about to pull down?
 
-![The pending report: one line per upgradable package with its size and why it is installed](https://gitlab.com/safteinzz/whypkg/-/raw/main/readme-assets/pending.png)
+![The pending report: one line per upgradable package with its size and why it is installed](https://raw.githubusercontent.com/safteinzz/whypkg/main/readme-assets/pending.png)
 
 ```bash
 whypkg --upgradable    # browse only packages with an upgrade waiting
@@ -102,7 +100,7 @@ The file keeps your comments, so it can live in your dotfiles.
 - cargo, pipx, uv and npm are read from the files they keep (`~/.cargo/.crates2.json`, each tool's virtualenv, npm's global `node_modules`), never by running them, and their upgrades are not shown.
 - A crate that starts other programs can name them in its `Cargo.toml` as `[package.metadata] runs = ["ssh", "rsync"]`, and whypkg links it to the packages that provide them once it is installed, because a program started at run time leaves no trace in the binary.
 - Everything loads once into an in-memory graph, so every hop is a lookup rather than a subprocess; the slow part is your package manager's own queries, about half a second, and every other source is read while they run.
-- It started as the bash `apt-why` and `apt-pending` scripts, kept in [`legacy/`](https://gitlab.com/safteinzz/whypkg/-/tree/main/legacy).
+- It started as the bash `apt-why` and `apt-pending` scripts, kept in [`legacy/`](https://github.com/safteinzz/whypkg/tree/main/legacy).
 
 ## Compatibility
 
